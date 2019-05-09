@@ -1,9 +1,0 @@
-{
-  "externalDevices": {
-    "/FutabaInterLinkDevice": {
-      "deviceName": "futaba0",
-      "server": "localhost:3884",
-      "descriptor": "external-devices/device-descriptors/Futaba_InterLink_Elite.json"
-    }
-  }
-}

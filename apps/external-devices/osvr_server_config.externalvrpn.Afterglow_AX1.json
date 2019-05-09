@@ -1,9 +1,0 @@
-{
-    "externalDevices": {
-        "/AfterglowAx1Device": {
-            "deviceName": "microsoft0",
-            "server": "localhost:3884",
-            "descriptor": "external-devices/device-descriptors/Afterglow_AX1.json"
-        }
-    }
-}
