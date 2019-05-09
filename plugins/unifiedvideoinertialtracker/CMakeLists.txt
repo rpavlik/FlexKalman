@@ -78,17 +78,19 @@ add_library(uvbi-core STATIC
     Types.h
     UsefulQuaternions.h
     ${OSVR_VIDEOTRACKERSHARED_SOURCES_CORE})
-target_compile_options(uvbi-core
+target_compile_features(uvbi-core
     PUBLIC
-    ${OSVR_CXX11_FLAGS})
+    cxx_std_11)
 target_link_libraries(uvbi-core
     PUBLIC
     ${VIDEOTRACKER_EXTRA_LIBS}
     opencv_core
-    osvrUtilCpp # for typedefs and boost headers
-    osvrKalman
+    opencv_imgproc
+    opencv_videoio
+    osvr::osvrUtilCpp # for typedefs and boost headers
+    osvr::osvrKalman
     eigen-headers
-    osvrCommon # for tracing
+    osvr::osvrCommon # for tracing
     PRIVATE
     util-headers)
 set_target_properties(uvbi-core PROPERTIES
@@ -99,17 +101,17 @@ target_compile_definitions(uvbi-core PRIVATE OSVR_UVBI_CORE)
 # Convenience tool to view the tracker camera using the same pipeline as the tracker plugin.
 ###
 add_executable(uvbi-view-camera ViewTrackingCamera.cpp)
-target_link_libraries(uvbi-view-camera PRIVATE uvbi-image-sources)
+target_link_libraries(uvbi-view-camera PRIVATE uvbi-image-sources opencv_imgcodecs)
 set_target_properties(uvbi-view-camera PROPERTIES
     FOLDER "${PROJ_FOLDER}")
 
 ###
 # Utility to measure capture latency of the IR camera, USB stack, etc.
 ###
-add_executable(uvbi-measure-camera-latency MeasureTrackingCameraLatency.cpp)
-target_link_libraries(uvbi-measure-camera-latency PRIVATE uvbi-image-sources vendored-vrpn)
-set_target_properties(uvbi-measure-camera-latency PROPERTIES
-    FOLDER "${PROJ_FOLDER}")
+# add_executable(uvbi-measure-camera-latency MeasureTrackingCameraLatency.cpp)
+# target_link_libraries(uvbi-measure-camera-latency PRIVATE uvbi-image-sources vendored-vrpn)
+# set_target_properties(uvbi-measure-camera-latency PROPERTIES
+#     FOLDER "${PROJ_FOLDER}")
 
 if(BUILD_TESTING)
     ###
@@ -128,9 +130,10 @@ endif()
 
 # "object library" for the HDK data files.
 add_library(uvbi-hdkdata OBJECT ${OSVR_VIDEOTRACKERSHARED_SOURCES_HDKDATA})
-target_compile_options(uvbi-hdkdata
+
+target_compile_features(uvbi-hdkdata
     PUBLIC
-    ${OSVR_CXX11_FLAGS})
+    cxx_std_11)
 target_include_directories(uvbi-hdkdata
     PUBLIC
     ${OpenCV_INCLUDE_DIRS})

@@ -48,13 +48,13 @@ if(BUILD_ADVANCED_DEV_TOOLS)
         ${OSVR_VIDEOTRACKERSHARED_INCLUDE_DIR}
         ${OpenCV_INCLUDE_DIRS}
         ${Boost_INCLUDE_DIRS})
-    target_compile_options(blob_extraction_demo
-        PUBLIC
-        ${OSVR_CXX11_FLAGS})
+    target_compile_features(blob_extraction_demo PUBLIC cxx_std_11)
     target_link_libraries(blob_extraction_demo
         PUBLIC
         ${VIDEOTRACKER_EXTRA_LIBS}
         opencv_core
+        opencv_imgproc
+        opencv_image2d
         osvrUtil
         JsonCpp::JsonCpp)
     target_compile_definitions(blob_extraction_demo

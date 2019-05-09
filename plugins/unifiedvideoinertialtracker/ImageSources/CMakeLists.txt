@@ -3,13 +3,14 @@
 ###
 set(SOURCES
     CVImageSource.cpp
-    DK2ImageSource.cpp
+    # DK2ImageSource.cpp
     ImageSource.cpp
     ImageSource.h
     ImageSourceFactories.h
     FakeImageSource.cpp
-    Oculus_DK2.cpp
-    Oculus_DK2.h)
+    # Oculus_DK2.cpp
+    # Oculus_DK2.h
+    )
 
 if(WIN32)
     list(APPEND SOURCES
@@ -22,9 +23,9 @@ else()
         UVCImageSource.cpp)
 endif()
 add_library(uvbi-image-sources STATIC ${SOURCES})
-target_compile_options(uvbi-image-sources
+target_compile_features(uvbi-image-sources
     PUBLIC
-    ${OSVR_CXX11_FLAGS})
+    cxx_std_11)
 
 set_target_properties(uvbi-image-sources PROPERTIES
     FOLDER "${PROJ_FOLDER}")
@@ -34,10 +35,10 @@ set_target_properties(uvbi-image-sources PROPERTIES
 target_link_libraries(uvbi-image-sources PUBLIC
     opencv_core
     opencv_highgui
+    opencv_videoio
+    opencv_imgproc
     ${VIDEOTRACKER_EXTRA_LIBS}
-    osvrUtil
-    PRIVATE
-    vendored-vrpn)
+    osvr::osvrUtil)
 if(WIN32)
     target_link_libraries(uvbi-image-sources PUBLIC
         directshow-camera
