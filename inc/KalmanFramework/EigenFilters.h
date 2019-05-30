@@ -26,9 +26,9 @@
 #define INCLUDED_EigenFilters_h_GUID_ECD959BF_587B_4ABB_30B3_E881B4520AC8
 
 // Internal Includes
-#include <osvr/Util/EigenCoreGeometry.h>
-#include <osvr/Util/EigenExtras.h>
-#include <osvr/Util/EigenQuatExponentialMap.h>
+#include <KalmanFramework/EigenCoreGeometry.h>
+#include <KalmanFramework/EigenExtras.h>
+#include <KalmanFramework/EigenQuatExponentialMap.h>
 
 // Library/third-party includes
 // - none

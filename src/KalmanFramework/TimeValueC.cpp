@@ -23,7 +23,7 @@
 // limitations under the License.
 
 // Internal Includes
-#include <osvr/Util/TimeValueC.h>
+#include <KalmanFramework/TimeValueC.h>
 
 // Library/third-party includes
 #include <vrpn_Shared.h>

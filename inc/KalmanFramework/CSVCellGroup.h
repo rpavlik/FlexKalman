@@ -27,9 +27,9 @@
 
 // Internal Includes
 #include <KalmanFramework/CSV.h>
-#include <osvr/Util/QuaternionC.h>
+#include <KalmanFramework/QuaternionC.h>
 #include <KalmanFramework/TimeValue.h>
-#include <osvr/Util/Vec3C.h>
+#include <KalmanFramework/Vec3C.h>
 
 // Library/third-party includes
 // - none

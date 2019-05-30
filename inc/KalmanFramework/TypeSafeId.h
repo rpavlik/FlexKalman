@@ -26,8 +26,8 @@
 #define INCLUDED_TypeSafeId_h_GUID_137CA336_382A_4796_7735_4521F02D5AC2
 
 // Internal Includes
-#include <osvr/Util/StdInt.h>
-#include <osvr/Util/BasicTypeTraits.h>
+#include <KalmanFramework/StdInt.h>
+#include <KalmanFramework/BasicTypeTraits.h>
 
 // Library/third-party includes
 // - none

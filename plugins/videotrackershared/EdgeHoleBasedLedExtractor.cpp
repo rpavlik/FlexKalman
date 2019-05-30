@@ -34,7 +34,7 @@
 // Library/third-party includes
 #ifdef OSVR_UVBI_CORE
 /// Only trace when building the uvbi-core library.
-#include <osvr/Common/Tracing.h>
+#include <KalmanFramework/Tracing.h>
 #endif
 
 // Standard includes

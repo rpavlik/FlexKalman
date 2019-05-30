@@ -26,7 +26,7 @@
 #include "BeaconSetupData.h"
 
 // Library/third-party includes
-#include <osvr/Util/Verbosity.h>
+#include <KalmanFramework/Verbosity.h>
 
 // Standard includes
 // - none

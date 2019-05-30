@@ -30,15 +30,15 @@
 #define INCLUDED_ClientReportTypesC_h_GUID_E79DAB07_78B7_4795_1EB9_CA6EEB274AEE
 
 /* Internal Includes */
-#include <osvr/Util/APIBaseC.h>
+#include <KalmanFramework/APIBaseC.h>
 #include <KalmanFramework/Pose3C.h>
-#include <osvr/Util/StdInt.h>
+#include <KalmanFramework/StdInt.h>
 
-#include <osvr/Util/BoolC.h>
+#include <KalmanFramework/BoolC.h>
 #include <KalmanFramework/ChannelCountC.h>
-#include <osvr/Util/SkeletonC.h>
-#include <osvr/Util/Vec2C.h>
-#include <osvr/Util/Vec3C.h>
+#include <KalmanFramework/SkeletonC.h>
+#include <KalmanFramework/Vec2C.h>
+#include <KalmanFramework/Vec3C.h>
 
 /* Library/third-party includes */
 /* none */

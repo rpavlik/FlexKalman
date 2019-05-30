@@ -30,7 +30,7 @@
 #include "PropertyBagHelper.h"
 #include "dibsize.h"
 #include "directx_samplegrabber_callback.h"
-#include <osvr/Util/WideToUTF8.h>
+#include <KalmanFramework/WideToUTF8.h>
 
 // Library/third-party includes
 // - none

@@ -1,9 +1,9 @@
 /** @file
-    @brief Header
+    @brief Header wrapping the C99 standard `stdint` header.
 
     Must be c-safe!
 
-    @date 2015
+    @date 2014
 
     @author
     Sensics, Inc.
@@ -11,7 +11,7 @@
 */
 
 /*
-// Copyright 2015 Sensics, Inc.
+// Copyright 2014 Sensics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,32 +26,17 @@
 // limitations under the License.
 */
 
-#ifndef INCLUDED_ChannelCountC_h_GUID_CF7E5EE7_28B0_4B99_E823_DD701904B5D1
-#define INCLUDED_ChannelCountC_h_GUID_CF7E5EE7_28B0_4B99_E823_DD701904B5D1
+#ifndef INCLUDED_StdInt_h_GUID_C1AAF35C_C704_4DB7_14AC_615730C4619B
+#define INCLUDED_StdInt_h_GUID_C1AAF35C_C704_4DB7_14AC_615730C4619B
 
-/* Internal Includes */
-#include <KalmanFramework/StdInt.h>
-#include <KalmanFramework/APIBaseC.h>
+/* IWYU pragma: begin_exports */
 
-/* Library/third-party includes */
-/* none */
+#if !defined(_MSC_VER) || (defined(_MSC_VER) && _MSC_VER >= 1600)
+#include <stdint.h>
+#else
+#include "MSStdIntC.h"
+#endif
 
-/* Standard includes */
-/* none */
-
-OSVR_EXTERN_C_BEGIN
-
-/** @addtogroup PluginKit
-@{
-*/
-
-/** @brief The integer type specifying a number of channels/sensors or a
-channel/sensor index.
-*/
-typedef uint32_t OSVR_ChannelCount;
-
-/** @} */
-
-OSVR_EXTERN_C_END
+/* IWYU pragma: end_exports */
 
 #endif

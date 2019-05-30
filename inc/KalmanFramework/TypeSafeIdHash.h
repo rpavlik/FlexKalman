@@ -30,7 +30,7 @@
 
 // Internal Includes
 #include <KalmanFramework/TypeSafeId.h>
-#include <osvr/Util/SizedInt.h>
+#include <KalmanFramework/SizedInt.h>
 
 // Library/third-party includes
 // - none

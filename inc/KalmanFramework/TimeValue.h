@@ -26,8 +26,8 @@
 #define INCLUDED_TimeValue_h_GUID_AD9F3D81_382D_4394_433B_A8026BE803B6
 
 // Internal Includes
-#include <osvr/Util/TimeValueC.h>
-#include <osvr/Util/TimeValue_fwd.h>
+#include <KalmanFramework/TimeValueC.h>
+#include <KalmanFramework/TimeValue_fwd.h>
 
 // Library/third-party includes
 // - none

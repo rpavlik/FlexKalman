@@ -32,9 +32,9 @@
 /* Internal Includes */
 
 /* Internal Includes */
-#include <osvr/Util/APIBaseC.h>
-#include <osvr/Util/Vec3C.h>
-#include <osvr/Util/QuaternionC.h>
+#include <KalmanFramework/APIBaseC.h>
+#include <KalmanFramework/Vec3C.h>
+#include <KalmanFramework/QuaternionC.h>
 
 /* Library/third-party includes */
 /* none */

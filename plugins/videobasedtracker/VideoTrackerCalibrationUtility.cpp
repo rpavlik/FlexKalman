@@ -34,8 +34,8 @@
 
 #include "CVTwoStepProgressBar.h"
 
-#include <osvr/Common/JSONHelpers.h>
-#include <osvr/Common/JSONEigen.h>
+#include <KalmanFramework/JSONHelpers.h>
+#include <KalmanFramework/JSONEigen.h>
 
 // Library/third-party includes
 #include <opencv2/highgui/highgui.hpp>

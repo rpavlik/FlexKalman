@@ -1,9 +1,9 @@
 /** @file
-    @brief Header
+    @brief Header providing basic C macros for defining API headers.
 
     Must be c-safe!
 
-    @date 2015
+    @date 2014
 
     @author
     Sensics, Inc.
@@ -11,7 +11,7 @@
 */
 
 /*
-// Copyright 2015 Sensics, Inc.
+// Copyright 2014 Sensics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,32 +26,25 @@
 // limitations under the License.
 */
 
-#ifndef INCLUDED_ChannelCountC_h_GUID_CF7E5EE7_28B0_4B99_E823_DD701904B5D1
-#define INCLUDED_ChannelCountC_h_GUID_CF7E5EE7_28B0_4B99_E823_DD701904B5D1
+#ifndef INCLUDED_APIBaseC_h_GUID_C5A2E769_2ADC_429E_D250_DF0883E6E5DB
+#define INCLUDED_APIBaseC_h_GUID_C5A2E769_2ADC_429E_D250_DF0883E6E5DB
 
-/* Internal Includes */
-#include <KalmanFramework/StdInt.h>
-#include <KalmanFramework/APIBaseC.h>
-
-/* Library/third-party includes */
-/* none */
-
-/* Standard includes */
-/* none */
-
-OSVR_EXTERN_C_BEGIN
-
-/** @addtogroup PluginKit
-@{
-*/
-
-/** @brief The integer type specifying a number of channels/sensors or a
-channel/sensor index.
-*/
-typedef uint32_t OSVR_ChannelCount;
-
-/** @} */
-
-OSVR_EXTERN_C_END
+#ifdef __cplusplus
+#define OSVR_C_ONLY(X)
+#define OSVR_CPP_ONLY(X) X
+#define OSVR_EXTERN_C_BEGIN extern "C" {
+#define OSVR_EXTERN_C_END }
+#define OSVR_INLINE inline
+#else
+#define OSVR_C_ONLY(X) X
+#define OSVR_CPP_ONLY(X)
+#define OSVR_EXTERN_C_BEGIN
+#define OSVR_EXTERN_C_END
+#ifdef _MSC_VER
+#define OSVR_INLINE static __inline
+#else
+#define OSVR_INLINE static inline
+#endif
+#endif
 
 #endif
