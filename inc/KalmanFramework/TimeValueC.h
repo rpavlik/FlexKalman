@@ -35,7 +35,6 @@
 #include <KalmanFramework/AnnotationMacrosC.h>
 #include <KalmanFramework/BoolC.h>
 #include <KalmanFramework/Export.h>
-#include <KalmanFramework/PlatformConfig.h>
 #include <KalmanFramework/StdInt.h>
 
 /* Library/third-party includes */
@@ -43,6 +42,16 @@
 
 /* Standard includes */
 /* none */
+
+#define OSVR_HAVE_STRUCT_TIMEVAL
+
+#if defined(_WIN32) && !defined(__MINGW32__)
+#define OSVR_HAVE_STRUCT_TIMEVAL_IN_WINSOCK2_H
+#include <Winsock2.h>
+#else
+#define OSVR_HAVE_STRUCT_TIMEVAL_IN_SYS_TIME_H
+#include <sys/time.h>
+#endif
 
 OSVR_EXTERN_C_BEGIN
 
@@ -87,7 +96,7 @@ typedef struct OSVR_TimeValue {
 
 #ifdef OSVR_HAVE_STRUCT_TIMEVAL
 /** @brief Gets the current time in the TimeValue. Parallel to gettimeofday. */
-OSVR_UTIL_EXPORT void osvrTimeValueGetNow(OSVR_OUT OSVR_TimeValue *dest)
+KALMANFRAMEWORK_EXPORT void osvrTimeValueGetNow(OSVR_OUT OSVR_TimeValue *dest)
     OSVR_FUNC_NONNULL((1));
 
 struct timeval; /* forward declaration */
@@ -100,7 +109,7 @@ struct timeval; /* forward declaration */
     If either parameter is NULL, the function will return without doing
    anything.
 */
-OSVR_UTIL_EXPORT void
+KALMANFRAMEWORK_EXPORT void
 osvrTimeValueToStructTimeval(OSVR_OUT struct timeval *dest,
                              OSVR_IN_PTR const OSVR_TimeValue *src)
     OSVR_FUNC_NONNULL((1, 2));
@@ -114,7 +123,7 @@ osvrTimeValueToStructTimeval(OSVR_OUT struct timeval *dest,
     If either parameter is NULL, the function will return without doing
    anything.
 */
-OSVR_UTIL_EXPORT void
+KALMANFRAMEWORK_EXPORT void
 osvrStructTimevalToTimeValue(OSVR_OUT OSVR_TimeValue *dest,
                              OSVR_IN_PTR const struct timeval *src)
     OSVR_FUNC_NONNULL((1, 2));
@@ -127,7 +136,7 @@ osvrStructTimevalToTimeValue(OSVR_OUT OSVR_TimeValue *dest,
 
     If the given pointer is NULL, this function returns without doing anything.
 */
-OSVR_UTIL_EXPORT void osvrTimeValueNormalize(OSVR_INOUT_PTR OSVR_TimeValue *tv)
+KALMANFRAMEWORK_EXPORT void osvrTimeValueNormalize(OSVR_INOUT_PTR OSVR_TimeValue *tv)
     OSVR_FUNC_NONNULL((1));
 
 /** @brief Sums two time values, replacing the first with the result.
@@ -139,7 +148,7 @@ OSVR_UTIL_EXPORT void osvrTimeValueNormalize(OSVR_INOUT_PTR OSVR_TimeValue *tv)
 
     Both parameters are expected to be in normalized form.
 */
-OSVR_UTIL_EXPORT void osvrTimeValueSum(OSVR_INOUT_PTR OSVR_TimeValue *tvA,
+KALMANFRAMEWORK_EXPORT void osvrTimeValueSum(OSVR_INOUT_PTR OSVR_TimeValue *tvA,
                                        OSVR_IN_PTR const OSVR_TimeValue *tvB)
     OSVR_FUNC_NONNULL((1, 2));
 
@@ -155,7 +164,7 @@ OSVR_UTIL_EXPORT void osvrTimeValueSum(OSVR_INOUT_PTR OSVR_TimeValue *tvA,
 
     Both parameters are expected to be in normalized form.
 */
-OSVR_UTIL_EXPORT void
+KALMANFRAMEWORK_EXPORT void
 osvrTimeValueDifference(OSVR_INOUT_PTR OSVR_TimeValue *tvA,
                         OSVR_IN_PTR const OSVR_TimeValue *tvB)
     OSVR_FUNC_NONNULL((1, 2));
@@ -166,7 +175,7 @@ osvrTimeValueDifference(OSVR_INOUT_PTR OSVR_TimeValue *tvA,
     @return <0 if A is earlier than B, 0 if they are the same, and >0 if A
     is later than B.
 */
-OSVR_UTIL_EXPORT int osvrTimeValueCmp(OSVR_IN_PTR const OSVR_TimeValue *tvA,
+KALMANFRAMEWORK_EXPORT int osvrTimeValueCmp(OSVR_IN_PTR const OSVR_TimeValue *tvA,
                                       OSVR_IN_PTR const OSVR_TimeValue *tvB)
     OSVR_FUNC_NONNULL((1, 2));
 

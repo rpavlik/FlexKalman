@@ -31,7 +31,7 @@
 // Library/third-party includes
 #include <boost/none_t.hpp>
 #include <boost/variant.hpp>
-#include <osvr/TypePack/List.h>
+#include <KalmanFramework/TypePack/List.h>
 #include <KalmanFramework/ClientReportTypesC.h>
 #include <KalmanFramework/TimeValue.h>
 

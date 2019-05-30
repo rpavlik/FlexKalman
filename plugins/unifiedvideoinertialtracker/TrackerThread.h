@@ -41,7 +41,7 @@
 #include <boost/noncopyable.hpp>
 #include <folly/ProducerConsumerQueue.h>
 #include <folly/sorted_vector_types.h>
-#include <osvr/TypePack/List.h>
+#include <KalmanFramework/TypePack/List.h>
 
 // Standard includes
 #include <array>

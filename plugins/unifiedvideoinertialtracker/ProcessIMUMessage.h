@@ -31,7 +31,7 @@
 #include "TrackedBodyIMU.h"
 
 // Library/third-party includes
-#include <osvr/TypePack/Contains.h>
+#include <KalmanFramework/TypePack/Contains.h>
 #include <KalmanFramework/EigenInterop.h>
 
 // Standard includes

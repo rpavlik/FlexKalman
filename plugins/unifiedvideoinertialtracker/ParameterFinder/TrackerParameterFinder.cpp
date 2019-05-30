@@ -28,9 +28,9 @@
 #include "ParameterSets.h"
 #include "TransformFindingRoutine.h"
 
-#include <osvr/TypePack/ForEachType.h>
-#include <osvr/TypePack/Head.h>
-#include <osvr/TypePack/List.h>
+#include <KalmanFramework/TypePack/ForEachType.h>
+#include <KalmanFramework/TypePack/Head.h>
+#include <KalmanFramework/TypePack/List.h>
 
 // Library/third-party includes
 #include <boost/algorithm/string/predicate.hpp> // for argument handling

@@ -32,6 +32,7 @@ target_compile_features(KalmanFramework
     PUBLIC
     cxx_std_11)
 
+set(EXPORT_BASENAME KALMANFRAMEWORK)
 configure_file(Export.h.in
     Export.h
     @ONLY NEWLINE_STYLE LF)
