@@ -26,7 +26,7 @@
 #define INCLUDED_UtilityFunctions_h_GUID_18928B12_FA9D_4285_102C_3106E5EEE14C
 
 // Internal Includes
-#include <osvr/Util/TimeValue.h>
+#include <KalmanFramework/TimeValue.h>
 
 #include <LedMeasurement.h>
 

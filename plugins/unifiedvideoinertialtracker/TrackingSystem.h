@@ -33,8 +33,8 @@
 
 // Library/third-party includes
 #include <KalmanFramework/EigenCoreGeometry.h>
-#include <osvr/Util/TimeValue.h>
-#include <osvr/Util/TypeSafeIdHash.h>
+#include <KalmanFramework/TimeValue.h>
+#include <KalmanFramework/TypeSafeIdHash.h>
 #include <opencv2/core/core.hpp>
 
 // Standard includes

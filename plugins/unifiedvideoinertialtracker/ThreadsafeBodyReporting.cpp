@@ -28,9 +28,9 @@
 
 // Library/third-party includes
 #include <KalmanFramework/EigenCoreGeometry.h>
-#include <osvr/Util/EigenInterop.h>
+#include <KalmanFramework/EigenInterop.h>
 #include <KalmanFramework/EigenQuatExponentialMap.h>
-#include <osvr/Util/TimeValueChrono.h>
+#include <KalmanFramework/TimeValueChrono.h>
 
 // Standard includes
 // - none

@@ -34,7 +34,7 @@
 #include "ImageSources/ImageSource.h"
 
 // Library/third-party includes
-#include <osvr/Util/ClientReportTypesC.h>
+#include <KalmanFramework/ClientReportTypesC.h>
 
 #include <opencv2/core/core.hpp> // for basic OpenCV types
 

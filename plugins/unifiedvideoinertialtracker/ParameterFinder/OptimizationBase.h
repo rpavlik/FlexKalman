@@ -34,7 +34,7 @@
 
 // Library/third-party includes
 #include <KalmanFramework/EigenCoreGeometry.h>
-#include <osvr/Util/EigenFilters.h>
+#include <KalmanFramework/EigenFilters.h>
 
 // Standard includes
 #include <memory>

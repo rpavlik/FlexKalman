@@ -33,7 +33,7 @@
 
 // Library/third-party includes
 #include <KalmanFramework/EigenCoreGeometry.h>
-#include <osvr/Util/TimeValue.h>
+#include <KalmanFramework/TimeValue.h>
 #include <boost/assert.hpp>
 
 // Standard includes

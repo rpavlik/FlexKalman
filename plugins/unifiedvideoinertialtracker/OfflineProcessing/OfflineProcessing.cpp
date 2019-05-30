@@ -36,9 +36,9 @@
 #include <EdgeHoleBasedLedExtractor.h>
 #include <UndistortMeasurements.h>
 #include <cvUtils.h>
-#include <osvr/Util/CSV.h>
-#include <osvr/Util/MiniArgsHandling.h>
-#include <osvr/Util/TimeValue.h>
+#include <KalmanFramework/CSV.h>
+#include <KalmanFramework/MiniArgsHandling.h>
+#include <KalmanFramework/TimeValue.h>
 
 // Library/third-party includes
 #include <boost/algorithm/string/predicate.hpp>

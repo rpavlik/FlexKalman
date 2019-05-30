@@ -32,8 +32,8 @@
 #include <LedMeasurement.h>
 #include <MakeHDKTrackingSystem.h>
 
-#include <osvr/Util/Finally.h>
-#include <osvr/Util/TimeValue.h>
+#include <KalmanFramework/Finally.h>
+#include <KalmanFramework/TimeValue.h>
 
 // Library/third-party includes
 #include <Eigen/Core>

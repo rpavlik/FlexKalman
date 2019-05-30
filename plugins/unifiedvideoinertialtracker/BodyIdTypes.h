@@ -29,8 +29,8 @@
 // - none
 
 // Library/third-party includes
-#include <osvr/Util/TypeSafeId.h>
-#include <osvr/Util/TypeSafeIdHash.h>
+#include <KalmanFramework/TypeSafeId.h>
+#include <KalmanFramework/TypeSafeIdHash.h>
 
 // Standard includes
 #include <stdexcept>

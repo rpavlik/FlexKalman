@@ -32,7 +32,7 @@
 
 // Library/third-party includes
 #include <osvr/TypePack/Contains.h>
-#include <osvr/Util/EigenInterop.h>
+#include <KalmanFramework/EigenInterop.h>
 
 // Standard includes
 #include <type_traits>

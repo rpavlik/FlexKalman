@@ -35,7 +35,7 @@
 #include "comutils/ComPtr.h"
 
 // Library/third-party includes
-#include <osvr/Util/TimeValue.h>
+#include <KalmanFramework/TimeValue.h>
 
 // Standard includes
 #include <functional>

@@ -30,9 +30,9 @@
 #include "ModelTypes.h"
 
 // Library/third-party includes
-#include <osvr/Util/Angles.h>
+#include <KalmanFramework/Angles.h>
 #include <KalmanFramework/EigenCoreGeometry.h>
-#include <osvr/Util/TimeValue.h>
+#include <KalmanFramework/TimeValue.h>
 
 // Standard includes
 // - none

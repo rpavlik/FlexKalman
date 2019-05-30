@@ -32,7 +32,7 @@
 #include "BeaconBasedPoseEstimator.h"
 #include "CameraParameters.h"
 #include "SBDBlobExtractor.h"
-#include <osvr/Util/ChannelCountC.h>
+#include <KalmanFramework/ChannelCountC.h>
 
 // Library/third-party includes
 #include <opencv2/core/core.hpp>

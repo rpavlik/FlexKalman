@@ -31,8 +31,8 @@
 #include "CameraParameters.h"
 
 // Library/third-party includes
-#include <osvr/Util/TimeValue.h>
-#include <osvr/Util/ClientReportTypesC.h>
+#include <KalmanFramework/TimeValue.h>
+#include <KalmanFramework/ClientReportTypesC.h>
 #include <KalmanFramework/PureVectorState.h>
 #include <KalmanFramework/PoseState.h>
 #include <KalmanFramework/PoseSeparatelyDampedConstantVelocity.h>

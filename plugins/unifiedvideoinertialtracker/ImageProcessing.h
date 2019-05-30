@@ -30,7 +30,7 @@
 #include "CameraParameters.h"
 
 // Library/third-party includes
-#include <osvr/Util/TimeValue.h>
+#include <KalmanFramework/TimeValue.h>
 #include <opencv2/core/core.hpp>
 
 // Standard includes

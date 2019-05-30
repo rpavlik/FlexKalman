@@ -27,7 +27,9 @@
 
 // Internal Includes
 #include <KalmanFramework/CSV.h>
+#include <osvr/Util/QuaternionC.h>
 #include <KalmanFramework/TimeValue.h>
+#include <osvr/Util/Vec3C.h>
 
 // Library/third-party includes
 // - none
@@ -49,6 +51,8 @@ namespace util {
     class CellGroupProxy {
       public:
         CellGroupProxy(RowProxyType &row, const char *groupPrefix)
+            : row_(row), prefix_(groupPrefix){};
+        CellGroupProxy(RowProxyType &row, std::string const &groupPrefix)
             : row_(row), prefix_(groupPrefix){};
 
         RowProxyType getRow() { return std::forward<RowProxyType>(row_); }
@@ -75,32 +79,60 @@ namespace util {
     }
 
     namespace detail {
+        template <typename PrefixType> struct PrefixTypeToArgType {
+            using type = PrefixType;
+        };
+        template <> struct PrefixTypeToArgType<std::string> {
+            using type = std::string const &;
+        };
         /// Temporary object created by the cellGroup call, captures the string
-        /// literal prefix, the data reference/type, and the group tag.
-        template <typename T, typename Tag = DefaultGroupTag> class CellGroup {
+        /// (literal) prefix, the data reference/type, and the group tag.
+        template <typename T, typename PrefixType = const char *,
+                  typename Tag = DefaultGroupTag>
+        class CellGroup {
           public:
-            CellGroup(const char *prefix, T const &data)
+            using prefix_type = PrefixType;
+            using prefix_arg_type =
+                typename PrefixTypeToArgType<PrefixType>::type;
+            CellGroup(prefix_arg_type prefix, T const &data)
                 : prefix_(prefix), data_(data) {}
 
-            const char *getPrefix() const { return prefix_; }
+            prefix_arg_type getPrefix() const { return prefix_; }
             T const &getData() const { return data_; }
 
           private:
-            const char *prefix_;
+            PrefixType prefix_;
             T const &data_;
         };
+#if 0
+        template <typename T, typename Tag>
+        class CellGroup<T, std::string, Tag> {
+          public:
+            using prefix_type = std::string;
+            CellGroup(prefix_type const &prefix, T const &data)
+                : prefix_(prefix), data_(data) {}
+
+            prefix_type const &getPrefix() const { return prefix_; }
+            T const &getData() const { return data_; }
+
+          private:
+            prefix_type prefix_;
+            T const &data_;
+        };
+#endif
 
         /// Wrapper for RowProxy lvalue-reference and CellGroup:
         /// creates the specially-typed CellGroupProxy object that will activate
         /// the user's operator<< and ours in turn, and takes care of getting
         /// the return value correct for chained calls.
-        template <typename Derived, typename T, typename Tag>
+        template <typename Derived, typename T, typename PrefixType,
+                  typename Tag>
         inline CSVRowProxy<Derived> &
         operator<<(CSVRowProxy<Derived> &row,
-                   detail::CellGroup<T, Tag> const &group) {
+                   detail::CellGroup<T, PrefixType, Tag> const &group) {
             using RowProxyType = CSVRowProxy<Derived> &;
             auto proxy =
-                CellGroupProxy<RowProxyType, Tag>{row, group.getPrefix()};
+                CellGroupProxy<RowProxyType, Tag>(row, group.getPrefix());
             proxy << group.getData();
             return row;
         }
@@ -109,10 +141,11 @@ namespace util {
         /// creates the specially-typed CellGroupProxy object that will activate
         /// the user's operator<< and ours in turn, and takes care of getting
         /// the return value correct for chained calls.
-        template <typename Derived, typename T, typename Tag>
+        template <typename Derived, typename T, typename PrefixType,
+                  typename Tag>
         inline CSVRowProxy<Derived> &&
         operator<<(CSVRowProxy<Derived> &&row,
-                   detail::CellGroup<T> const &group) {
+                   detail::CellGroup<T, PrefixType, Tag> const &group) {
             using RowProxyType = CSVRowProxy<Derived> &&;
             auto proxy = CellGroupProxy<RowProxyType, Tag>{
                 std::forward<RowProxyType>(row), group.getPrefix()};
@@ -128,13 +161,29 @@ namespace util {
                                           T const &data) {
         return detail::CellGroup<T>{groupHeader, data};
     }
+
+    /// Helper function to create a cell group with a group header prefix.
+    template <typename T>
+    inline detail::CellGroup<T, std::string>
+    cellGroup(std::string const &groupHeader, T const &data) {
+        return detail::CellGroup<T, std::string>{groupHeader, data};
+    }
     /// Helper function to create a cell group with a group header prefix and
     /// explicit (non-default) tag.
     template <typename Tag, typename T>
-    inline detail::CellGroup<T, Tag>
+    inline detail::CellGroup<T, const char *, Tag>
     cellGroup(const char *groupHeader, T const &data,
               Tag * /*dummy*/ = static_cast<Tag *>(nullptr)) {
-        return detail::CellGroup<T, Tag>{groupHeader, data};
+        return detail::CellGroup<T, const char *, Tag>{groupHeader, data};
+    }
+
+    /// Helper function to create a cell group with a group header prefix and
+    /// explicit (non-default) tag.
+    template <typename Tag, typename T>
+    inline detail::CellGroup<T, std::string, Tag>
+    cellGroup(std::string const &groupHeader, T const &data,
+              Tag * /*dummy*/ = static_cast<Tag *>(nullptr)) {
+        return detail::CellGroup<T, std::string, Tag>{groupHeader, data};
     }
     /// Helper function to create a cell group with no group header prefix -
     /// warning: column headers must be unique!
@@ -145,9 +194,9 @@ namespace util {
     /// Helper function to create a cell group with no group header prefix and
     /// explicit (non-default) tag - warning: column headers must be unique!
     template <typename Tag, typename T>
-    inline detail::CellGroup<T, Tag>
+    inline detail::CellGroup<T, const char *, Tag>
     cellGroup(T const &data, Tag * /*dummy*/ = static_cast<Tag *>(nullptr)) {
-        return detail::CellGroup<T, Tag>{"", data};
+        return detail::CellGroup<T, const char *, Tag>{"", data};
     }
 
     template <typename T>
@@ -156,6 +205,43 @@ namespace util {
         group << cell("seconds", tv.seconds)
               << cell("microseconds", tv.microseconds);
     }
+    struct AbbreviatedTimeMemberFieldsTag;
+    template <typename T>
+    inline void
+    operator<<(CellGroupProxy<T, AbbreviatedTimeMemberFieldsTag> &group,
+               time::TimeValue const &tv) {
+        group << cell("sec", tv.seconds) << cell("usec", tv.microseconds);
+    }
+
+    struct DecimalTimeFieldTag;
+    template <typename T>
+    inline void operator<<(CellGroupProxy<T, DecimalTimeFieldTag> &group,
+                           time::TimeValue const &tv) {
+
+        group << cell("seconds", time::toDecimalString(tv));
+    }
+
+    template <typename T>
+    inline void operator<<(CellGroupProxy<T, DefaultGroupTag> &group,
+                           OSVR_Vec3 const &v) {
+        group << cell("x", v.data[0]) << cell("y", v.data[1])
+              << cell("z", v.data[2]);
+    }
+
+    template <typename T>
+    inline void operator<<(CellGroupProxy<T, DefaultGroupTag> &group,
+                           OSVR_Quaternion const &q) {
+        group << cell("qw", osvrQuatGetW(&q)) << cell("qx", osvrQuatGetX(&q))
+              << cell("qy", osvrQuatGetY(&q)) << cell("qz", osvrQuatGetZ(&q));
+    }
+
+#ifdef EIGEN_WORLD_VERSION
+    template <typename T, typename Scalar>
+    inline void operator<<(CellGroupProxy<T, DefaultGroupTag> &group,
+                           Eigen::Matrix<Scalar, 2, 1> const &v) {
+        group << cell("x", v.x()) << cell("y", v.y());
+    }
+
     template <typename T>
     inline void operator<<(CellGroupProxy<T, DefaultGroupTag> &group,
                            Eigen::Vector3d const &v) {
@@ -168,6 +254,7 @@ namespace util {
         group << cell("qw", q.w()) << cell("qx", q.x()) << cell("qy", q.y())
               << cell("qz", q.z());
     }
+#endif
 
 } // namespace util
 } // namespace osvr

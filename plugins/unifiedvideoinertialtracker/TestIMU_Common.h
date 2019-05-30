@@ -33,7 +33,7 @@
 #include "IMUStateMeasurements.h"
 
 // Library/third-party includes
-#include <osvr/Util/Angles.h>
+#include <KalmanFramework/Angles.h>
 
 // Standard includes
 #include <iostream>

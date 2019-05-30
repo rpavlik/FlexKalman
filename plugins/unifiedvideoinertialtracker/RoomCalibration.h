@@ -29,10 +29,10 @@
 #include "BodyIdTypes.h"
 
 // Library/third-party includes
-#include <osvr/Util/Angles.h>
+#include <KalmanFramework/Angles.h>
 #include <KalmanFramework/EigenCoreGeometry.h>
-#include <osvr/Util/EigenFilters.h>
-#include <osvr/Util/TimeValue.h>
+#include <KalmanFramework/EigenFilters.h>
+#include <KalmanFramework/TimeValue.h>
 
 #include <boost/optional.hpp>
 

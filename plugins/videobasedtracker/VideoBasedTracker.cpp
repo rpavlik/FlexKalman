@@ -27,7 +27,7 @@
 #include <CameraDistortionModel.h>
 #include <UndistortMeasurements.h>
 #include <cvToEigen.h>
-#include <osvr/Util/CSV.h>
+#include <KalmanFramework/CSV.h>
 #include <KalmanFramework/EigenCoreGeometry.h>
 
 // Library/third-party includes

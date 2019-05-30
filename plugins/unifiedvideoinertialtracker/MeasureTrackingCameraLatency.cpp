@@ -26,7 +26,7 @@
 // Internal Includes
 #include "ImageSources/ImageSource.h"
 #include "ImageSources/ImageSourceFactories.h"
-#include <osvr/Util/MiniArgsHandling.h>
+#include <KalmanFramework/MiniArgsHandling.h>
 
 // Library/third-party includes
 #include <boost/lexical_cast.hpp>

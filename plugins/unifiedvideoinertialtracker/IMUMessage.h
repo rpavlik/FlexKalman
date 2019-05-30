@@ -32,8 +32,8 @@
 #include <boost/none_t.hpp>
 #include <boost/variant.hpp>
 #include <osvr/TypePack/List.h>
-#include <osvr/Util/ClientReportTypesC.h>
-#include <osvr/Util/TimeValue.h>
+#include <KalmanFramework/ClientReportTypesC.h>
+#include <KalmanFramework/TimeValue.h>
 
 // Standard includes
 // - none

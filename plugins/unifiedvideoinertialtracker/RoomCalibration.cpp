@@ -35,11 +35,11 @@
 // Library/third-party includes
 #include <boost/assert.hpp>
 #include <KalmanFramework/EigenExtras.h>
-#include <osvr/Util/ExtractYaw.h>
+#include <KalmanFramework/ExtractYaw.h>
 
 #ifdef OSVR_UVBI_DUMP_CALIB_LOG
-#include <osvr/Util/CSV.h>
-#include <osvr/Util/CSVCellGroup.h>
+#include <KalmanFramework/CSV.h>
+#include <KalmanFramework/CSVCellGroup.h>
 #endif
 
 // Standard includes

@@ -31,8 +31,8 @@
 // Library/third-party includes
 #include <boost/optional.hpp>
 #include <folly/ProducerConsumerQueue.h>
-#include <osvr/Util/ClientReportTypesC.h>
-#include <osvr/Util/TimeValue.h>
+#include <KalmanFramework/ClientReportTypesC.h>
+#include <KalmanFramework/TimeValue.h>
 
 // Standard includes
 #include <array>

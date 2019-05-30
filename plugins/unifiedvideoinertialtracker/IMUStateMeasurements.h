@@ -34,7 +34,7 @@
 // Library/third-party includes
 #include <KalmanFramework/AbsoluteOrientationMeasurement.h>
 #include <KalmanFramework/FlexibleKalmanFilter.h>
-#include <osvr/Util/Angles.h>
+#include <KalmanFramework/Angles.h>
 #include <KalmanFramework/EigenExtras.h>
 #include <KalmanFramework/EigenQuatExponentialMap.h>
 

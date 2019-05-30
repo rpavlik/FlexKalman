@@ -30,7 +30,7 @@
 
 // Library/third-party includes
 #include <opencv2/core/core.hpp>
-#include <osvr/Util/TimeValue.h>
+#include <KalmanFramework/TimeValue.h>
 
 // Standard includes
 #include <memory>

@@ -34,8 +34,8 @@
 #include "PoseEstimator_SCAATKalman.h"
 #include "TrackedBody.h"
 #include "cvToEigen.h"
-#include <osvr/Util/CSV.h>
-#include <osvr/Util/CSVCellGroup.h>
+#include <KalmanFramework/CSV.h>
+#include <KalmanFramework/CSVCellGroup.h>
 
 // Library/third-party includes
 #include <boost/assert.hpp>

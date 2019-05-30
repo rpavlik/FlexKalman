@@ -30,7 +30,7 @@
 #include "CannedIMUMeasurement.h"
 
 // Library/third-party includes
-#include <osvr/Util/TimeValue.h>
+#include <KalmanFramework/TimeValue.h>
 
 // Standard includes
 // - none

@@ -29,7 +29,7 @@
 #include "BodyIdTypes.h"
 
 // Library/third-party includes
-#include <osvr/Util/TypeSafeId.h>
+#include <KalmanFramework/TypeSafeId.h>
 #include <boost/assert.hpp>
 
 // Standard includes

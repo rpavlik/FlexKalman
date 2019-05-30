@@ -33,8 +33,8 @@
 #include "TrackedBodyTarget.h"
 
 // Library/third-party includes
-#include <osvr/Util/EigenInterop.h>
-#include <osvr/Util/Finally.h>
+#include <KalmanFramework/EigenInterop.h>
+#include <KalmanFramework/Finally.h>
 
 // Standard includes
 #include <future>

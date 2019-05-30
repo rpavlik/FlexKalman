@@ -30,7 +30,7 @@
 #include "ImageSources/ImageSource.h"
 
 // Library/third-party includes
-#include <osvr/Util/Finally.h>
+#include <KalmanFramework/Finally.h>
 
 // Standard includes
 #include <iostream>

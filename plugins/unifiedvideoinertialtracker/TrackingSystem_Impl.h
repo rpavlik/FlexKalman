@@ -36,7 +36,7 @@
 #include <boost/noncopyable.hpp>
 #include <opencv2/core/core.hpp>
 #include <KalmanFramework/EigenCoreGeometry.h>
-#include <osvr/Util/TimeValue.h>
+#include <KalmanFramework/TimeValue.h>
 
 // Standard includes
 #include <memory>

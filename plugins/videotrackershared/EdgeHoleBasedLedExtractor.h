@@ -33,7 +33,7 @@
 #include <BlobExtractor.h>
 #include <BlobParams.h>
 #include <LedMeasurement.h>
-#include <osvr/Util/OpenCVVersion.h>
+#include <KalmanFramework/OpenCVVersion.h>
 
 // Library/third-party includes
 #include <opencv2/core/core.hpp>

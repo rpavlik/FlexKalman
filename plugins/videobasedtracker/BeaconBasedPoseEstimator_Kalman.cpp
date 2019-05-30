@@ -45,7 +45,7 @@ inline void dumpKalmanDebugOuput(const char name[], const char expr[],
 #include <KalmanFramework/AugmentedState.h>
 #include <KalmanFramework/ConstantProcess.h>
 
-#include <osvr/Util/EigenInterop.h>
+#include <KalmanFramework/EigenInterop.h>
 
 #include <opencv2/core/eigen.hpp>
 

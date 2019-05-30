@@ -45,7 +45,7 @@
 #include <osvr/PluginKit/PluginKit.h>
 #include <osvr/PluginKit/TrackerInterfaceC.h>
 
-#include <osvr/Util/EigenInterop.h>
+#include <KalmanFramework/EigenInterop.h>
 
 // Generated JSON header file
 #include "org_osvr_unifiedvideoinertial_json.h"
