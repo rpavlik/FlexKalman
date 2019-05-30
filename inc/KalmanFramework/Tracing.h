@@ -27,7 +27,6 @@
 
 // Internal Includes
 #include <KalmanFramework/Export.h>
-#include <KalmanFramework/TracingConfig.h>
 
 // Library/third-party includes
 // - none

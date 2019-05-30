@@ -26,7 +26,7 @@
 #include <KalmanFramework/TimeValueC.h>
 
 // Library/third-party includes
-#include <vrpn_Shared.h>
+// - none
 
 // Standard includes
 #include <ratio>
@@ -99,7 +99,7 @@ int osvrTimeValueCmp(OSVR_IN_PTR const OSVR_TimeValue *tvA,
 
 void osvrTimeValueGetNow(OSVR_INOUT_PTR OSVR_TimeValue *dest) {
     timeval tv;
-    vrpn_gettimeofday(&tv, nullptr);
+    gettimeofday(&tv, nullptr);
     osvrStructTimevalToTimeValue(dest, &tv);
 }
 
