@@ -30,7 +30,6 @@
 
 #include "ConfigParams.h"
 #include "IMUStateMeasurements.h"
-#include "IMUStateMeasurements.h"
 
 // Library/third-party includes
 #include <KalmanFramework/Angles.h>
@@ -152,8 +151,7 @@ inline void commonSmallPositiveYChecks(TestData *data,
     AND_THEN("state correction should not contain any translational/linear "
              "velocity components") {
         REQUIRE(inProgress.stateCorrection.template head<3>().isZero());
-        REQUIRE(
-            inProgress.stateCorrection.template segment<3>(6).isZero());
+        REQUIRE(inProgress.stateCorrection.template segment<3>(6).isZero());
     }
     AND_WHEN("the correction is applied") {
         auto errorCovarianceCorrectionWasFinite = inProgress.finishCorrection();

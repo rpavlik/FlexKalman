@@ -80,7 +80,7 @@ namespace string_fields {
         }
         return pos;
     }
-}
+} // namespace string_fields
 
 #define CSV_TESTING
 
@@ -314,6 +314,6 @@ inline void stripQuotes(std::vector<std::string> &fields) {
         stripQuotes(field);
     }
 }
-} // csvtools
+} // namespace csvtools
 
 #endif // INCLUDED_CSVTools_h_GUID_82FA298C_196A_46AA_B2D6_059F2A035687

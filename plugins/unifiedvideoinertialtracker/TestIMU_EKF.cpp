@@ -36,9 +36,8 @@
 TEMPLATE_TEST_CASE("identity calibration output", "[.][ekf]", kalman::QFirst,
                         kalman::QLast, kalman::SplitQ) {
 #endif
-TEMPLATE_TEST_CASE("identity calibration output", "[.][ekf]",
-                                  kalman::SplitQ,
-                                  kalman::QLastWithSplitInnovation) {
+TEMPLATE_TEST_CASE("identity calibration output", "[.][ekf]", kalman::SplitQ,
+                   kalman::QLastWithSplitInnovation) {
     using MeasurementType = OrientationMeasurementUsingPolicy<TestType>;
     using JacobianType = typename MeasurementType::JacobianType;
     unique_ptr<TestData> data(new TestData);

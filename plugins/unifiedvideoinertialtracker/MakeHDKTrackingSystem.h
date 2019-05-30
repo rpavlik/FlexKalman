@@ -145,7 +145,7 @@ namespace vbtracker {
         /// Transform vectors: we only apply rotation/basis change
         template <typename Scalar>
         inline cv::Vec<Scalar, 3>
-            transformFromHDKData(cv::Vec<Scalar, 3> input) {
+        transformFromHDKData(cv::Vec<Scalar, 3> input) {
             static const cvMatx33<Scalar> xformMatrix = getTransform<Scalar>();
             return xformMatrix * input;
         }

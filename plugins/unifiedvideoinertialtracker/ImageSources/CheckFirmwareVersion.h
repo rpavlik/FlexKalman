@@ -142,7 +142,7 @@ namespace vbtracker {
             0,                              // Authority (for example, Kerberos)
             nullptr,                        // Context object
             AttachPtr(wbemServices)         // pointer to IWbemServices proxy
-            );
+        );
 
         if (FAILED(result)) {
             return ret;
@@ -183,10 +183,10 @@ namespace vbtracker {
                 break;
             }
 
-            using comutils::Variant;
-            using comutils::get;
             using comutils::containsArray;
+            using comutils::get;
             using comutils::getArray;
+            using comutils::Variant;
 
             // This is an array of hardware IDs - one of them should have
             // REV_xxxx

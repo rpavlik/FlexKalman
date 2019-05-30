@@ -29,8 +29,8 @@
 // - none
 
 // Library/third-party includes
-#include <opencv2/core/core.hpp>
 #include <KalmanFramework/TimeValue.h>
+#include <opencv2/core/core.hpp>
 
 // Standard includes
 #include <memory>

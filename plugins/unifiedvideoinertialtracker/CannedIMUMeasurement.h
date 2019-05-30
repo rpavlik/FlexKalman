@@ -29,9 +29,9 @@
 // - none
 
 // Library/third-party includes
-#include <boost/assert.hpp>
 #include <KalmanFramework/Angles.h>
 #include <KalmanFramework/EigenCoreGeometry.h>
+#include <boost/assert.hpp>
 
 // Standard includes
 #include <array>

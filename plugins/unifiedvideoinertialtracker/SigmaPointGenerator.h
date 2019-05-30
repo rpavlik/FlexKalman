@@ -58,7 +58,7 @@ namespace kalman {
         double beta;
         /// Tertiary scaling factor, typically 0.
         /// Some authors recommend parameter estimation to use L - 3
-		double kappa;
+        double kappa;
     };
     struct SigmaPointParameterDerivedQuantities {
         SigmaPointParameterDerivedQuantities(SigmaPointParameters const &p,
@@ -136,7 +136,9 @@ namespace kalman {
         using ConstOrigMeanVec = Eigen::VectorBlock<const MeanVec, OrigDim>;
 
         /// Get the "un-augmented" mean
-        ConstOrigMeanVec getOrigMean() const { return mean_.template head<OrigDim>(); }
+        ConstOrigMeanVec getOrigMean() const {
+            return mean_.template head<OrigDim>();
+        }
 
       private:
         SigmaPointParameterDerivedQuantities p_;
@@ -190,9 +192,10 @@ namespace kalman {
                 auto weight = sigmaPoints.getWeightsForCov()[i];
                 xformedCov_ += weight * zeroMeanPoints.col(i) *
                                zeroMeanPoints.col(i).transpose();
-                crossCov_ += weight * (sigmaPoints.getSigmaPoint(i) -
-                                       sigmaPoints.getOrigMean()) *
-                             zeroMeanPoints.col(i).transpose();
+                crossCov_ +=
+                    weight *
+                    (sigmaPoints.getSigmaPoint(i) - sigmaPoints.getOrigMean()) *
+                    zeroMeanPoints.col(i).transpose();
             }
         }
 

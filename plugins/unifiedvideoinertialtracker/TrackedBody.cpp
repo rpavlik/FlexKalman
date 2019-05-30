@@ -34,8 +34,8 @@
 #include "TrackingSystem.h"
 
 // Library/third-party includes
-#include <boost/optional.hpp>
 #include <KalmanFramework/FlexibleKalmanFilter.h>
+#include <boost/optional.hpp>
 
 #include <util/Stride.h>
 
@@ -164,11 +164,11 @@ namespace vbtracker {
     void TrackedBody::replaceStateSnapshot(
         osvr::util::time::TimeValue const &origTime,
         osvr::util::time::TimeValue const &newTime, BodyState const &newState) {
-#if !(defined(UVBI_ASSUME_SINGLE_CAMERA) &&                               \
+#if !(defined(UVBI_ASSUME_SINGLE_CAMERA) &&                                    \
       defined(UVBI_ASSUME_CAMERA_ALWAYS_SLOWER))
 #error "Current code assumes that all we have to replay is IMU measurements."
 #endif // !(defined(UVBI_ASSUME_SINGLE_CAMERA) &&
-        // defined(UVBI_ASSUME_CAMERA_ALWAYS_SLOWER))
+       // defined(UVBI_ASSUME_CAMERA_ALWAYS_SLOWER))
 
         /// Clear off the state we're about to invalidate.
         auto numPopped = m_impl->stateHistory.pop_after(origTime);

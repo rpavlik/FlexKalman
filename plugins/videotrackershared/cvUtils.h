@@ -187,7 +187,7 @@ namespace vbtracker {
                          cv::CHAIN_APPROX_NONE);
         // intentionally storing in int, instead of auto, since we'll compare
         // against int.
-        int n =  static_cast<int>(contours.size());
+        int n = static_cast<int>(contours.size());
         std::vector<ContourType> ret;
         for (std::size_t i = 0; i < n; ++i) {
             // If this contour has no parent, then it's the outer contour of a

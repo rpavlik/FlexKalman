@@ -73,7 +73,9 @@ namespace vbtracker {
         /// For those devices that naturally read a non-corrupt color image,
         /// overriding just this method will let the default implementation of
         /// retrieve() do the RGB to Gray for you.
-        virtual void retrieveColor(cv::Mat &color, osvr::util::time::TimeValue &timestamp) override;
+        virtual void
+        retrieveColor(cv::Mat &color,
+                      osvr::util::time::TimeValue &timestamp) override;
 
       protected:
         /// This callback function is called each time a new frame is received
@@ -111,8 +113,8 @@ namespace vbtracker {
 
         std::mutex mutex_;                         //< to protect frames_
         std::condition_variable frames_available_; //< To allow grab() to wait
-                                                   //for frames to become
-                                                   //available
+                                                   // for frames to become
+                                                   // available
     };
 
     using UVCImageSourcePtr = std::unique_ptr<UVCImageSource>;
@@ -143,7 +145,6 @@ namespace vbtracker {
             camera_.reset(device);
         }
 
-
         { // Try to open the device -- requires exclusive access
             uvc_device_handle_t *device_handle;
             const auto open_res = uvc_open(camera_.get(), &device_handle);
@@ -152,7 +153,7 @@ namespace vbtracker {
                                          std::string(uvc_strerror(open_res)));
             }
             cameraHandle_.reset(device_handle);
-            //uvc_print_diag(cameraHandle_.get(), stdout);
+            // uvc_print_diag(cameraHandle_.get(), stdout);
         }
 
         // Setup streaming parameters
@@ -207,8 +208,8 @@ namespace vbtracker {
 
     cv::Size UVCImageSource::resolution() const { return resolution_; }
 
-    void osvr::vbtracker::UVCImageSource::retrieveColor(cv::Mat& color, util::time::TimeValue& timestamp)
-{
+    void osvr::vbtracker::UVCImageSource::retrieveColor(
+        cv::Mat &color, util::time::TimeValue &timestamp) {
         // Grab a frame from the queue, but don't keep the queue locked!
         Frame_ptr current_frame;
         {
@@ -220,12 +221,13 @@ namespace vbtracker {
             frames_.pop();
         }
 
-		timestamp = m_timestamp;
+        timestamp = m_timestamp;
 
         // Convert the image to at cv::Mat
         color = cv::Mat(current_frame->height, current_frame->width, CV_8UC3,
                         current_frame->data)
-                    .clone();    }
+                    .clone();
+    }
 
     void UVCImageSource::callback(uvc_frame_t *frame, void *ptr) {
         auto me = static_cast<UVCImageSource *>(ptr);
@@ -248,14 +250,14 @@ namespace vbtracker {
                 "Error: Unable to allocate the rgb frame.");
         }
 
-	auto convert_ret = uvc_mjpeg2rgb(frame, rgb_frame.get());
-	if (UVC_SUCCESS != convert_ret) {
+        auto convert_ret = uvc_mjpeg2rgb(frame, rgb_frame.get());
+        if (UVC_SUCCESS != convert_ret) {
             // Try any2rgb() instead
             auto any_ret = uvc_any2rgb(frame, rgb_frame.get());
             if (UVC_SUCCESS != any_ret) {
-	      throw std::runtime_error(
-				       "Error: Unable to convert frame to rgb: " +
-				       std::string(uvc_strerror(convert_ret)));
+                throw std::runtime_error(
+                    "Error: Unable to convert frame to rgb: " +
+                    std::string(uvc_strerror(convert_ret)));
             }
         }
         std::lock_guard<std::mutex> lock(mutex_);

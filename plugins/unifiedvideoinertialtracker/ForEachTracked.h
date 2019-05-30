@@ -26,9 +26,9 @@
 #define INCLUDED_ForEachTracked_h_GUID_8DA1845D_2D7F_4C8C_9424_C18D06339380
 
 // Internal Includes
-#include "TrackingSystem.h"
 #include "TrackedBody.h"
 #include "TrackedBodyTarget.h"
+#include "TrackingSystem.h"
 
 // Library/third-party includes
 // - none

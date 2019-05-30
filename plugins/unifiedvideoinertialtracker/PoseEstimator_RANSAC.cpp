@@ -200,7 +200,7 @@ namespace vbtracker {
             // This lambda wraps binary_search to do what it says: check to see
             // if a given beacon ID is in the list of inlier beacons.
             auto isAnInlierBeacon = [&inlierBeaconIds, &idComparator](
-                ZeroBasedBeaconId const &needle) {
+                                        ZeroBasedBeaconId const &needle) {
                 return std::binary_search(begin(inlierBeaconIds),
                                           end(inlierBeaconIds), needle,
                                           idComparator);

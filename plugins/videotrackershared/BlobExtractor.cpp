@@ -153,8 +153,9 @@ namespace vbtracker {
         cv::Rect filledBounds;
         auto m_area = cv::floodFill(
             grayClone, floodFillMask_, peakCenter, 255, &filledBounds, loDiff,
-            upDiff, CV_FLOODFILL_MASK_ONLY | (/* connectivity 4 or 8 */ 4) |
-                        (/* value to write in to mask */ 255 << 8));
+            upDiff,
+            CV_FLOODFILL_MASK_ONLY | (/* connectivity 4 or 8 */ 4) |
+                (/* value to write in to mask */ 255 << 8));
         // Now floodFillMask_ contains the mask with both our point
         // and all other points so far. We need to split them by ANDing with
         // the NOT of the old flood-fill mask we saved earlier.

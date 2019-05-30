@@ -110,7 +110,7 @@ namespace vbtracker {
         cv::SimpleBlobDetector::Params m_sbdParams;
     };
 
-	BlobExtractorPtr makeBlobExtractor(BlobParams const &blobParams);
+    BlobExtractorPtr makeBlobExtractor(BlobParams const &blobParams);
 } // namespace vbtracker
 } // namespace osvr
 

@@ -33,9 +33,9 @@
 // Library/third-party includes
 #include <KalmanFramework/AbsoluteOrientationMeasurement.h>
 #include <KalmanFramework/AngularVelocityMeasurement.h>
-#include <KalmanFramework/FlexibleKalmanFilter.h>
 #include <KalmanFramework/EigenExtras.h>
 #include <KalmanFramework/EigenQuatExponentialMap.h>
+#include <KalmanFramework/FlexibleKalmanFilter.h>
 #include <util/Stride.h>
 
 // Standard includes

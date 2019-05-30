@@ -211,9 +211,10 @@ namespace vbtracker {
                 /// Early out:
                 /// We've already matched up all of one type or another.
                 if (verbose || verbose_) {
-                    std::cout << getPrefix() << "hasMoreMatches: Already "
-                                                "reached our limit for "
-                                                "matches!\n";
+                    std::cout << getPrefix()
+                              << "hasMoreMatches: Already "
+                                 "reached our limit for "
+                                 "matches!\n";
                 }
                 return false;
             }
@@ -486,7 +487,7 @@ namespace vbtracker {
             /// We get rid of the back.
             distanceHeap_.pop_back();
         }
-		
+
         bool populated_ = false;
         std::vector<LedIter> ledRefs_;
         std::vector<MeasPtr> measRefs_;

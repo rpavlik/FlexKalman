@@ -26,10 +26,10 @@
 #define INCLUDED_TrackedBody_h_GUID_1FC60169_196A_4F89_551C_E1B41531BBC8
 
 // Internal Includes
-#include "ConfigParams.h"
 #include "BodyIdTypes.h"
-#include "ModelTypes.h"
 #include "CannedIMUMeasurement.h"
+#include "ConfigParams.h"
+#include "ModelTypes.h"
 
 // Library/third-party includes
 #include <KalmanFramework/EigenCoreGeometry.h>

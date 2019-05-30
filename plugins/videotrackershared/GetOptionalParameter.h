@@ -38,7 +38,7 @@ namespace osvr {
 namespace vbtracker {
     namespace detail {
         template <typename T> struct JsonTypeGetter;
-#define KALMANFRAMEWORK_DECLARE_JSON_TYPE_GETTER(TYPENAME, METHOD)                        \
+#define KALMANFRAMEWORK_DECLARE_JSON_TYPE_GETTER(TYPENAME, METHOD)             \
     template <> struct JsonTypeGetter<TYPENAME> {                              \
         static TYPENAME apply(Json::Value const &val) { return val.METHOD(); } \
     };

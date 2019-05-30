@@ -33,10 +33,10 @@
 #include <GenericBlobExtractor.h>
 
 // Library/third-party includes
-#include <boost/noncopyable.hpp>
-#include <opencv2/core/core.hpp>
 #include <KalmanFramework/EigenCoreGeometry.h>
 #include <KalmanFramework/TimeValue.h>
+#include <boost/noncopyable.hpp>
+#include <opencv2/core/core.hpp>
 
 // Standard includes
 #include <memory>

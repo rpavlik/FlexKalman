@@ -29,10 +29,10 @@
 #include "ModelTypes.h"
 
 // Library/third-party includes
-#include <boost/optional.hpp>
-#include <folly/ProducerConsumerQueue.h>
 #include <KalmanFramework/ClientReportTypesC.h>
 #include <KalmanFramework/TimeValue.h>
+#include <boost/optional.hpp>
+#include <folly/ProducerConsumerQueue.h>
 
 // Standard includes
 #include <array>

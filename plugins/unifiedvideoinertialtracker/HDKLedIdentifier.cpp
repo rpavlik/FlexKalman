@@ -23,9 +23,9 @@
 // limitations under the License.
 
 // Internal Includes
-#include "LED.h"
 #include "HDKLedIdentifier.h"
 #include "IdentifierHelpers.h"
+#include "LED.h"
 
 // Library/third-party includes
 // - none
@@ -88,10 +88,10 @@ namespace vbtracker {
         }
     }
 
-    ZeroBasedBeaconId
-    OsvrHdkLedIdentifier::getId(ZeroBasedBeaconId currentId,
-                                BrightnessList &brightnesses,
-                                bool &lastBright, bool blobsKeepId) const {
+    ZeroBasedBeaconId OsvrHdkLedIdentifier::getId(ZeroBasedBeaconId currentId,
+                                                  BrightnessList &brightnesses,
+                                                  bool &lastBright,
+                                                  bool blobsKeepId) const {
         // If we don't have at least the required number of frames of data, we
         // don't know anything.
         if (brightnesses.size() < d_length) {

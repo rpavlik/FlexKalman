@@ -29,8 +29,8 @@
 // - none
 
 // Library/third-party includes
-#include <KalmanFramework/PoseState.h>
 #include <KalmanFramework/PoseSeparatelyDampedConstantVelocity.h>
+#include <KalmanFramework/PoseState.h>
 #include <KalmanFramework/PureVectorState.h>
 
 // Standard includes

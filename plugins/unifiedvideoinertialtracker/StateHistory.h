@@ -29,13 +29,13 @@
 // - none
 
 // Library/third-party includes
-#include <KalmanFramework/TimeValue.h>
 #include <KalmanFramework/FlexibleKalmanBase.h>
+#include <KalmanFramework/TimeValue.h>
 
 // Standard includes
 #include <array>
-#include <vector>
 #include <type_traits>
+#include <vector>
 
 namespace osvr {
 namespace kalman {
@@ -46,7 +46,7 @@ namespace kalman {
     namespace orient_externalized_rotation {
         // forward declaration
         class State;
-    }
+    } // namespace orient_externalized_rotation
 } // namespace kalman
 } // namespace osvr
 

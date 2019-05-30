@@ -22,8 +22,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <iostream>
 #include <KalmanFramework/EigenCoreGeometry.h>
+#include <iostream>
 template <typename T>
 inline void dumpKalmanDebugOuput(const char name[], const char expr[],
                                  T const &value) {
@@ -31,14 +31,14 @@ inline void dumpKalmanDebugOuput(const char name[], const char expr[],
               << value << std::endl;
 }
 
-#define KALMANFRAMEWORK_KALMAN_DEBUG_OUTPUT(Name, Value)                                  \
+#define KALMANFRAMEWORK_KALMAN_DEBUG_OUTPUT(Name, Value)                       \
     dumpKalmanDebugOuput(Name, #Value, Value)
 
 // Internal Includes
 #include "ContentsInvalid.h"
+#include <KalmanFramework/AbsoluteOrientationMeasurement.h>
 #include <KalmanFramework/FlexibleKalmanFilter.h>
 #include <KalmanFramework/PoseConstantVelocity.h>
-#include <KalmanFramework/AbsoluteOrientationMeasurement.h>
 
 // Library/third-party includes
 // - none

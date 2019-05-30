@@ -29,11 +29,11 @@
 // - none
 
 // Library/third-party includes
-#include <boost/none_t.hpp>
-#include <boost/variant.hpp>
-#include <KalmanFramework/TypePack/List.h>
 #include <KalmanFramework/ClientReportTypesC.h>
 #include <KalmanFramework/TimeValue.h>
+#include <KalmanFramework/TypePack/List.h>
+#include <boost/none_t.hpp>
+#include <boost/variant.hpp>
 
 // Standard includes
 // - none

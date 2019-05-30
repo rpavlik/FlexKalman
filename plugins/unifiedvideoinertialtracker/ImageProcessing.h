@@ -26,8 +26,8 @@
 #define INCLUDED_ImageProcessing_h_GUID_3E426FCE_BED1_4DAC_0669_70D55A14A507
 
 // Internal Includes
-#include "LedMeasurement.h"
 #include "CameraParameters.h"
+#include "LedMeasurement.h"
 
 // Library/third-party includes
 #include <KalmanFramework/TimeValue.h>

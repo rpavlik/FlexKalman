@@ -26,11 +26,11 @@
 #define INCLUDED_PoseEstimatorTypes_h_GUID_A9E792C9_4128_4B84_2108_DD3BA8B88061
 
 // Internal Includes
-#include "Types.h"
-#include "ModelTypes.h"
 #include "CameraParameters.h"
 #include "ConfigParams.h"
+#include "ModelTypes.h"
 #include "TrackedBodyTarget.h"
+#include "Types.h"
 
 // Library/third-party includes
 #include <KalmanFramework/EigenCoreGeometry.h>

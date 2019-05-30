@@ -93,8 +93,9 @@ namespace vbtracker {
                        "tracking camera was detected to have outdated "
                        "firmware in need of updating, and may not function "
                        "properly. Please visit "
-                    << UPDATER_URL << " to get the "
-                                      "camera firmware updater.\n\n"
+                    << UPDATER_URL
+                    << " to get the "
+                       "camera firmware updater.\n\n"
                     << std::endl;
                 /// @todo do we allow the tracker to run with outdated firmware
                 /// versions?

@@ -103,8 +103,9 @@ void osvrTimeValueGetNow(KALMANFRAMEWORK_INOUT_PTR OSVR_TimeValue *dest) {
     osvrStructTimevalToTimeValue(dest, &tv);
 }
 
-void osvrTimeValueToStructTimeval(KALMANFRAMEWORK_OUT timeval *dest,
-                                  KALMANFRAMEWORK_IN_PTR const OSVR_TimeValue *src) {
+void osvrTimeValueToStructTimeval(
+    KALMANFRAMEWORK_OUT timeval *dest,
+    KALMANFRAMEWORK_IN_PTR const OSVR_TimeValue *src) {
     if (!dest || !src) {
         return;
     }

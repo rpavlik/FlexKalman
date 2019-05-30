@@ -41,7 +41,8 @@ namespace util {
 
     inline Eigen::Vector3d getEuler(Eigen::Quaterniond const &q) {
         Eigen::Vector3d ret;
-        // This method seems terribly unreliable, but we're using it because we lack quatlib.
+        // This method seems terribly unreliable, but we're using it because we
+        // lack quatlib.
         return q.toRotationMatrix().eulerAngles(2, 0, 2);
     }
 

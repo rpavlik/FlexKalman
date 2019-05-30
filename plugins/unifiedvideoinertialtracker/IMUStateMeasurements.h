@@ -33,10 +33,10 @@
 
 // Library/third-party includes
 #include <KalmanFramework/AbsoluteOrientationMeasurement.h>
-#include <KalmanFramework/FlexibleKalmanFilter.h>
 #include <KalmanFramework/Angles.h>
 #include <KalmanFramework/EigenExtras.h>
 #include <KalmanFramework/EigenQuatExponentialMap.h>
+#include <KalmanFramework/FlexibleKalmanFilter.h>
 
 // Standard includes
 // - none

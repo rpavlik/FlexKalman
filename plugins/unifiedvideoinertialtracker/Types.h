@@ -26,19 +26,19 @@
 #define INCLUDED_Types_h_GUID_819757A3_DE89_4BAD_3BF5_6FE152F1EA08
 
 // Internal Includes
+#include "Assumptions.h"
 #include "BasicTypes.h"
 #include "ConfigParams.h"
-#include "Assumptions.h"
 
 // Library/third-party includes
 #include <opencv2/features2d/features2d.hpp>
 
 // Standard includes
-#include <vector>
-#include <list>
-#include <string>
-#include <memory>
 #include <functional>
+#include <list>
+#include <memory>
+#include <string>
+#include <vector>
 
 namespace osvr {
 namespace vbtracker {

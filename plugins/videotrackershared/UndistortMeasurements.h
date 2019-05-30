@@ -26,17 +26,17 @@
 #define INCLUDED_UndistortMeasurements_h_GUID_EBA50677_306F_4985_BC70_393C58140FE4
 
 // Internal Includes
+#include "CameraDistortionModel.h"
+#include "CameraParameters.h"
 #include "LedMeasurement.h"
 #include "cvToEigen.h"
-#include "CameraParameters.h"
-#include "CameraDistortionModel.h"
 
 // Library/third-party includes
 #include <KalmanFramework/EigenCoreGeometry.h>
 
 // Standard includes
-#include <vector>
 #include <algorithm>
+#include <vector>
 
 namespace osvr {
 namespace vbtracker {

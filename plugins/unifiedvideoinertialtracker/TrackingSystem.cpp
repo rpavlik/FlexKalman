@@ -198,7 +198,8 @@ namespace vbtracker {
             Eigen::Quaterniond quat;
             auto gotPose = target.uncalibratedRANSACPoseEstimateFromLeds(
                 m_impl->camParams, xlate, quat,
-                ROOM_CALIBRATION_SKIP_BRIGHTS_CUTOFF, CALIBRATION_RANSAC_ITERATIONS);
+                ROOM_CALIBRATION_SKIP_BRIGHTS_CUTOFF,
+                CALIBRATION_RANSAC_ITERATIONS);
             if (gotPose) {
                 m_impl->calib.processVideoData(*this, bodyTargetId,
                                                m_impl->lastFrame, xlate, quat);

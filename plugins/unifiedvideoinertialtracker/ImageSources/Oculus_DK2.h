@@ -29,9 +29,9 @@
 // - none
 
 // Library/third-party includes
+#include <opencv2/core/core.hpp> // for basic OpenCV types
 #include <vrpn_HumanInterface.h>
 #include <vrpn_Shared.h>
-#include <opencv2/core/core.hpp> // for basic OpenCV types
 
 // Standard includes
 #include <vector>
@@ -53,7 +53,7 @@ namespace oculus_dk2 {
       public:
         Oculus_DK2_HID(double keepAliveSeconds =
                            9 //< How often to re-trigger the LED flashing
-                       );
+        );
         virtual ~Oculus_DK2_HID();
 
         /// Return the latest IMU report(s).  Even if reports are not desired,
@@ -80,7 +80,7 @@ namespace oculus_dk2 {
                         bool useCarrier = true, bool syncInput = false,
                         bool vSyncLock = false, bool customPattern = false,
                         vrpn_uint16 commandId = 0 //< Should always be zero
-                        );
+        );
 
         // Send a KeepAlive feature report to the DK2.  This needs to be sent
         // every keepAliveSeconds to keep the LEDs going.
@@ -90,7 +90,7 @@ namespace oculus_dk2 {
             vrpn_uint16 interval = 10000 //< KeepAlive time in milliseconds
             ,
             vrpn_uint16 commandId = 0 //< Should always be zero
-            );
+        );
 
         // Handle incoming data reports, which in this case are reports
         // from the Inertial Measurement Unit (IMU).

@@ -26,8 +26,8 @@
 #define INCLUDED_ApplyIMUToState_h_GUID_B896B3E1_97C6_44BE_50CE_EDA075299FED
 
 // Internal Includes
-#include "ModelTypes.h"
 #include "CannedIMUMeasurement.h"
+#include "ModelTypes.h"
 
 // Library/third-party includes
 #include <KalmanFramework/TimeValue.h>

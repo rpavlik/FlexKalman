@@ -26,10 +26,10 @@
 #define INCLUDED_TrackingSystem_h_GUID_B94B2C23_321F_45B4_5167_CB32D2624B50
 
 // Internal Includes
-#include "ConfigParams.h"
-#include "ImageProcessing.h"
 #include "BodyIdTypes.h"
 #include "CameraParameters.h"
+#include "ConfigParams.h"
+#include "ImageProcessing.h"
 
 // Library/third-party includes
 #include <KalmanFramework/EigenCoreGeometry.h>
@@ -38,10 +38,10 @@
 #include <opencv2/core/core.hpp>
 
 // Standard includes
-#include <vector>
-#include <memory>
 #include <cstddef>
+#include <memory>
 #include <unordered_map>
+#include <vector>
 
 namespace osvr {
 namespace vbtracker {

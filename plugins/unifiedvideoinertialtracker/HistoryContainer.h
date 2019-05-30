@@ -33,8 +33,8 @@
 
 // Standard includes
 #include <deque>
-#include <stdexcept>
 #include <iterator>
+#include <stdexcept>
 
 namespace osvr {
 namespace vbtracker {

@@ -81,11 +81,11 @@ static const auto DRIVER_NAME = "UnifiedTrackingSystem";
 static const auto DEBUGGABLE_BEACONS = 34;
 static const auto DATAPOINTS_PER_BEACON = 5;
 using TrackingSystemPtr = std::unique_ptr<osvr::vbtracker::TrackingSystem>;
-using osvr::vbtracker::TrackerThread;
+using osvr::vbtracker::BodyId;
 using osvr::vbtracker::BodyReportingVector;
 using osvr::vbtracker::TrackedBody;
 using osvr::vbtracker::TrackedBodyIMU;
-using osvr::vbtracker::BodyId;
+using osvr::vbtracker::TrackerThread;
 
 class UnifiedVideoInertialTracker : boost::noncopyable {
   public:
@@ -401,12 +401,12 @@ class ConfiguredDeviceConstructor {
 #ifdef _WIN32
         auto cam = osvr::vbtracker::openHDKCameraDirectShow(config.highGain);
 #else // !_WIN32
-        /// @todo This is rather crude, as we can't select the exact camera we
-        /// want, nor set the "50Hz" high-gain mode (and only works with HDK
-        /// camera firmware v7 and up). Presumably eventually use libuvc on
-        /// other platforms instead, at least for the HDK IR camera.
+      /// @todo This is rather crude, as we can't select the exact camera we
+      /// want, nor set the "50Hz" high-gain mode (and only works with HDK
+      /// camera firmware v7 and up). Presumably eventually use libuvc on
+      /// other platforms instead, at least for the HDK IR camera.
 
-        //auto cam = osvr::vbtracker::openOpenCVCamera(0);
+        // auto cam = osvr::vbtracker::openOpenCVCamera(0);
         auto cam = osvr::vbtracker::openHDKCameraUVC();
 
 #endif
@@ -419,11 +419,12 @@ class ConfiguredDeviceConstructor {
         }
 
         auto trackingSystem = osvr::vbtracker::makeHDKTrackingSystem(config);
-        
+
         // OK, now that we have our parameters, create the device.
         osvr::pluginkit::PluginContext context(ctx);
         auto newTracker = osvr::pluginkit::registerObjectForDeletion(
-            ctx, new UnifiedVideoInertialTracker(ctx, std::move(cam), config, std::move(trackingSystem)));
+            ctx, new UnifiedVideoInertialTracker(ctx, std::move(cam), config,
+                                                 std::move(trackingSystem)));
         return KALMANFRAMEWORK_RETURN_SUCCESS;
     }
 };

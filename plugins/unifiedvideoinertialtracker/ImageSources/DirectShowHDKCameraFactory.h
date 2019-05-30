@@ -32,8 +32,8 @@
 // - none
 
 // Standard includes
-#include <memory>
 #include <iostream>
+#include <memory>
 
 #include <ks.h>
 #include <ksmedia.h>
@@ -83,7 +83,8 @@ inline void setGainMode(IBaseFilter &filter, bool highGain) {
     }
 }
 
-inline std::unique_ptr<directx_camera_server> getDirectShowHDKCamera(bool highGain = true) {
+inline std::unique_ptr<directx_camera_server>
+getDirectShowHDKCamera(bool highGain = true) {
     // This string begins the DevicePath provided by Windows for the HDK's
     // camera.
     static const auto HDK_CAMERA_PATH_PREFIX =

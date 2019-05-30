@@ -391,7 +391,8 @@ namespace vbtracker {
                 << HEAP_PREFIX
                 << "Matched: " << assignment.numCompletedMatches()
                 << "\tUnclaimed Meas: " << assignment.numUnclaimedMeasurements()
-                << "\tUnclaimed LED: " << assignment.numUnclaimedLedObjects()
+                << "\tUnclaimed LED: "
+                << assignment.numUnclaimedLedObjects()
                 /// this is how many elements the match-count early-out saved us
                 << "\tRemaining: " << assignment.size() << "\n";
         }
@@ -571,7 +572,7 @@ namespace vbtracker {
         }
         }
 
-/// End of main estimation dispatch
+        /// End of main estimation dispatch
 
 #ifdef UVBI_DEBUG_ERROR_VARIANCE
 

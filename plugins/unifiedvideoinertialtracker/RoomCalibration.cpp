@@ -33,9 +33,9 @@
 #include "TrackedBodyIMU.h"
 
 // Library/third-party includes
-#include <boost/assert.hpp>
 #include <KalmanFramework/EigenExtras.h>
 #include <KalmanFramework/ExtractYaw.h>
+#include <boost/assert.hpp>
 
 #ifdef UVBI_DUMP_CALIB_LOG
 #include <KalmanFramework/CSV.h>
@@ -202,12 +202,12 @@ namespace vbtracker {
 
             msg() << "Restarting ";
             if (m_linVel >= LINEAR_VELOCITY_CUTOFF) {
-                msgStream() << " - Linear velocity too high (" << m_linVel
-                            << ")";
+                msgStream()
+                    << " - Linear velocity too high (" << m_linVel << ")";
             }
             if (m_angVel >= ANGULAR_VELOCITY_CUTOFF) {
-                msgStream() << " - Angular velocity too high (" << m_angVel
-                            << ")";
+                msgStream()
+                    << " - Angular velocity too high (" << m_angVel << ")";
             }
             msgStream() << "\n";
         }

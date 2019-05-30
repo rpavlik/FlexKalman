@@ -32,8 +32,8 @@
 // Internal Includes
 #include <BlobExtractor.h>
 #include <BlobParams.h>
-#include <LedMeasurement.h>
 #include <KalmanFramework/OpenCVVersion.h>
+#include <LedMeasurement.h>
 
 // Library/third-party includes
 #include <opencv2/core/core.hpp>

@@ -33,8 +33,8 @@
 #include <KalmanFramework/TypeSafeIdHash.h>
 
 // Standard includes
-#include <stdexcept>
 #include <cstdint>
+#include <stdexcept>
 
 namespace osvr {
 namespace vbtracker {

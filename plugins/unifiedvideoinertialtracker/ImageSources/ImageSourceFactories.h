@@ -45,7 +45,8 @@ namespace vbtracker {
 #else
     /// Factory method to open a USB video class (UVC) device as an image
     /// source.
-    ImageSourcePtr openUVCCamera(int vendor_id = 0, int product_id = 0, const char* serial_number = nullptr);
+    ImageSourcePtr openUVCCamera(int vendor_id = 0, int product_id = 0,
+                                 const char *serial_number = nullptr);
 
     /// Factory method to open the HDK camera as an image source via libuvc.
     ImageSourcePtr openHDKCameraUVC();

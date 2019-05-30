@@ -34,9 +34,9 @@
 #include "Types.h"
 
 // Library/third-party includes
-#include <boost/assert.hpp>
 #include <KalmanFramework/PureVectorState.h>
 #include <KalmanFramework/TimeValue.h>
+#include <boost/assert.hpp>
 
 // Standard includes
 #include <iosfwd>
