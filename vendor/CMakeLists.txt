@@ -18,10 +18,6 @@ add_library(folly-headers INTERFACE)
 target_include_directories(folly-headers INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/folly")
 target_compile_definitions(folly-headers INTERFACE FOLLY_NO_CONFIG) # we don't build a folly/folly-config.h
 
-# Interface target for the C++11/14 headers backported from libc++
-add_library(libcxx_backports INTERFACE)
-target_include_directories(libcxx_backports INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/libcxx-backports")
-
 # Interface target for intrusive_ptr support for COM
 add_library(com_smart_pointer INTERFACE)
 target_include_directories(com_smart_pointer INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/com_smart_pointer" ${Boost_INCLUDE_DIRS})
@@ -52,7 +48,7 @@ if(WIN32)
 
 endif()
 
-if(WIN32 AND NOT OSVR_OFFICIAL)
+if(WIN32)
     # Only known to work on Windows, should only be used for development.
     add_library(FloatExceptions INTERFACE)
     target_include_directories(FloatExceptions INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/FloatExceptions")
@@ -60,12 +56,11 @@ endif()
 
 # Interface target for Eigen
 add_library(eigen-headers INTERFACE)
-# Bundled 3.3.7
-set(OSVR_VENDORED_EIGEN_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/eigen" CACHE INTERNAL "" FORCE)
 target_compile_definitions(eigen-headers INTERFACE EIGEN_MPL2_ONLY)
 find_package(Eigen3 QUIET)
 if(EIGEN3_FOUND)
     target_include_directories(eigen-headers INTERFACE "${EIGEN3_INCLUDE_DIR}")
 else()
-    target_include_directories(eigen-headers INTERFACE "${OSVR_VENDORED_EIGEN_ROOT}")
+    # Bundled 3.3.7
+    target_include_directories(eigen-headers INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/eigen")
 endif()
