@@ -9,6 +9,7 @@
 */
 
 // Copyright 2015 Sensics, Inc.
+// Copyright 2019 Collabora, Ltd.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -60,11 +61,6 @@ using Filter = osvr::kalman::FlexibleKalmanFilter<ProcessModel>;
 
 class Stability {
   public:
-    template <typename Filter> void dumpInitialState(Filter const &filter) {
-        REQUIRE(iteration == 0);
-        dumpState(filter.state(), "Initial state");
-    }
-
     template <typename State>
     void dumpState(State const &state, const char msg[]) {
         std::cout << "\n"
@@ -95,22 +91,9 @@ class Stability {
     void filterAndCheckRepeatedly(Filter &filter, Measurement &meas,
                                   double dt = 0.1,
                                   std::size_t iterations = 100) {
-        for (iteration = 0; iteration < iterations; iteration++) {
-            INFO("Iteration " << iteration);
-            INFO("prediction step");
-            filter.predict(dt);
-            dumpState(filter.state(), "After prediction");
-            REQUIRE_FALSE(stateContentsInvalid(filter.state()));
-            REQUIRE_FALSE(covarianceContentsInvalid(filter.state()));
-
-            REQUIRE_FALSE(
-                covarianceContentsInvalid(meas.getCovariance(filter.state())));
-
-            INFO("correction step");
-            filter.correct(meas);
-            dumpState(filter.state(), "After correction");
-            REQUIRE_FALSE(stateContentsInvalid(filter.state()));
-            REQUIRE_FALSE(covarianceContentsInvalid(filter.state()));
+        iteration = 0;
+        while (iteration < iterations) {
+            filterAndCheck(filter, meas, dt);
         }
     }
 
@@ -118,48 +101,33 @@ class Stability {
     std::size_t iteration = 0;
 };
 
-template <typename T> class VariedProcessModelStability : public Stability {};
-
-TEMPLATE_TEST_CASE(
-    "ProcessModelStability_IdentityAbsoluteOrientationMeasurement", "",
-    osvr::kalman::PoseConstantVelocityProcessModel,
-    osvr::kalman::PoseDampedConstantVelocityProcessModel) {
-    VariedProcessModelStability<TestType> fixture;
-    using Filter = osvr::kalman::FlexibleKalmanFilter<TestType>;
-
-    auto filter = Filter{};
-    auto meas = AbsoluteOrientationMeasurement{
-        Eigen::Quaterniond::Identity(),
-        Eigen::Vector3d(0.00001, 0.00001, 0.00001)};
-    fixture.dumpInitialState(filter);
-    fixture.filterAndCheckRepeatedly(filter, meas);
-    /// @todo check that it's roughly identity
-}
-
-TEMPLATE_TEST_CASE("ProcessModelStability_IdentityAbsolutePositionMeasurement",
-                   "", osvr::kalman::PoseConstantVelocityProcessModel,
+TEMPLATE_TEST_CASE("ProcessModelStability", "",
+                   osvr::kalman::PoseConstantVelocityProcessModel,
                    osvr::kalman::PoseDampedConstantVelocityProcessModel) {
-    VariedProcessModelStability<TestType> fixture;
+    Stability fixture;
     using Filter = osvr::kalman::FlexibleKalmanFilter<TestType>;
 
     auto filter = Filter{};
-    auto meas = AbsolutePositionMeasurement{
-        Eigen::Vector3d::Zero(), Eigen::Vector3d::Constant(0.000007)};
-    fixture.dumpInitialState(filter);
-    fixture.filterAndCheckRepeatedly(filter, meas);
-    /// @todo check that it's roughly identity
-}
+    fixture.dumpState(filter.state(), "Initial state");
 
-TEMPLATE_TEST_CASE("ProcessModelStability_AbsolutePositionMeasurementXlate111",
-                   "", osvr::kalman::PoseConstantVelocityProcessModel,
-                   osvr::kalman::PoseDampedConstantVelocityProcessModel) {
-    VariedProcessModelStability<TestType> fixture;
-    using Filter = osvr::kalman::FlexibleKalmanFilter<TestType>;
-
-    auto filter = Filter{};
-    auto meas = AbsolutePositionMeasurement{
-        Eigen::Vector3d::Constant(1), Eigen::Vector3d::Constant(0.000007)};
-    fixture.dumpInitialState(filter);
-    fixture.filterAndCheckRepeatedly(filter, meas);
-    /// @todo check that it's roughly identity orientation, position of 1, 1, 1
+    SECTION("IdentityAbsoluteOrientationMeasurement") {
+        auto meas = AbsoluteOrientationMeasurement{
+            Eigen::Quaterniond::Identity(),
+            Eigen::Vector3d(0.00001, 0.00001, 0.00001)};
+        fixture.filterAndCheckRepeatedly(filter, meas);
+        /// @todo check that it's roughly identity
+    }
+    SECTION("IdentityAbsolutePositionMeasurement") {
+        auto meas = AbsolutePositionMeasurement{
+            Eigen::Vector3d::Zero(), Eigen::Vector3d::Constant(0.000007)};
+        fixture.filterAndCheckRepeatedly(filter, meas);
+        /// @todo check that it's roughly identity
+    }
+    SECTION("AbsolutePositionMeasurementXlate111") {
+        auto meas = AbsolutePositionMeasurement{
+            Eigen::Vector3d::Constant(1), Eigen::Vector3d::Constant(0.000007)};
+        fixture.filterAndCheckRepeatedly(filter, meas);
+        /// @todo check that it's roughly identity orientation, position of 1,
+        /// 1, 1
+    }
 }
