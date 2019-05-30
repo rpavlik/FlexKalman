@@ -170,7 +170,30 @@ set_target_properties(uvbi-hdkdata PROPERTIES
 #     util-headers
 #     folly-headers)
 
+# These are the non-OSVR-dependent files from the plugin:
+# everything except the org_osvr_unifiedvideoinertial.cpp
+# and the JSON literal
+add_library(uvbi_plugin_parts SHARED
+    AdditionalReports.h
+    ConfigurationParser.h
+    MakeHDKTrackingSystem.h
+    ImageProcessingThread.cpp
+    ImageProcessingThread.h
+    IMUMessage.h
+    ProcessIMUMessage.h
+    ThreadsafeBodyReporting.cpp
+    ThreadsafeBodyReporting.h
+    TrackerThread.cpp
+    TrackerThread.h
+    $<TARGET_OBJECTS:uvbi-hdkdata>
+    ${KALMANFRAMEWORK_VIDEOTRACKERSHARED_SOURCES_IO})
 
+target_link_libraries(uvbi_plugin_parts
+    uvbi-core
+    uvbi-image-sources
+    JsonCpp::JsonCpp
+    util-headers
+    folly-headers)
 
 add_subdirectory(ParameterFinder)
 add_subdirectory(OfflineProcessing)
