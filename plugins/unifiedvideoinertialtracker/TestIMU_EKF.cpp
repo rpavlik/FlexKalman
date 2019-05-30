@@ -33,13 +33,13 @@
 
 #if 0
 /// Turns out that QFirst and QLast are likely wrong.
-CATCH_TYPELIST_DESCRIBED_TESTCASE("identity calibration output", "[.][ekf]", kalman::QFirst,
+TEMPLATE_TEST_CASE("identity calibration output", "[.][ekf]", kalman::QFirst,
                         kalman::QLast, kalman::SplitQ) {
 #endif
-CATCH_TYPELIST_DESCRIBED_TESTCASE("identity calibration output", "[.][ekf]",
+TEMPLATE_TEST_CASE("identity calibration output", "[.][ekf]",
                                   kalman::SplitQ,
                                   kalman::QLastWithSplitInnovation) {
-    using MeasurementType = OrientationMeasurementUsingPolicy<TypeParam>;
+    using MeasurementType = OrientationMeasurementUsingPolicy<TestType>;
     using JacobianType = typename MeasurementType::JacobianType;
     unique_ptr<TestData> data(new TestData);
     GIVEN("an identity state") {

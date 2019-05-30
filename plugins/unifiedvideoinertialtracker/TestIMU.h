@@ -29,11 +29,8 @@
 /// messages.
 #define CATCH_CONFIG_CONSOLE_WIDTH 120
 
-// Internal Includes
-#include "catch_typelist.h" // internally-developed extension to Catch.
-
 // Library/third-party includes
-#include <catch.hpp>
+#include <catch2/catch.hpp>
 
 // Standard includes
 // - none

@@ -94,17 +94,17 @@ inline std::ostream &operator<<(std::ostream &os, Quaterniond const &q) {
 }
 } // namespace Eigen
 
-namespace Catch {
-template <> struct TypelistTypeNameTrait<kalman::QFirst> {
-    static const char *get() { return "kalman::QFirst"; }
-};
-template <> struct TypelistTypeNameTrait<kalman::QLast> {
-    static const char *get() { return "kalman::QLast"; }
-};
-template <> struct TypelistTypeNameTrait<kalman::SplitQ> {
-    static const char *get() { return "kalman::SplitQ"; }
-};
-} // namespace Catch
+// namespace Catch {
+// template <> struct TypelistTypeNameTrait<kalman::QFirst> {
+//     static const char *get() { return "kalman::QFirst"; }
+// };
+// template <> struct TypelistTypeNameTrait<kalman::QLast> {
+//     static const char *get() { return "kalman::QLast"; }
+// };
+// template <> struct TypelistTypeNameTrait<kalman::SplitQ> {
+//     static const char *get() { return "kalman::SplitQ"; }
+// };
+// } // namespace Catch
 
 static const double SMALL_VALUE = 0.1;
 
