@@ -38,17 +38,17 @@ namespace osvr {
 namespace vbtracker {
     namespace detail {
         template <typename T> struct JsonTypeGetter;
-#define OSVR_DECLARE_JSON_TYPE_GETTER(TYPENAME, METHOD)                        \
+#define KALMANFRAMEWORK_DECLARE_JSON_TYPE_GETTER(TYPENAME, METHOD)                        \
     template <> struct JsonTypeGetter<TYPENAME> {                              \
         static TYPENAME apply(Json::Value const &val) { return val.METHOD(); } \
     };
-        OSVR_DECLARE_JSON_TYPE_GETTER(bool, asBool)
-        OSVR_DECLARE_JSON_TYPE_GETTER(float, asFloat)
-        OSVR_DECLARE_JSON_TYPE_GETTER(double, asDouble)
-        OSVR_DECLARE_JSON_TYPE_GETTER(int, asInt)
-        OSVR_DECLARE_JSON_TYPE_GETTER(std::string, asString)
+        KALMANFRAMEWORK_DECLARE_JSON_TYPE_GETTER(bool, asBool)
+        KALMANFRAMEWORK_DECLARE_JSON_TYPE_GETTER(float, asFloat)
+        KALMANFRAMEWORK_DECLARE_JSON_TYPE_GETTER(double, asDouble)
+        KALMANFRAMEWORK_DECLARE_JSON_TYPE_GETTER(int, asInt)
+        KALMANFRAMEWORK_DECLARE_JSON_TYPE_GETTER(std::string, asString)
 
-#undef OSVR_DECLARE_JSON_TYPE_GETTER
+#undef KALMANFRAMEWORK_DECLARE_JSON_TYPE_GETTER
     } // namespace detail
     template <typename T> inline T json_cast(Json::Value const &val) {
         return detail::JsonTypeGetter<T>::apply(val);

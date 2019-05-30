@@ -7,12 +7,12 @@ set(PROJ_FOLDER "OSVR Plugins/Unified Video-Inertial Tracker")
 # Be able to find our generated header file, have shared files find us, and have us find shared files.
 include_directories("${CMAKE_CURRENT_BINARY_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${OSVR_VIDEOTRACKERSHARED_INCLUDE_DIR}")
+    "${KALMANFRAMEWORK_VIDEOTRACKERSHARED_INCLUDE_DIR}")
 
 # Make sure we can link these upcoming static libraries into a shared lib
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-add_definitions(-DOSVR_USING_EDGE_HOLE_EXTRACTOR)
+add_definitions(-DUVBI_USING_EDGE_HOLE_EXTRACTOR)
 
 add_subdirectory(ImageSources)
 
@@ -77,7 +77,7 @@ add_library(uvbi-core STATIC
     TrackingSystem.h
     Types.h
     UsefulQuaternions.h
-    ${OSVR_VIDEOTRACKERSHARED_SOURCES_CORE})
+    ${KALMANFRAMEWORK_VIDEOTRACKERSHARED_SOURCES_CORE})
 target_compile_features(uvbi-core
     PUBLIC
     cxx_std_11)
@@ -93,7 +93,7 @@ target_link_libraries(uvbi-core
     util-headers)
 set_target_properties(uvbi-core PROPERTIES
     FOLDER "${PROJ_FOLDER}")
-target_compile_definitions(uvbi-core PRIVATE OSVR_UVBI_CORE)
+target_compile_definitions(uvbi-core PRIVATE UVBI_CORE)
 
 ###
 # Convenience tool to view the tracker camera using the same pipeline as the tracker plugin.
@@ -127,7 +127,7 @@ if(BUILD_TESTING)
 endif()
 
 # "object library" for the HDK data files.
-add_library(uvbi-hdkdata OBJECT ${OSVR_VIDEOTRACKERSHARED_SOURCES_HDKDATA})
+add_library(uvbi-hdkdata OBJECT ${KALMANFRAMEWORK_VIDEOTRACKERSHARED_SOURCES_HDKDATA})
 
 target_compile_features(uvbi-hdkdata
     PUBLIC
@@ -155,7 +155,7 @@ set_target_properties(uvbi-hdkdata PROPERTIES
 #     TrackerThread.cpp
 #     TrackerThread.h
 #     $<TARGET_OBJECTS:uvbi-hdkdata>
-#     ${OSVR_VIDEOTRACKERSHARED_SOURCES_IO})
+#     ${KALMANFRAMEWORK_VIDEOTRACKERSHARED_SOURCES_IO})
 
 # target_link_libraries(org_osvr_unifiedvideoinertial
 #     osvr::osvrAnalysisPluginKit

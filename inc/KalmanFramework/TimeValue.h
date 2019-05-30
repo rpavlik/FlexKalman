@@ -117,14 +117,14 @@ namespace util {
             return toTimeValue(src);
         }
 
-#ifdef OSVR_STRUCT_TIMEVAL_INCLUDED
+#ifdef KALMANFRAMEWORK_STRUCT_TIMEVAL_INCLUDED
         /// @brief Convert a TimeValue to a struct timeval
         inline struct timeval toStructTimeval(TimeValue const &src) {
             struct timeval dest;
             osvrTimeValueToStructTimeval(&dest, &src);
             return dest;
         }
-#endif // OSVR_STRUCT_TIMEVAL_INCLUDED
+#endif // KALMANFRAMEWORK_STRUCT_TIMEVAL_INCLUDED
 
 #endif // KALMANFRAMEWORK_HAVE_STRUCT_TIMEVAL
 

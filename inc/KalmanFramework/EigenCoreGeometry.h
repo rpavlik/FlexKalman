@@ -38,7 +38,7 @@
     (defined(__GNUC__) && (((__GNUC__ * 100) + __GNUC_MINOR__) >= 406))
 // Suppress std::binder1st/std::binder2nd deprecation notices when building as
 // new c++
-#define OSVR_GCC_WARNINGS_PUSHED
+#define KALMANFRAMEWORK_GCC_WARNINGS_PUSHED
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #endif
@@ -46,8 +46,8 @@
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 
-#ifdef OSVR_GCC_WARNINGS_PUSHED
-#undef OSVR_GCC_WARNINGS_PUSHED
+#ifdef KALMANFRAMEWORK_GCC_WARNINGS_PUSHED
+#undef KALMANFRAMEWORK_GCC_WARNINGS_PUSHED
 #pragma GCC diagnostic pop
 #endif
 

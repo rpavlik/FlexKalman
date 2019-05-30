@@ -146,7 +146,7 @@ class UnifiedVideoInertialTracker : boost::noncopyable {
 
         /// Create the analysis device token with the options
         OSVR_DeviceToken dev;
-        if (OSVR_RETURN_FAILURE ==
+        if (KALMANFRAMEWORK_RETURN_FAILURE ==
             osvrAnalysisSyncInit(ctx, DRIVER_NAME, opts, &dev, &m_clientCtx)) {
             throw std::runtime_error("Could not initialize analysis plugin!");
         }
@@ -159,7 +159,7 @@ class UnifiedVideoInertialTracker : boost::noncopyable {
         if (m_mainBody->hasIMU()) {
             m_imu = &(m_mainBody->getIMU());
             /// Create our client interface and register a callback.
-            if (OSVR_RETURN_FAILURE ==
+            if (KALMANFRAMEWORK_RETURN_FAILURE ==
                 osvrClientGetInterface(m_clientCtx, params.imu.path.c_str(),
                                        &m_clientInterface)) {
                 throw std::runtime_error(
@@ -344,7 +344,7 @@ inline OSVR_ReturnCode UnifiedVideoInertialTracker::update() {
         /// First call to update, we let the tracker go flying.
         m_threadLoopStarted = true;
         m_trackerThreadManager->permitStart();
-        return OSVR_RETURN_SUCCESS;
+        return KALMANFRAMEWORK_RETURN_SUCCESS;
     }
     namespace ei = osvr::util::eigen_interop;
     std::size_t numSensors = m_bodyReportingVector.size();
@@ -374,7 +374,7 @@ inline OSVR_ReturnCode UnifiedVideoInertialTracker::update() {
             osvrDeviceAnalogSetValues(m_dev, m_analog, arr.data(), arr.size());
         }
     }
-    return OSVR_RETURN_SUCCESS;
+    return KALMANFRAMEWORK_RETURN_SUCCESS;
 }
 
 class ConfiguredDeviceConstructor {
@@ -415,7 +415,7 @@ class ConfiguredDeviceConstructor {
             std::cerr << "Could not access the tracking camera, skipping "
                          "video-based tracking!"
                       << std::endl;
-            return OSVR_RETURN_FAILURE;
+            return KALMANFRAMEWORK_RETURN_FAILURE;
         }
 
         auto trackingSystem = osvr::vbtracker::makeHDKTrackingSystem(config);
@@ -424,7 +424,7 @@ class ConfiguredDeviceConstructor {
         osvr::pluginkit::PluginContext context(ctx);
         auto newTracker = osvr::pluginkit::registerObjectForDeletion(
             ctx, new UnifiedVideoInertialTracker(ctx, std::move(cam), config, std::move(trackingSystem)));
-        return OSVR_RETURN_SUCCESS;
+        return KALMANFRAMEWORK_RETURN_SUCCESS;
     }
 };
 
@@ -437,5 +437,5 @@ OSVR_PLUGIN(org_osvr_unifiedvideoinertial) {
     osvr::pluginkit::registerDriverInstantiationCallback(
         ctx, DRIVER_NAME, new ConfiguredDeviceConstructor);
 
-    return OSVR_RETURN_SUCCESS;
+    return KALMANFRAMEWORK_RETURN_SUCCESS;
 }

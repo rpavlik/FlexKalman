@@ -42,12 +42,12 @@
 #include <comutils/ComVariant.h>
 #include <tchar.h>
 
-#ifdef OSVR_HAVE_CODECVT
+#ifdef KALMANFRAMEWORK_HAVE_CODECVT
 #include <codecvt>
 #include <locale>
-#else // !OSVR_HAVE_CODECVT
+#else // !KALMANFRAMEWORK_HAVE_CODECVT
 #include <boost/locale/encoding_utf.hpp>
-#endif // OSVR_HAVE_CODECVT
+#endif // KALMANFRAMEWORK_HAVE_CODECVT
 #endif // _WIN32
 
 // Standard includes
@@ -59,21 +59,21 @@ namespace vbtracker {
     static const auto CURRENT_CAMERA_FIRMWARE_VERSION = 7;
 
     template <typename T> inline std::string wideToUTF8String(T input) {
-#ifdef OSVR_HAVE_CODECVT
+#ifdef KALMANFRAMEWORK_HAVE_CODECVT
         std::wstring_convert<std::codecvt_utf8<wchar_t> > strCvt;
         return strCvt.to_bytes(input);
-#else  // !OSVR_HAVE_CODECVT
+#else  // !KALMANFRAMEWORK_HAVE_CODECVT
         return boost::locale::conv::utf_to_utf<char>(input);
-#endif // OSVR_HAVE_CODECVT
+#endif // KALMANFRAMEWORK_HAVE_CODECVT
     }
 
     template <typename T> inline std::wstring narrowToWideString(T input) {
-#ifdef OSVR_HAVE_CODECVT
+#ifdef KALMANFRAMEWORK_HAVE_CODECVT
         std::wstring_convert<std::codecvt_utf8<wchar_t> > strCvt;
         return strCvt.from_bytes(input);
-#else  // !OSVR_HAVE_CODECVT
+#else  // !KALMANFRAMEWORK_HAVE_CODECVT
         return boost::locale::conv::utf_to_utf<wchar_t>(input);
-#endif // OSVR_HAVE_CODECVT
+#endif // KALMANFRAMEWORK_HAVE_CODECVT
     }
 
     enum class FirmwareStatus {

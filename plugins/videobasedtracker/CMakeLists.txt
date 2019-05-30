@@ -8,7 +8,7 @@ osvr_convert_json(com_osvr_VideoBasedHMDTracker_json
 # Be able to find our generated header file, have shared files find us, and have us find shared files.
 include_directories("${CMAKE_CURRENT_BINARY_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${OSVR_VIDEOTRACKERSHARED_INCLUDE_DIR}")
+    "${KALMANFRAMEWORK_VIDEOTRACKERSHARED_INCLUDE_DIR}")
 if(WIN32)
     include_directories("${CMAKE_CURRENT_SOURCE_DIR}/DirectShowCameraLib")
 endif()
@@ -42,8 +42,8 @@ add_library(vbtracker-core STATIC
     Types.h
     VideoBasedTracker.cpp
     VideoBasedTracker.h
-    ${OSVR_VIDEOTRACKERSHARED_SOURCES_CORE}
-    ${OSVR_VIDEOTRACKERSHARED_SOURCES_HDKDATA})
+    ${KALMANFRAMEWORK_VIDEOTRACKERSHARED_SOURCES_CORE}
+    ${KALMANFRAMEWORK_VIDEOTRACKERSHARED_SOURCES_HDKDATA})
 
 target_link_libraries(vbtracker-core
     PUBLIC
@@ -86,7 +86,7 @@ set(PLUGIN_SOURCES
     ImageSourceFactories.h
     SetupSensors.h
     FakeImageSource.cpp
-    ${OSVR_VIDEOTRACKERSHARED_SOURCES_IO})
+    ${KALMANFRAMEWORK_VIDEOTRACKERSHARED_SOURCES_IO})
 if(WIN32)
     list(APPEND PLUGIN_SOURCES
         DirectShowHDKCameraFactory.h
@@ -144,7 +144,7 @@ if(WIN32)
         DirectShowHDKCameraFactory.h
         DirectShowImageSource.cpp
         DirectShowToCV.h
-        ${OSVR_VIDEOTRACKERSHARED_SOURCES_IO})
+        ${KALMANFRAMEWORK_VIDEOTRACKERSHARED_SOURCES_IO})
     add_executable(VideoTrackerCalibrationUtility ${CALIB_SOURCES})
     target_link_libraries(VideoTrackerCalibrationUtility
         PRIVATE

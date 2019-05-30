@@ -5,7 +5,7 @@ add_executable(uvbi-offline-processing
     CSVCellGroup.h
     QuatToEuler.h
     ../MakeHDKTrackingSystem.h
-    ${OSVR_VIDEOTRACKERSHARED_SOURCES_IO})
+    ${KALMANFRAMEWORK_VIDEOTRACKERSHARED_SOURCES_IO})
 
 set_target_properties(uvbi-offline-processing PROPERTIES
     FOLDER "${PROJ_FOLDER}")

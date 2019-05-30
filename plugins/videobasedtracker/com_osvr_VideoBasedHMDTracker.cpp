@@ -132,7 +132,7 @@ inline OSVR_ReturnCode VideoBasedHMDTracker::update() {
     if (!m_source->ok()) {
         // Couldn't open the camera.  Failing silently for now. Maybe the
         // camera will be plugged back in later.
-        return OSVR_RETURN_SUCCESS;
+        return KALMANFRAMEWORK_RETURN_SUCCESS;
     }
 
     //==================================================================
@@ -140,7 +140,7 @@ inline OSVR_ReturnCode VideoBasedHMDTracker::update() {
     if (!m_source->grab()) {
         // Couldn't open the camera.  Failing silently for now. Maybe the
         // camera will be plugged back in later.
-        return OSVR_RETURN_SUCCESS;
+        return KALMANFRAMEWORK_RETURN_SUCCESS;
     }
 
     //==================================================================
@@ -219,7 +219,7 @@ inline OSVR_ReturnCode VideoBasedHMDTracker::update() {
         osvrDeviceAnalogSetValuesTimestamped(m_dev, m_analog, data, n, &now);
     }
 
-    return OSVR_RETURN_SUCCESS;
+    return KALMANFRAMEWORK_RETURN_SUCCESS;
 }
 
 class HardwareDetection {
@@ -235,7 +235,7 @@ class HardwareDetection {
 
     OSVR_ReturnCode operator()(OSVR_PluginRegContext ctx) {
         if (m_found) {
-            return OSVR_RETURN_SUCCESS;
+            return KALMANFRAMEWORK_RETURN_SUCCESS;
         }
         auto src = m_cameraFactory();
         if (!src || !src->ok()) {
@@ -262,7 +262,7 @@ class HardwareDetection {
 #endif
                 std::cout << std::endl;
             }
-            return OSVR_RETURN_FAILURE;
+            return KALMANFRAMEWORK_RETURN_FAILURE;
         }
         std::cout << "Video-based tracker: Camera turned on!" << std::endl;
         m_found = true;
@@ -273,7 +273,7 @@ class HardwareDetection {
             ctx, new VideoBasedHMDTracker(ctx, std::move(src), m_cameraID,
                                           m_params));
         m_sensorSetup(*newTracker);
-        return OSVR_RETURN_SUCCESS;
+        return KALMANFRAMEWORK_RETURN_SUCCESS;
     }
 
   private:
@@ -327,7 +327,7 @@ class ConfiguredDeviceConstructor {
             // fake images
             auto src = osvr::vbtracker::openImageFileSequence(path);
             if (!src) {
-                return OSVR_RETURN_FAILURE;
+                return KALMANFRAMEWORK_RETURN_FAILURE;
             }
             auto newTracker = osvr::pluginkit::registerObjectForDeletion(
                 ctx, new VideoBasedHMDTracker(ctx, std::move(src), cameraID,
@@ -345,7 +345,7 @@ class ConfiguredDeviceConstructor {
                 osvr::vbtracker::OsvrHdkLedLocations_SENSOR1,
                 osvr::vbtracker::OsvrHdkLedDirections_SENSOR1,
                 backPanelFixedBeacon, 4, 0);
-            return OSVR_RETURN_SUCCESS;
+            return KALMANFRAMEWORK_RETURN_SUCCESS;
         }
 #if 0
         bool isOculusCamera = (width == 376) && (height == 480);
@@ -393,7 +393,7 @@ class ConfiguredDeviceConstructor {
         context.registerHardwareDetectCallback(new HardwareDetection(
             cameraFactory, setupHDKParamsAndSensors, cameraID, config));
 
-        return OSVR_RETURN_SUCCESS;
+        return KALMANFRAMEWORK_RETURN_SUCCESS;
     }
 };
 
@@ -406,5 +406,5 @@ OSVR_PLUGIN(com_osvr_VideoBasedHMDTracker) {
     osvr::pluginkit::registerDriverInstantiationCallback(
         ctx, "VideoBasedHMDTracker", new ConfiguredDeviceConstructor);
 
-    return OSVR_RETURN_SUCCESS;
+    return KALMANFRAMEWORK_RETURN_SUCCESS;
 }

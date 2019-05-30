@@ -54,8 +54,8 @@
 #define KALMANFRAMEWORK_INOUT _Inout_
 #define KALMANFRAMEWORK_INOUT_PTR _Inout_
 
-#define OSVR_RETURN_WARN_UNUSED _Must_inspect_result_
-#define OSVR_RETURN_SUCCESS_CONDITION(X) _Return_type_success_(X)
+#define KALMANFRAMEWORK_RETURN_WARN_UNUSED _Must_inspect_result_
+#define KALMANFRAMEWORK_RETURN_SUCCESS_CONDITION(X) _Return_type_success_(X)
 
 /* end of msvc section */
 #elif defined(__GNUC__) && (__GNUC__ >= 4)
@@ -65,8 +65,8 @@
 /* clang-specific section */
 #endif
 
-#define OSVR_FUNC_NONNULL(X) __attribute__((__nonnull__ X))
-#define OSVR_RETURN_WARN_UNUSED __attribute__((warn_unused_result))
+#define KALMANFRAMEWORK_FUNC_NONNULL(X) __attribute__((__nonnull__ X))
+#define KALMANFRAMEWORK_RETURN_WARN_UNUSED __attribute__((warn_unused_result))
 
 /* end of gcc section and compiler detection */
 #endif
@@ -190,7 +190,7 @@ as well as any methods handling a buffer with a length.
 
    @{
 */
-/** @def OSVR_FUNC_NONNULL(X)
+/** @def KALMANFRAMEWORK_FUNC_NONNULL(X)
     @brief Indicates the parameter(s) that must be non-null.
 
     @param X A parenthesized list of parameters by number (1-based index)
@@ -198,24 +198,24 @@ as well as any methods handling a buffer with a length.
     Should be placed after a function declaration (but before the
    semicolon). Repeating in the definition is not needed.
 */
-#ifndef OSVR_FUNC_NONNULL
-#define OSVR_FUNC_NONNULL(X)
+#ifndef KALMANFRAMEWORK_FUNC_NONNULL
+#define KALMANFRAMEWORK_FUNC_NONNULL(X)
 #endif
 
-/** @def OSVR_RETURN_WARN_UNUSED
+/** @def KALMANFRAMEWORK_RETURN_WARN_UNUSED
     @brief Indicates the function has a return value that must be used (either a
    security problem or an obvious bug if not).
 
     Should be placed before the return value (and virtual keyword, if
    applicable) in both declaration and definition.
 */
-#ifndef OSVR_RETURN_WARN_UNUSED
-#define OSVR_RETURN_WARN_UNUSED
+#ifndef KALMANFRAMEWORK_RETURN_WARN_UNUSED
+#define KALMANFRAMEWORK_RETURN_WARN_UNUSED
 #endif
 /* End of function annotations. */
 /** @} */
 
-/** @def OSVR_RETURN_SUCCESS_CONDITION
+/** @def KALMANFRAMEWORK_RETURN_SUCCESS_CONDITION
     @brief Applied to a typedef, indicates the condition for `return` under
    which a function returning it should be considered to have succeeded (thus
    holding certain specifications).
@@ -223,8 +223,8 @@ as well as any methods handling a buffer with a length.
     Should be placed before the typename in a typedef, with the parameter
    including the keyword `return` to substitute for the return value.
 */
-#ifndef OSVR_RETURN_SUCCESS_CONDITION
-#define OSVR_RETURN_SUCCESS_CONDITION(X)
+#ifndef KALMANFRAMEWORK_RETURN_SUCCESS_CONDITION
+#define KALMANFRAMEWORK_RETURN_SUCCESS_CONDITION(X)
 #endif
 
 /* End of annotation group. */

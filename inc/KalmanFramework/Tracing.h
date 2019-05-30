@@ -39,7 +39,7 @@ namespace osvr {
 namespace common {
     namespace tracing {
         typedef std::int64_t TraceBeginStamp;
-#ifdef OSVR_COMMON_TRACING_ENABLED
+#ifdef KALMANFRAMEWORK_COMMON_TRACING_ENABLED
         struct KALMANFRAMEWORK_EXPORT MainTracePolicy {
             static TraceBeginStamp begin(const char *text);
             static void end(const char *text, TraceBeginStamp stamp);
@@ -77,7 +77,7 @@ namespace common {
                                       std::string const &string) {
             Policy::mark((fixedString + string).c_str());
         }
-#else  // OSVR_COMMON_TRACING_ENABLED ^^ // vv !OSVR_COMMON_TRACING_ENABLED
+#else  // KALMANFRAMEWORK_COMMON_TRACING_ENABLED ^^ // vv !KALMANFRAMEWORK_COMMON_TRACING_ENABLED
         struct MainTracePolicy {
             static TraceBeginStamp begin(const char *) { return 0; }
             static void end(const char *, TraceBeginStamp) {}
@@ -100,7 +100,7 @@ namespace common {
         inline void driverUpdateEnd(TraceBeginStamp) {}
         template <typename Policy>
         inline void markConcatenation(const char *, std::string const &) {}
-#endif // !OSVR_COMMON_TRACING_ENABLED
+#endif // !KALMANFRAMEWORK_COMMON_TRACING_ENABLED
 
         // -- Common code between dummy implementation and real implementation
 

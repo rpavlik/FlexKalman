@@ -94,7 +94,7 @@ namespace vbtracker {
                         /// initialized already.
                         m_patternLength = d.patterns[i].size();
                         if (!silent) {
-                            OSVR_DEV_VERBOSE("Determined that patterns are "
+                            KALMANFRAMEWORK_DEV_VERBOSE("Determined that patterns are "
                                              << m_patternLength
                                              << " bits long.");
                         }
