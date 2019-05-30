@@ -38,7 +38,7 @@
 /* Standard includes */
 /* none */
 
-OSVR_EXTERN_C_BEGIN
+KALMANFRAMEWORK_EXTERN_C_BEGIN
 
 /** @addtogroup UtilMath
     @{
@@ -52,11 +52,11 @@ typedef struct OSVR_Vec3 {
 
 #define OSVR_VEC_MEMBER(COMPONENT, INDEX)                                      \
     /** @brief Accessor for Vec3 component COMPONENT */                        \
-    OSVR_INLINE double osvrVec3Get##COMPONENT(OSVR_Vec3 const *v) {            \
+    KALMANFRAMEWORK_INLINE double osvrVec3Get##COMPONENT(OSVR_Vec3 const *v) {            \
         return v->data[INDEX];                                                 \
     }                                                                          \
     /** @brief Setter for Vec3 component COMPONENT */                          \
-    OSVR_INLINE void osvrVec3Set##COMPONENT(OSVR_Vec3 *v, double val) {        \
+    KALMANFRAMEWORK_INLINE void osvrVec3Set##COMPONENT(OSVR_Vec3 *v, double val) {        \
         v->data[INDEX] = val;                                                  \
     }
 
@@ -67,7 +67,7 @@ OSVR_VEC_MEMBER(Z, 2)
 #undef OSVR_VEC_MEMBER
 
 /** @brief Set a Vec3 to the zero vector */
-OSVR_INLINE void osvrVec3Zero(OSVR_Vec3 *v) {
+KALMANFRAMEWORK_INLINE void osvrVec3Zero(OSVR_Vec3 *v) {
     osvrVec3SetX(v, 0);
     osvrVec3SetY(v, 0);
     osvrVec3SetZ(v, 0);
@@ -75,7 +75,7 @@ OSVR_INLINE void osvrVec3Zero(OSVR_Vec3 *v) {
 
 /** @} */
 
-OSVR_EXTERN_C_END
+KALMANFRAMEWORK_EXTERN_C_END
 
 #ifdef __cplusplus
 template <typename StreamType>

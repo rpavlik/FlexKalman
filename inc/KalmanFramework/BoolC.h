@@ -40,7 +40,7 @@
 /* Standard includes */
 /* none */
 
-OSVR_EXTERN_C_BEGIN
+KALMANFRAMEWORK_EXTERN_C_BEGIN
 /** @addtogroup Util
 @{
 */
@@ -54,6 +54,6 @@ typedef uint8_t OSVR_CBool;
 #define OSVR_FALSE (0)
 
 /** @} */
-OSVR_EXTERN_C_END
+KALMANFRAMEWORK_EXTERN_C_END
 
 #endif

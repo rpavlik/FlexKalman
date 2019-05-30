@@ -3,7 +3,7 @@
    sophisticated, just enough to keep the hand-written stuff from taking over
    main().
 
-   Define OSVR_HAVE_BOOST before including if you want to be able to use the
+   Define KALMANFRAMEWORK_HAVE_BOOST before including if you want to be able to use the
    case-insensitive comparisons, etc.
 
     @date 2016
@@ -34,7 +34,7 @@
 // - none
 
 // Library/third-party includes
-#if defined(OSVR_HAVE_BOOST) || defined(BOOST_VERSION)
+#if defined(KALMANFRAMEWORK_HAVE_BOOST) || defined(BOOST_VERSION)
 #include <boost/algorithm/string/predicate.hpp> // for argument handling
 #endif
 
@@ -76,14 +76,14 @@ namespace util {
                     return (std::forward<T>(a) == b);
                 }
             };
-#ifdef OSVR_HAVE_BOOST
+#ifdef KALMANFRAMEWORK_HAVE_BOOST
             struct CaseInsensitiveComparisonPolicy {
                 template <typename T>
                 static bool apply(T &&a, std::string const &b) {
                     return boost::iequals(b, std::forward<T>(a));
                 }
             };
-#endif // OSVR_HAVE_BOOST
+#endif // KALMANFRAMEWORK_HAVE_BOOST
 
             template <typename ComparisonPolicy, typename SequenceType>
             inline bool generic_handle_has_switch(ArgList &c,
@@ -94,7 +94,7 @@ namespace util {
             }
         } // namespace detail
 
-#ifdef OSVR_HAVE_BOOST
+#ifdef KALMANFRAMEWORK_HAVE_BOOST
         /// Takes a "sequence" to compare (case-insensitive using
         /// `boost::iequals()`) with every arg.
         ///
@@ -107,7 +107,7 @@ namespace util {
                 detail::CaseInsensitiveComparisonPolicy>(
                 c, std::forward<SequenceType>(argSwitch));
         }
-#endif // OSVR_HAVE_BOOST
+#endif // KALMANFRAMEWORK_HAVE_BOOST
 
         /// Takes a "sequence" (something with operator== with std::string) to
         /// compare (case-sensitive) with every arg.
@@ -208,7 +208,7 @@ namespace util {
                 detail::StringEqualityComparisonPolicy>(c, argSwitches);
         }
 
-#ifdef OSVR_HAVE_BOOST
+#ifdef KALMANFRAMEWORK_HAVE_BOOST
         /// Takes a "sequence" to compare (case-insensitive using
         /// `boost::iequals()`) with every arg.
         /// Takes a list of  "sequences" to compare (case-insensitive using
@@ -223,7 +223,7 @@ namespace util {
             return detail::generic_handle_has_any_switch_of<
                 detail::CaseInsensitiveComparisonPolicy>(c, argSwitches);
         }
-#endif // OSVR_HAVE_BOOST
+#endif // KALMANFRAMEWORK_HAVE_BOOST
     }  // namespace args
 } // namespace util
 } // namespace osvr

@@ -97,7 +97,7 @@ namespace kalman {
             // VariedProcessModelStability/1.AbsolutePoseMeasurementXlate111,
             // where TypeParam =
             // osvr::kalman::PoseDampedConstantVelocityProcessModel
-            OSVR_KALMAN_DEBUG_OUTPUT(
+            KALMANFRAMEWORK_KALMAN_DEBUG_OUTPUT(
                 "error covariance scale",
                 (types::SquareMatrix<n>::Identity() - PHt * denom.solve(H)));
             types::SquareMatrix<n> newP =

@@ -46,7 +46,7 @@
 /* Standard includes */
 /* none */
 
-OSVR_EXTERN_C_BEGIN
+KALMANFRAMEWORK_EXTERN_C_BEGIN
 
 /** @addtogroup ClientKit
     @{
@@ -377,6 +377,6 @@ typedef struct OSVR_SkeletonReport {
 /** @} */
 
 /** @} */
-OSVR_EXTERN_C_END
+KALMANFRAMEWORK_EXTERN_C_END
 
 #endif

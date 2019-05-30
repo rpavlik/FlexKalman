@@ -41,18 +41,18 @@
 
 #include <sal.h>
 
-#define OSVR_IN _In_
-#define OSVR_IN_PTR _In_
-#define OSVR_IN_OPT _In_opt_
-#define OSVR_IN_STRZ _In_z_
-#define OSVR_IN_READS(NUM_ELEMENTS) _In_reads_(NUM_ELEMENTS)
+#define KALMANFRAMEWORK_IN _In_
+#define KALMANFRAMEWORK_IN_PTR _In_
+#define KALMANFRAMEWORK_IN_OPT _In_opt_
+#define KALMANFRAMEWORK_IN_STRZ _In_z_
+#define KALMANFRAMEWORK_IN_READS(NUM_ELEMENTS) _In_reads_(NUM_ELEMENTS)
 
-#define OSVR_OUT _Out_
-#define OSVR_OUT_PTR _Outptr_
-#define OSVR_OUT_OPT _Out_opt_
+#define KALMANFRAMEWORK_OUT _Out_
+#define KALMANFRAMEWORK_OUT_PTR _Outptr_
+#define KALMANFRAMEWORK_OUT_OPT _Out_opt_
 
-#define OSVR_INOUT _Inout_
-#define OSVR_INOUT_PTR _Inout_
+#define KALMANFRAMEWORK_INOUT _Inout_
+#define KALMANFRAMEWORK_INOUT_PTR _Inout_
 
 #define OSVR_RETURN_WARN_UNUSED _Must_inspect_result_
 #define OSVR_RETURN_SUCCESS_CONDITION(X) _Return_type_success_(X)
@@ -93,89 +93,89 @@ as well as any methods handling a buffer with a length.
    match!)
    @{
 */
-/** @def OSVR_IN
+/** @def KALMANFRAMEWORK_IN
     @brief Indicates a required function parameter that serves only as input.
 */
-#ifndef OSVR_IN
-#define OSVR_IN
+#ifndef KALMANFRAMEWORK_IN
+#define KALMANFRAMEWORK_IN
 #endif
 
-/** @def OSVR_IN_PTR
+/** @def KALMANFRAMEWORK_IN_PTR
     @brief Indicates a required pointer (non-null) function parameter that
     serves only as input.
 */
-#ifndef OSVR_IN_PTR
-#define OSVR_IN_PTR
+#ifndef KALMANFRAMEWORK_IN_PTR
+#define KALMANFRAMEWORK_IN_PTR
 #endif
 
-/** @def OSVR_IN_OPT
+/** @def KALMANFRAMEWORK_IN_OPT
     @brief Indicates a function parameter (pointer) that serves only as input,
    but is optional and might be NULL.
 */
-#ifndef OSVR_IN_OPT
-#define OSVR_IN_OPT
+#ifndef KALMANFRAMEWORK_IN_OPT
+#define KALMANFRAMEWORK_IN_OPT
 #endif
 
-/** @def OSVR_IN_STRZ
+/** @def KALMANFRAMEWORK_IN_STRZ
     @brief Indicates a null-terminated string function parameter that serves
    only as input.
 */
-#ifndef OSVR_IN_STRZ
-#define OSVR_IN_STRZ
+#ifndef KALMANFRAMEWORK_IN_STRZ
+#define KALMANFRAMEWORK_IN_STRZ
 #endif
 
-/** @def OSVR_IN_READS(NUM_ELEMENTS)
+/** @def KALMANFRAMEWORK_IN_READS(NUM_ELEMENTS)
     @brief Indicates a buffer containing input with the specified number of
    elements.
 
     The specified number of elements is typically the name of another parameter.
 */
-#ifndef OSVR_IN_READS
-#define OSVR_IN_READS(NUM_ELEMENTS)
+#ifndef KALMANFRAMEWORK_IN_READS
+#define KALMANFRAMEWORK_IN_READS(NUM_ELEMENTS)
 #endif
 
-/** @def OSVR_OUT
+/** @def KALMANFRAMEWORK_OUT
     @brief Indicates a required function parameter that serves only as output.
     In C code, since this usually means "pointer", you probably want
-   OSVR_OUT_PTR instead.
+   KALMANFRAMEWORK_OUT_PTR instead.
 */
-#ifndef OSVR_OUT
-#define OSVR_OUT
+#ifndef KALMANFRAMEWORK_OUT
+#define KALMANFRAMEWORK_OUT
 #endif
 
-/** @def OSVR_OUT_PTR
+/** @def KALMANFRAMEWORK_OUT_PTR
     @brief Indicates a required pointer (non-null) function parameter that
     serves only as output.
 */
-#ifndef OSVR_OUT_PTR
-#define OSVR_OUT_PTR
+#ifndef KALMANFRAMEWORK_OUT_PTR
+#define KALMANFRAMEWORK_OUT_PTR
 #endif
 
-/** @def OSVR_OUT_OPT
+/** @def KALMANFRAMEWORK_OUT_OPT
     @brief Indicates a function parameter (pointer) that serves only as output,
    but is optional and might be NULL
 */
-#ifndef OSVR_OUT_OPT
-#define OSVR_OUT_OPT
+#ifndef KALMANFRAMEWORK_OUT_OPT
+#define KALMANFRAMEWORK_OUT_OPT
 #endif
 
-/** @def OSVR_INOUT
+/** @def KALMANFRAMEWORK_INOUT
     @brief Indicates a required function parameter that is both read and written
    to.
 
     In C code, since this usually means "pointer", you probably want
-   OSVR_INOUT_PTR instead.
+   KALMANFRAMEWORK_INOUT_PTR instead.
 */
-#ifndef OSVR_INOUT
-#define OSVR_INOUT
+#ifndef KALMANFRAMEWORK_INOUT
+#define KALMANFRAMEWORK_INOUT
 #endif
 
-/** @def OSVR_INOUT_PTR
+/** @def KALMANFRAMEWORK_INOUT_PTR
     @brief Indicates a required pointer (non-null) function parameter that is
     both read and written to.
 */
-#ifndef OSVR_INOUT_PTR
-#define OSVR_INOUT_PTR
+#ifndef KALMANFRAMEWORK_INOUT_PTR
+#define KALMANFRAMEWORK_INOUT_PTR
 #endif
 
 /* End of parameter annotations. */

@@ -40,18 +40,18 @@ namespace util {
     namespace detail {
         template <std::size_t bytes, bool isSigned> struct sized_int;
 /// Set up specializations for the standard int types.
-#define OSVR_INT_TRAITS(BITS)                                                  \
+#define KALMANFRAMEWORK_INT_TRAITS(BITS)                                                  \
     template <> struct sized_int<sizeof(std::int##BITS##_t), true> {           \
         using type = std::int##BITS##_t;                                       \
     };                                                                         \
     template <> struct sized_int<sizeof(std::uint##BITS##_t), false> {         \
         using type = std::uint##BITS##_t;                                      \
     }
-        OSVR_INT_TRAITS(8);
-        OSVR_INT_TRAITS(16);
-        OSVR_INT_TRAITS(32);
-        OSVR_INT_TRAITS(64);
-#undef OSVR_INT_TRAITS
+        KALMANFRAMEWORK_INT_TRAITS(8);
+        KALMANFRAMEWORK_INT_TRAITS(16);
+        KALMANFRAMEWORK_INT_TRAITS(32);
+        KALMANFRAMEWORK_INT_TRAITS(64);
+#undef KALMANFRAMEWORK_INT_TRAITS
         /// Maximum size with a valid specialization.
         static const auto MAX_SIZE = sizeof(std::uint64_t);
 

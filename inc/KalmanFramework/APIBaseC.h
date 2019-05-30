@@ -30,20 +30,20 @@
 #define INCLUDED_APIBaseC_h_GUID_C5A2E769_2ADC_429E_D250_DF0883E6E5DB
 
 #ifdef __cplusplus
-#define OSVR_C_ONLY(X)
-#define OSVR_CPP_ONLY(X) X
-#define OSVR_EXTERN_C_BEGIN extern "C" {
-#define OSVR_EXTERN_C_END }
-#define OSVR_INLINE inline
+#define KALMANFRAMEWORK_C_ONLY(X)
+#define KALMANFRAMEWORK_CPP_ONLY(X) X
+#define KALMANFRAMEWORK_EXTERN_C_BEGIN extern "C" {
+#define KALMANFRAMEWORK_EXTERN_C_END }
+#define KALMANFRAMEWORK_INLINE inline
 #else
-#define OSVR_C_ONLY(X) X
-#define OSVR_CPP_ONLY(X)
-#define OSVR_EXTERN_C_BEGIN
-#define OSVR_EXTERN_C_END
+#define KALMANFRAMEWORK_C_ONLY(X) X
+#define KALMANFRAMEWORK_CPP_ONLY(X)
+#define KALMANFRAMEWORK_EXTERN_C_BEGIN
+#define KALMANFRAMEWORK_EXTERN_C_END
 #ifdef _MSC_VER
-#define OSVR_INLINE static __inline
+#define KALMANFRAMEWORK_INLINE static __inline
 #else
-#define OSVR_INLINE static inline
+#define KALMANFRAMEWORK_INLINE static inline
 #endif
 #endif
 

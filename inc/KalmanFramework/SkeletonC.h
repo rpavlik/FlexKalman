@@ -34,11 +34,11 @@
 /* Standard includes */
 /* none */
 
-OSVR_EXTERN_C_BEGIN
+KALMANFRAMEWORK_EXTERN_C_BEGIN
 
 /** @brief Opaque type of a skeleton configuration. */
 typedef struct OSVR_SkeletonObject *OSVR_Skeleton;
 
-OSVR_EXTERN_C_END
+KALMANFRAMEWORK_EXTERN_C_END
 
 #endif // INCLUDED_SkeletonC_h_GUID_0ED703E0_E838_4099_95A5_288FA779BF66

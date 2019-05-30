@@ -28,7 +28,7 @@
 
 #if 0 // warning suppressions no longer needed with currently-used Eigen version
 #ifdef _MSC_VER
-#define OSVR_MSVC_WARNINGS_PUSHED
+#define KALMANFRAMEWORK_MSVC_WARNINGS_PUSHED
 #pragma warning(push)
 #pragma warning(disable : 4127)
 #endif
@@ -51,8 +51,8 @@
 #pragma GCC diagnostic pop
 #endif
 
-#ifdef OSVR_MSVC_WARNINGS_PUSHED
-#undef OSVR_MSVC_WARNINGS_PUSHED
+#ifdef KALMANFRAMEWORK_MSVC_WARNINGS_PUSHED
+#undef KALMANFRAMEWORK_MSVC_WARNINGS_PUSHED
 #pragma warning(pop)
 #endif
 

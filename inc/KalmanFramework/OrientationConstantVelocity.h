@@ -95,7 +95,7 @@ namespace kalman {
         /// Returns a 6-element vector containing a predicted state based on a
         /// constant velocity process model.
         StateVector computeEstimate(State &state, double dt) const {
-            OSVR_KALMAN_DEBUG_OUTPUT("Time change", dt);
+            KALMANFRAMEWORK_KALMAN_DEBUG_OUTPUT("Time change", dt);
             StateVector ret = orient_externalized_rotation::applyVelocity(
                 state.stateVector(), dt);
             return ret;

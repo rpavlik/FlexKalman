@@ -29,7 +29,7 @@
 #define INCLUDED_Verbosity_h_GUID_92D43527_D3AC_4BB4_FA39_91252412C1EE
 
 #define OSVR_TRACE(...) do {} while (0)
-#define OSVR_DEBUG(...) do {} while (0)
+#define KALMANFRAMEWORK_DEBUG(...) do {} while (0)
 #define OSVR_DEV_VERBOSE(...) do {} while (0)
 
 #endif // INCLUDED_Verbosity_h_GUID_92D43527_D3AC_4BB4_FA39_91252412C1EE

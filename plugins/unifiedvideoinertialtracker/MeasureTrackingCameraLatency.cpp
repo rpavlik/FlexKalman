@@ -21,7 +21,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-#define OSVR_HAVE_BOOST
+#define KALMANFRAMEWORK_HAVE_BOOST
 
 // Internal Includes
 #include "ImageSources/ImageSource.h"

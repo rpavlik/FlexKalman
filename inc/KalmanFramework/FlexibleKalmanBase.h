@@ -34,8 +34,8 @@
 // Standard includes
 #include <type_traits>
 
-#ifndef OSVR_KALMAN_DEBUG_OUTPUT
-#define OSVR_KALMAN_DEBUG_OUTPUT(Name, Value)
+#ifndef KALMANFRAMEWORK_KALMAN_DEBUG_OUTPUT
+#define KALMANFRAMEWORK_KALMAN_DEBUG_OUTPUT(Name, Value)
 #endif
 
 namespace osvr {
@@ -136,13 +136,13 @@ namespace kalman {
                            ProcessModelType &processModel, double dt) {
         types::DimSquareMatrix<StateType> A =
             processModel.getStateTransitionMatrix(state, dt);
-        // OSVR_KALMAN_DEBUG_OUTPUT("State transition matrix", A);
+        // KALMANFRAMEWORK_KALMAN_DEBUG_OUTPUT("State transition matrix", A);
         types::DimSquareMatrix<StateType> P = state.errorCovariance();
         /// @todo Determine if the fact that Q is (at least in one case)
         /// symmetrical implies anything else useful performance-wise here or
         /// later in the data flow.
         // auto Q = processModel.getSampledProcessNoiseCovariance(dt);
-        OSVR_KALMAN_DEBUG_OUTPUT(
+        KALMANFRAMEWORK_KALMAN_DEBUG_OUTPUT(
             "Process Noise Covariance Q",
             processModel.getSampledProcessNoiseCovariance(dt));
         return A * P * A.transpose() +

@@ -41,10 +41,10 @@ namespace kalman {
     template <typename StateType, typename ProcessModelType>
     void predict(StateType &state, ProcessModelType &processModel, double dt) {
         processModel.predictState(state, dt);
-        OSVR_KALMAN_DEBUG_OUTPUT("Predicted state",
+        KALMANFRAMEWORK_KALMAN_DEBUG_OUTPUT("Predicted state",
                                  state.stateVector().transpose());
 
-        OSVR_KALMAN_DEBUG_OUTPUT("Predicted error covariance",
+        KALMANFRAMEWORK_KALMAN_DEBUG_OUTPUT("Predicted error covariance",
                                  state.errorCovariance());
     }
 

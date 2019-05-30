@@ -31,11 +31,11 @@
 // Standard includes
 #include <ratio>
 
-#if defined(OSVR_HAVE_STRUCT_TIMEVAL_IN_SYS_TIME_H)
+#if defined(KALMANFRAMEWORK_HAVE_STRUCT_TIMEVAL_IN_SYS_TIME_H)
 #include <sys/time.h>
 typedef time_t tv_seconds_type;
 typedef suseconds_t tv_microseconds_type;
-#elif defined(OSVR_HAVE_STRUCT_TIMEVAL_IN_WINSOCK2_H)
+#elif defined(KALMANFRAMEWORK_HAVE_STRUCT_TIMEVAL_IN_WINSOCK2_H)
 //#include <winsock2.h>
 typedef long tv_seconds_type;
 typedef long tv_microseconds_type;
@@ -43,7 +43,7 @@ typedef long tv_microseconds_type;
 
 #define OSVR_USEC_PER_SEC std::micro::den;
 
-void osvrTimeValueNormalize(OSVR_INOUT_PTR OSVR_TimeValue *tv) {
+void osvrTimeValueNormalize(KALMANFRAMEWORK_INOUT_PTR OSVR_TimeValue *tv) {
     if (!tv) {
         return;
     }
@@ -62,8 +62,8 @@ void osvrTimeValueNormalize(OSVR_INOUT_PTR OSVR_TimeValue *tv) {
     }
 }
 
-void osvrTimeValueSum(OSVR_INOUT_PTR OSVR_TimeValue *tvA,
-                      OSVR_IN_PTR const OSVR_TimeValue *tvB) {
+void osvrTimeValueSum(KALMANFRAMEWORK_INOUT_PTR OSVR_TimeValue *tvA,
+                      KALMANFRAMEWORK_IN_PTR const OSVR_TimeValue *tvB) {
     if (!tvA || !tvB) {
         return;
     }
@@ -72,8 +72,8 @@ void osvrTimeValueSum(OSVR_INOUT_PTR OSVR_TimeValue *tvA,
     osvrTimeValueNormalize(tvA);
 }
 
-void osvrTimeValueDifference(OSVR_INOUT_PTR OSVR_TimeValue *tvA,
-                             OSVR_IN_PTR const OSVR_TimeValue *tvB) {
+void osvrTimeValueDifference(KALMANFRAMEWORK_INOUT_PTR OSVR_TimeValue *tvA,
+                             KALMANFRAMEWORK_IN_PTR const OSVR_TimeValue *tvB) {
     if (!tvA || !tvB) {
         return;
     }
@@ -86,8 +86,8 @@ template <typename T> inline int numcmp(T a, T b) {
     return (a == b) ? 0 : (a < b ? -1 : 1);
 }
 
-int osvrTimeValueCmp(OSVR_IN_PTR const OSVR_TimeValue *tvA,
-                     OSVR_IN_PTR const OSVR_TimeValue *tvB) {
+int osvrTimeValueCmp(KALMANFRAMEWORK_IN_PTR const OSVR_TimeValue *tvA,
+                     KALMANFRAMEWORK_IN_PTR const OSVR_TimeValue *tvB) {
     if (!tvA || !tvB) {
         return 0;
     }
@@ -95,16 +95,16 @@ int osvrTimeValueCmp(OSVR_IN_PTR const OSVR_TimeValue *tvA,
     return (major != 0) ? major : numcmp(tvA->microseconds, tvB->microseconds);
 }
 
-#ifdef OSVR_HAVE_STRUCT_TIMEVAL
+#ifdef KALMANFRAMEWORK_HAVE_STRUCT_TIMEVAL
 
-void osvrTimeValueGetNow(OSVR_INOUT_PTR OSVR_TimeValue *dest) {
+void osvrTimeValueGetNow(KALMANFRAMEWORK_INOUT_PTR OSVR_TimeValue *dest) {
     timeval tv;
     gettimeofday(&tv, nullptr);
     osvrStructTimevalToTimeValue(dest, &tv);
 }
 
-void osvrTimeValueToStructTimeval(OSVR_OUT timeval *dest,
-                                  OSVR_IN_PTR const OSVR_TimeValue *src) {
+void osvrTimeValueToStructTimeval(KALMANFRAMEWORK_OUT timeval *dest,
+                                  KALMANFRAMEWORK_IN_PTR const OSVR_TimeValue *src) {
     if (!dest || !src) {
         return;
     }
@@ -112,8 +112,8 @@ void osvrTimeValueToStructTimeval(OSVR_OUT timeval *dest,
     dest->tv_usec = tv_microseconds_type(src->microseconds);
 }
 
-void osvrStructTimevalToTimeValue(OSVR_OUT OSVR_TimeValue *dest,
-                                  OSVR_IN_PTR const timeval *src) {
+void osvrStructTimevalToTimeValue(KALMANFRAMEWORK_OUT OSVR_TimeValue *dest,
+                                  KALMANFRAMEWORK_IN_PTR const timeval *src) {
     if (!dest || !src) {
         return;
     }

@@ -39,7 +39,7 @@
 /* Standard includes */
 /* none */
 
-OSVR_EXTERN_C_BEGIN
+KALMANFRAMEWORK_EXTERN_C_BEGIN
 
 /** @addtogroup PluginKit
 @{
@@ -52,6 +52,6 @@ typedef uint32_t OSVR_ChannelCount;
 
 /** @} */
 
-OSVR_EXTERN_C_END
+KALMANFRAMEWORK_EXTERN_C_END
 
 #endif
