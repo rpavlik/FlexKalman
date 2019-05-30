@@ -1,3 +1,8 @@
+
+if(WIN32)
+    add_subdirectory(DirectShowCameraLib)
+endif()
+
 # ls *.cpp *.h | sort | sed  -e 's/^/"${CMAKE_CURRENT_SOURCE_DIR}\//' -e 's/$/"/'
 set(KALMANFRAMEWORK_VIDEOTRACKERSHARED_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}"
     CACHE INTERNAL "" FORCE)

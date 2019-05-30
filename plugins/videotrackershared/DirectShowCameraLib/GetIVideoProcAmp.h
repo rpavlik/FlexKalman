@@ -41,9 +41,9 @@
 // Standard includes
 #include <iostream>
 
-#include <strmif.h>
-#include <vidcap.h>  // for IKsTopologyInfo
 #include <ksmedia.h> // for KSNODETYPE_VIDEO_PROCESSING
+#include <strmif.h>
+#include <vidcap.h> // for IKsTopologyInfo
 
 inline comutils::Ptr<IVideoProcAmp> getIVideoProcAmp(IBaseFilter &filter) {
     auto ret = comutils::Ptr<IVideoProcAmp>{};

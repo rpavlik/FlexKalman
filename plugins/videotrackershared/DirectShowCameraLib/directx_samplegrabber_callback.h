@@ -32,8 +32,8 @@
 // - none
 
 // Standard includes
-#include <dshow.h>
 #include "qedit_wrapper.h"
+#include <dshow.h>
 
 // This class is used to handle callbacks from the SampleGrabber filter.  It
 // grabs each sample and holds onto it until the camera server that is

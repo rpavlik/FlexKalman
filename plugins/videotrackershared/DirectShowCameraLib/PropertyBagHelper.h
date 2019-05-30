@@ -30,8 +30,8 @@
 #include "comutils/ComVariant.h"
 
 // Library/third-party includes
-#include <ObjIdl.h> // for IMonkider
 #include <OAIdl.h>  // for IPropertyBag, IID_IPropertyBag
+#include <ObjIdl.h> // for IMonkider
 
 // Standard includes
 #include <string>

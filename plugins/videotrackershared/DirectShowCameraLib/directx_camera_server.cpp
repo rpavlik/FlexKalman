@@ -104,8 +104,9 @@ bool directx_camera_server::read_one_frame(unsigned minX, unsigned maxX,
             return false;
         }
         if ((hr != S_OK) && (hr != S_FALSE)) {
-            fprintf(stderr, "directx_camera_server::read_one_frame(): Can't "
-                            "run filter graph, got %#010x\n",
+            fprintf(stderr,
+                    "directx_camera_server::read_one_frame(): Can't "
+                    "run filter graph, got %#010x\n",
                     static_cast<uint32_t>(hr));
             _status = false;
             return false;
@@ -483,18 +484,19 @@ bool directx_camera_server::open_moniker_and_finish_setup(
 
         // Make the call to actually set the video type to what we want.
         if (pStreamConfig->SetFormat(&mt) != S_OK) {
-            fprintf(stderr, "directx_camera_server::open_and_find_parameters():"
-                            " Can't set resolution to %dx%d using uncompressed "
-                            "24-bit video\n",
+            fprintf(stderr,
+                    "directx_camera_server::open_and_find_parameters():"
+                    " Can't set resolution to %dx%d using uncompressed "
+                    "24-bit video\n",
                     pVideoHeader->bmiHeader.biWidth,
                     pVideoHeader->bmiHeader.biHeight);
             return false;
         }
     }
 
-//-------------------------------------------------------------------
-// Create a null renderer that will be used to discard the video frames
-// on the output pin of the sample grabber
+    //-------------------------------------------------------------------
+    // Create a null renderer that will be used to discard the video frames
+    // on the output pin of the sample grabber
 
 #ifdef DEBUG
     printf("directx_camera_server::open_and_find_parameters(): Before "

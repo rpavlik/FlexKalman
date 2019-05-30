@@ -33,8 +33,8 @@
 // - none
 
 // Standard includes
-#include <stdio.h> // For NULL
 #include <math.h>  // For floor()
+#include <stdio.h> // For NULL
 #include <string>
 #include <vector>
 

@@ -30,9 +30,9 @@
 // - none
 
 // Standard includes
-#include <stdexcept>
-#include <dshow.h>
 #include "qedit_wrapper.h"
+#include <dshow.h>
+#include <stdexcept>
 
 extern "C" const CLSID CLSID_SampleGrabber;
 struct SampleGrabberWrapper::Impl {
