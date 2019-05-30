@@ -34,7 +34,7 @@
 
 // Library/third-party includes
 #include <boost/assert.hpp>
-#include <osvr/Util/EigenExtras.h>
+#include <osvr/Kalman/EigenExtras.h>
 #include <osvr/Util/ExtractYaw.h>
 
 #ifdef OSVR_UVBI_DUMP_CALIB_LOG

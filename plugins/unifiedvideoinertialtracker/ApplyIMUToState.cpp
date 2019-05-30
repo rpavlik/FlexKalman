@@ -34,8 +34,8 @@
 #include <osvr/Kalman/AbsoluteOrientationMeasurement.h>
 #include <osvr/Kalman/AngularVelocityMeasurement.h>
 #include <osvr/Kalman/FlexibleKalmanFilter.h>
-#include <osvr/Util/EigenExtras.h>
-#include <osvr/Util/EigenQuatExponentialMap.h>
+#include <osvr/Kalman/EigenExtras.h>
+#include <osvr/Kalman/EigenQuatExponentialMap.h>
 #include <util/Stride.h>
 
 // Standard includes

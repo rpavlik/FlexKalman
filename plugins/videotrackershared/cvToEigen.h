@@ -32,7 +32,7 @@
 #include <opencv2/calib3d/calib3d.hpp>
 #include <opencv2/core/core.hpp>
 #include <opencv2/core/eigen.hpp>
-#include <osvr/Util/EigenCoreGeometry.h>
+#include <osvr/Kalman/EigenCoreGeometry.h>
 
 // Standard includes
 // - none

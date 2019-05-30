@@ -23,7 +23,7 @@
 // limitations under the License.
 
 #include <iostream>
-#include <osvr/Util/EigenCoreGeometry.h>
+#include <osvr/Kalman/EigenCoreGeometry.h>
 #include <util/Stride.h>
 static ::util::Stride debugStride{401};
 

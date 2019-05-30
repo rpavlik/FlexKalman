@@ -35,7 +35,7 @@
 // Library/third-party includes
 #include <boost/noncopyable.hpp>
 #include <opencv2/core/core.hpp>
-#include <osvr/Util/EigenCoreGeometry.h>
+#include <osvr/Kalman/EigenCoreGeometry.h>
 #include <osvr/Util/TimeValue.h>
 
 // Standard includes

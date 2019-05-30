@@ -27,9 +27,9 @@
 #include "AngVelTools.h"
 
 // Library/third-party includes
-#include <osvr/Util/EigenCoreGeometry.h>
+#include <osvr/Kalman/EigenCoreGeometry.h>
 #include <osvr/Util/EigenInterop.h>
-#include <osvr/Util/EigenQuatExponentialMap.h>
+#include <osvr/Kalman/EigenQuatExponentialMap.h>
 #include <osvr/Util/TimeValueChrono.h>
 
 // Standard includes

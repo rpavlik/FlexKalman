@@ -33,7 +33,7 @@
 #include <TrackedBodyTarget.h>
 
 // Library/third-party includes
-#include <osvr/Util/EigenCoreGeometry.h>
+#include <osvr/Kalman/EigenCoreGeometry.h>
 #include <osvr/Util/EigenFilters.h>
 
 // Standard includes

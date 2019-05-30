@@ -32,7 +32,7 @@
 #include "CameraParameters.h"
 
 // Library/third-party includes
-#include <osvr/Util/EigenCoreGeometry.h>
+#include <osvr/Kalman/EigenCoreGeometry.h>
 #include <osvr/Util/TimeValue.h>
 #include <osvr/Util/TypeSafeIdHash.h>
 #include <opencv2/core/core.hpp>

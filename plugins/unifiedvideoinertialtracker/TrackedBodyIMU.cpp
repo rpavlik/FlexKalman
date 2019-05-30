@@ -27,7 +27,7 @@
 #include "AngVelTools.h"
 #include "TrackedBody.h"
 #include "TrackingSystem.h"
-#include <osvr/Util/EigenExtras.h>
+#include <osvr/Kalman/EigenExtras.h>
 
 // Library/third-party includes
 #include <boost/assert.hpp>

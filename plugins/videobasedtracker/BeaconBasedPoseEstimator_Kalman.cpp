@@ -24,7 +24,7 @@
 // limitations under the License.
 
 #include <iostream>
-#include <osvr/Util/EigenCoreGeometry.h>
+#include <osvr/Kalman/EigenCoreGeometry.h>
 #if 0
 template <typename T>
 inline void dumpKalmanDebugOuput(const char name[], const char expr[],

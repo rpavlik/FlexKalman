@@ -31,7 +31,7 @@
 // Library/third-party includes
 #include <boost/assert.hpp>
 #include <osvr/Util/Angles.h>
-#include <osvr/Util/EigenCoreGeometry.h>
+#include <osvr/Kalman/EigenCoreGeometry.h>
 
 // Standard includes
 #include <array>

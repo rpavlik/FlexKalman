@@ -9,7 +9,6 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 ###
 # Package Options
 ###
-find_package(osvr REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(JsonCpp REQUIRED)
 
@@ -55,8 +54,8 @@ endif()
 # vendored dependencies
 add_subdirectory(vendor)
 
-# Core libraries
-#add_subdirectory(src/osvr)
+# Core library
+add_subdirectory(src/KalmanFramework)
 
 add_subdirectory(plugins)
 if(BUILD_TESTING)
