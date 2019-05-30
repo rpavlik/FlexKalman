@@ -38,13 +38,13 @@
 /// @todo Remove when we no longer assume a single camera or monotonic camera
 /// timestamps, and the build will break in a few places
 /// where known "gotchas" exist
-#define OSVR_UVBI_ASSUME_SINGLE_CAMERA 1
+#define UVBI_ASSUME_SINGLE_CAMERA 1
 /// @todo Remove when we no longer assume that IMU reports arrive before video
 /// reports with same timestamps.
-#define OSVR_UVBI_ASSUME_CAMERA_ALWAYS_SLOWER 1
+#define UVBI_ASSUME_CAMERA_ALWAYS_SLOWER 1
 /// @todo Remove when we no longer assume a single IMU in the whole system.
-#define OSVR_UVBI_ASSUME_SINGLE_IMU 1
+#define UVBI_ASSUME_SINGLE_IMU 1
 /// @todo Remove when we no longer assume a single optical target per body.
-#define OSVR_UVBI_ASSUME_SINGLE_TARGET_PER_BODY 1
+#define UVBI_ASSUME_SINGLE_TARGET_PER_BODY 1
 
 #endif // INCLUDED_Assumptions_h_GUID_62FEFDEF_D66D_4B98_2DD6_3DC8E5847652

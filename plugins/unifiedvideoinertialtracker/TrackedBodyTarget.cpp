@@ -46,15 +46,15 @@
 #include <fstream>
 #include <iostream>
 
-#undef OSVR_DEBUG_ERROR_VARIANCE_WHEN_TRACKING_LOST
-#undef OSVR_DEBUG_ERROR_VARIANCE
+#undef UVBI_DEBUG_ERROR_VARIANCE_WHEN_TRACKING_LOST
+#undef UVBI_DEBUG_ERROR_VARIANCE
 
-#undef OSVR_UVBI_FRAMEDROP_HEURISTIC_WARNING
+#undef UVBI_FRAMEDROP_HEURISTIC_WARNING
 
-#define OSVR_VERBOSE_ERROR_BOUNDS
+#define UVBI_VERBOSE_ERROR_BOUNDS
 
 /// make blobs.csv for determining variance.
-#undef OSVR_UVBI_DUMP_BLOB_CSV
+#undef UVBI_DUMP_BLOB_CSV
 
 namespace osvr {
 namespace vbtracker {
@@ -147,10 +147,10 @@ namespace vbtracker {
                                     params.softResetOrientationVariance),
               permitKalman(params.permitKalman), softResets(params.softResets)
 
-#ifdef OSVR_UVBI_DUMP_BLOB_CSV
+#ifdef UVBI_DUMP_BLOB_CSV
               ,
               blobFile("blobs.csv"), csv(blobFile)
-#endif // OSVR_UVBI_DUMP_BLOB_CSV
+#endif // UVBI_DUMP_BLOB_CSV
         {
         }
         BodyTargetInterface bodyInterface;
@@ -181,10 +181,10 @@ namespace vbtracker {
         std::size_t trackingResets = 0;
         std::ostringstream outputSink;
 
-#ifdef OSVR_UVBI_DUMP_BLOB_CSV
+#ifdef UVBI_DUMP_BLOB_CSV
         std::ofstream blobFile;
         util::StreamCSV csv;
-#endif // OSVR_UVBI_DUMP_BLOB_CSV
+#endif // UVBI_DUMP_BLOB_CSV
     };
 
     inline BeaconStateVec createBeaconStateVec(ConfigParams const &params,
@@ -251,7 +251,7 @@ namespace vbtracker {
         /// Create the beacon debug data
         m_beaconDebugData.resize(m_beacons.size());
 
-#ifdef OSVR_UVBI_DUMP_BLOB_CSV
+#ifdef UVBI_DUMP_BLOB_CSV
         {
             /// Pre-generate all the known beacon ID columns so they are in
             /// order and so we can start streaming the CSV right away.
@@ -265,7 +265,7 @@ namespace vbtracker {
             }
             m_impl->csv.startOutput();
         }
-#endif // OSVR_UVBI_DUMP_BLOB_CSV
+#endif // UVBI_DUMP_BLOB_CSV
         {
             /// Create the LED identifier
             std::unique_ptr<OsvrHdkLedIdentifier> identifier(
@@ -410,7 +410,7 @@ namespace vbtracker {
         /// ones before we pass it to an estimator.
         updateUsableLeds();
 
-#ifdef OSVR_UVBI_DUMP_BLOB_CSV
+#ifdef UVBI_DUMP_BLOB_CSV
         {
             static bool first = true;
             if (first) {
@@ -429,9 +429,9 @@ namespace vbtracker {
                     << util::cell(prefix + "bright", led->isBright());
             }
         }
-#endif // OSVR_UVBI_DUMP_BLOB_CSV
+#endif // UVBI_DUMP_BLOB_CSV
 
-#ifdef OSVR_UVBI_FRAMEDROP_HEURISTIC_WARNING
+#ifdef UVBI_FRAMEDROP_HEURISTIC_WARNING
         if (usableLeds().empty() && prevUsableLedCount > 3 &&
             assignment.numCompletedMatches() > prevUsableLedCount / 2) {
             // if we don't have any usable LEDs, last time we had more than 3
@@ -478,7 +478,7 @@ namespace vbtracker {
                                    m_impl->trackingState)) {
         case TargetHealthState::StopTrackingErrorBoundsExceeded: {
             msg() << "In flight reset - error bounds exceeded...";
-#ifdef OSVR_VERBOSE_ERROR_BOUNDS
+#ifdef UVBI_VERBOSE_ERROR_BOUNDS
             auto maxPositionalError =
                 getMaxPositionalErrorVariance(getBody().getState());
             auto distance = getBody().getState().position().z();
@@ -573,7 +573,7 @@ namespace vbtracker {
 
 /// End of main estimation dispatch
 
-#ifdef OSVR_DEBUG_ERROR_VARIANCE
+#ifdef UVBI_DEBUG_ERROR_VARIANCE
 
         static ::util::Stride varianceStride(101);
         if (++varianceStride) {
@@ -598,7 +598,7 @@ namespace vbtracker {
             // Get one frame pass on the Kalman health check.
             break;
         case TargetTrackingState::Kalman: {
-#ifndef OSVR_RANSACKALMAN
+#ifndef UVBI_RANSACKALMAN
             auto health = m_impl->kalmanEstimator.getTrackingHealth();
             switch (health) {
             case SCAATKalmanPoseEstimator::TrackingHealth::NeedsHardResetNow:
@@ -607,7 +607,7 @@ namespace vbtracker {
                 break;
             case SCAATKalmanPoseEstimator::TrackingHealth::
                 SoftResetWhenBeaconsSeen:
-#ifdef OSVR_DEBUG_ERROR_VARIANCE_WHEN_TRACKING_LOST
+#ifdef UVBI_DEBUG_ERROR_VARIANCE_WHEN_TRACKING_LOST
                 msg() << "Max positional error variance: "
                       << getMaxPositionalErrorVariance(getBody().getState())
                       << std::endl;
@@ -704,11 +704,11 @@ namespace vbtracker {
 
     void TrackedBodyTarget::enterRANSACMode() {
 
-#ifndef OSVR_UVBI_ASSUME_SINGLE_TARGET_PER_BODY
+#ifndef UVBI_ASSUME_SINGLE_TARGET_PER_BODY
 #error                                                                         \
     "We may not be able/willing to run right over the body velocity just because this target lost its fix"
 #endif
-#ifdef OSVR_DEBUG_ERROR_VARIANCE_WHEN_TRACKING_LOST
+#ifdef UVBI_DEBUG_ERROR_VARIANCE_WHEN_TRACKING_LOST
         msg() << "Max positional error variance: "
               << getMaxPositionalErrorVariance(getBody().getState())
               << std::endl;

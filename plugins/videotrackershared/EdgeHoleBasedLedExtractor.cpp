@@ -27,12 +27,12 @@
 #include "OptionalStream.h"
 #include "cvUtils.h"
 
-#ifdef OSVR_USE_REALTIME_LAPLACIAN
+#ifdef UVBI_USE_REALTIME_LAPLACIAN
 #include "RealtimeLaplacian.h"
 #endif
 
 // Library/third-party includes
-#ifdef OSVR_UVBI_CORE
+#ifdef UVBI_CORE
 /// Only trace when building the uvbi-core library.
 #include <KalmanFramework/Tracing.h>
 #endif
@@ -57,7 +57,7 @@ namespace vbtracker {
     EdgeHoleBasedLedExtractor::EdgeHoleBasedLedExtractor(
         EdgeHoleParams const &extractorParams)
         : extParams_(extractorParams)
-#ifdef OSVR_USE_REALTIME_LAPLACIAN
+#ifdef UVBI_USE_REALTIME_LAPLACIAN
           ,
           laplacianImpl_(new RealtimeLaplacian(EDGE_DETECT_DEST_DEPTH,
                                                extParams_.laplacianKSize,
@@ -68,12 +68,12 @@ namespace vbtracker {
         compressionArtifactRemovalKernel_ =
             cv::Mat::ones(cv::Size(3, 3), CV_8U) *
             static_cast<std::uint8_t>(extractorParams.erosionKernelValue);
-#ifdef OSVR_OPENCV_2
+#ifdef UVBI_OPENCV_2
         compressionArtifactRemoval_ = cv::createMorphologyFilter(
             cv::MORPH_ERODE, CV_8U, compressionArtifactRemovalKernel_);
 #endif
     }
-#ifdef OSVR_UVBI_CORE
+#ifdef UVBI_CORE
     namespace tracing = ::osvr::common::tracing;
     class BlobExtraction
         : public tracing::TracingRegion<tracing::MainTracePolicy> {
@@ -89,7 +89,7 @@ namespace vbtracker {
                bool verboseBlobOutput) {
         reset();
 
-#ifdef OSVR_UVBI_CORE
+#ifdef UVBI_CORE
         BlobExtraction trace;
 #endif
 
@@ -118,7 +118,7 @@ namespace vbtracker {
                                   extParams_.preEdgeDetectionBlurSize),
                          0, 0);
 
-#ifdef OSVR_USE_REALTIME_LAPLACIAN
+#ifdef UVBI_USE_REALTIME_LAPLACIAN
         /// Edge detection: re-apply our partially prepared laplacian to this
         /// frame now.
         laplacianImpl_->apply(blurred_, edge_);
@@ -130,7 +130,7 @@ namespace vbtracker {
 
         /// removal of mjpeg artifacts.
         if (extParams_.edgeDetectErosion) {
-#ifdef OSVR_OPENCV_2
+#ifdef UVBI_OPENCV_2
             compressionArtifactRemoval_->apply(edge_, edge_);
 #else
             cv::erode(edge_, edge_, compressionArtifactRemovalKernel_);
@@ -179,7 +179,7 @@ namespace vbtracker {
 
         auto data = getBlobDataFromContour(contour);
         auto debugStream = [&] {
-#ifdef OSVR_DEBUG_CONTOUR_CONDITIONS
+#ifdef UVBI_DEBUG_CONTOUR_CONDITIONS
             return outputIf(std::cout, true);
 #else
             return outputIf(std::cout, verbose_);

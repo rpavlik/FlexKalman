@@ -36,7 +36,7 @@ inline void dumpKalmanDebugOuput(const char name[], const char expr[],
                   << "]:\n" << value << std::endl;
     }
 }
-#define OSVR_KALMAN_DEBUG_OUTPUT(Name, Value)                                  \
+#define UVBI_KALMAN_DEBUG_OUTPUT(Name, Value)                                  \
     dumpKalmanDebugOuput(Name, #Value, Value)
 #endif
 
@@ -62,11 +62,11 @@ inline void dumpKalmanDebugOuput(const char name[], const char expr[],
 #include <iterator> // back_inserter
 #include <random>
 
-#undef OSVR_DEBUG_VELOCITY
-#undef OSVR_VARIANCE_PENALTY_FOR_FIXED_BEACONS
-#undef OSVR_CHECK_BOUNDING_BOXES
-#undef OSVR_TRY_LIMITING_ANGULAR_VELOCITY_CHANGE
-#undef OSVR_DEBUG_EMISSION_DIRECTION
+#undef UVBI_DEBUG_VELOCITY
+#undef UVBI_VARIANCE_PENALTY_FOR_FIXED_BEACONS
+#undef UVBI_CHECK_BOUNDING_BOXES
+#undef UVBI_TRY_LIMITING_ANGULAR_VELOCITY_CHANGE
+#undef UVBI_DEBUG_EMISSION_DIRECTION
 
 namespace osvr {
 namespace vbtracker {
@@ -231,7 +231,7 @@ namespace vbtracker {
             /// if it's meant to have some
             if (p.beaconFixed[index]) {
                 beaconProcess.setNoiseAutocorrelation(0);
-#ifdef OSVR_VARIANCE_PENALTY_FOR_FIXED_BEACONS
+#ifdef UVBI_VARIANCE_PENALTY_FOR_FIXED_BEACONS
                 /// Add a bit of variance to the fixed ones, since the lack of
                 /// beacon autocalib otherwise make them seem
                 /// super-authoritative.
@@ -335,7 +335,7 @@ namespace vbtracker {
                           << led.getOneBasedID().value() << std::endl;
                 continue;
             }
-#ifdef OSVR_TRY_LIMITING_ANGULAR_VELOCITY_CHANGE
+#ifdef UVBI_TRY_LIMITING_ANGULAR_VELOCITY_CHANGE
             /// this is the velocity correction:
             /// correction.stateCorrection.segment<3>(6)
             /// this is the angular velocity correction:
@@ -370,7 +370,7 @@ namespace vbtracker {
                 0.5 * p.state.errorCovariance().transpose();
             p.state.errorCovariance() = cov;
 
-#ifdef OSVR_DEBUG_VELOCITY
+#ifdef UVBI_DEBUG_VELOCITY
             {
                 static ::util::Stride s(77);
                 if (++s) {
@@ -488,7 +488,7 @@ namespace vbtracker {
                 // easily introduce substantial error.
                 double zComponent =
                     (rotate * cvToVector(p.beaconEmissionDirection[index])).z();
-#if OSVR_DEBUG_EMISSION_DIRECTION
+#if UVBI_DEBUG_EMISSION_DIRECTION
 
                 /// Beacon 32 is right on the front, should be facing nice and
                 /// forward.
@@ -554,7 +554,7 @@ namespace vbtracker {
                     return false;
                 }
 
-#ifdef OSVR_CHECK_BOUNDING_BOXES
+#ifdef UVBI_CHECK_BOUNDING_BOXES
                 /// @todo For right now, if we don't have a bounding box, we're
                 /// assuming it's square enough (and only testing for
                 /// non-squareness on those who actually do have bounding

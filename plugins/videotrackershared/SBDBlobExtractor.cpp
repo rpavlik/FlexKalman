@@ -37,7 +37,7 @@
 
 #include <iostream>
 
-#define OSVR_NEW_BLOB_CODE
+#define UVBI_NEW_BLOB_CODE
 
 namespace osvr {
 namespace vbtracker {

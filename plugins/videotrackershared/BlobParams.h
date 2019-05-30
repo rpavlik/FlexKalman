@@ -41,7 +41,7 @@ namespace vbtracker {
         /// Same meaning as the parameter to OpenCV's SimpleBlobDetector - in
         /// pixel units. May not be used (not used by the EdgeHoleExtractor)
         float minDistBetweenBlobs = 3.0f;
-#ifdef OSVR_USING_EDGE_HOLE_EXTRACTOR
+#ifdef UVBI_USING_EDGE_HOLE_EXTRACTOR
         /// Same meaning as the parameter to OpenCV's SimpleBlobDetector - in
         /// square pixel units. Edge hole extractor detects larger blobs, so the
         /// min area is correspondingly larger by default.

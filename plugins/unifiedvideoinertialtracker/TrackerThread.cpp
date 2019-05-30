@@ -41,7 +41,7 @@
 #include <iostream>
 #include <type_traits>
 
-#define OSVR_TRACKER_THREAD_WRAP_WITH_TRY
+#define UVBI_TRACKER_THREAD_WRAP_WITH_TRY
 
 namespace osvr {
 namespace vbtracker {
@@ -98,7 +98,7 @@ namespace vbtracker {
         msg() << "Tracker thread object entering its main execution loop."
               << std::endl;
 
-#ifdef OSVR_TRACKER_THREAD_WRAP_WITH_TRY
+#ifdef UVBI_TRACKER_THREAD_WRAP_WITH_TRY
         try {
 #endif
             bool keepGoing = true;
@@ -118,7 +118,7 @@ namespace vbtracker {
                           << std::endl;
                 }
             }
-#ifdef OSVR_TRACKER_THREAD_WRAP_WITH_TRY
+#ifdef UVBI_TRACKER_THREAD_WRAP_WITH_TRY
         } catch (std::exception const &e) {
             warn() << "Tracker thread object: exiting because of caught "
                       "exception: "
@@ -338,7 +338,7 @@ namespace vbtracker {
     }
 
     BodyReporting *TrackerThread::getCamPoseReporting() const {
-#ifdef OSVR_OUTPUT_CAMERA_POSE
+#ifdef UVBI_OUTPUT_CAMERA_POSE
         return m_reportingVec[m_numBodies + extra_outputs::outputCamIndex]
             .get();
 #else
@@ -347,7 +347,7 @@ namespace vbtracker {
     }
 
     BodyReporting *TrackerThread::getIMUReporting() const {
-#ifdef OSVR_OUTPUT_IMU
+#ifdef UVBI_OUTPUT_IMU
         return m_reportingVec[m_numBodies + extra_outputs::outputImuIndex]
             .get();
 #else
@@ -356,7 +356,7 @@ namespace vbtracker {
     }
 
     BodyReporting *TrackerThread::getIMUCamReporting() const {
-#ifdef OSVR_OUTPUT_IMU_CAM
+#ifdef UVBI_OUTPUT_IMU_CAM
         return m_reportingVec[m_numBodies + extra_outputs::outputImuCamIndex]
             .get();
 #else
@@ -366,7 +366,7 @@ namespace vbtracker {
 
     BodyReporting *TrackerThread::getHMDCamReporting() const {
 
-#ifdef OSVR_OUTPUT_HMD_CAM
+#ifdef UVBI_OUTPUT_HMD_CAM
         return m_reportingVec[m_numBodies + extra_outputs::outputHMDCamIndex]
             .get();
 #else
@@ -375,7 +375,7 @@ namespace vbtracker {
     }
 
     void TrackerThread::updateExtraCameraReport() {
-#ifndef OSVR_OUTPUT_CAMERA_POSE
+#ifndef UVBI_OUTPUT_CAMERA_POSE
         return;
 #endif
 
@@ -395,7 +395,7 @@ namespace vbtracker {
 
     void TrackerThread::updateExtraIMUReports() {
 
-#if !defined(OSVR_OUTPUT_IMU) && !defined(OSVR_OUTPUT_IMU_CAM)
+#if !defined(UVBI_OUTPUT_IMU) && !defined(UVBI_OUTPUT_IMU_CAM)
         // Not reporting these special reports, do nothing.
         return;
 #endif
@@ -410,7 +410,7 @@ namespace vbtracker {
         }
         Eigen::Quaterniond imuQuat = imu.getPoseEstimate();
 
-#ifdef OSVR_OUTPUT_IMU
+#ifdef UVBI_OUTPUT_IMU
         {
             BodyState state;
             state.setQuaternion(imuQuat);
@@ -418,7 +418,7 @@ namespace vbtracker {
         }
 #endif
 
-#ifdef OSVR_OUTPUT_IMU_CAM
+#ifdef UVBI_OUTPUT_IMU_CAM
 
         {
             BodyState state;
@@ -437,7 +437,7 @@ namespace vbtracker {
             auto bodyId = BodyId{i};
             auto &body = m_trackingSystem.getBody(bodyId);
             m_reportingVec[i]->initProcessModel(body.getProcessModel());
-#ifdef OSVR_OUTPUT_HMD_CAM
+#ifdef UVBI_OUTPUT_HMD_CAM
             if (bodyId == BodyId(0)) {
                 getHMDCamReporting()->initProcessModel(body.getProcessModel());
             }
@@ -493,7 +493,7 @@ namespace vbtracker {
         }
         for (auto const &bodyId : bodyIds) {
             updateReportingVector(bodyId);
-#ifdef OSVR_OUTPUT_HMD_CAM
+#ifdef UVBI_OUTPUT_HMD_CAM
             if (bodyId == BodyId(0)) {
                 auto &body = m_trackingSystem.getBody(bodyId);
                 getHMDCamReporting()->updateState(body.getStateTime(),

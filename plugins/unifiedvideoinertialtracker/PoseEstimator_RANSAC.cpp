@@ -42,7 +42,7 @@
 /// This was enabled/primarily useful to reduce jitter when RANSAC was the only
 /// tracking method, for culling a little tighter than the RANSAC PNP itself
 /// did.
-#undef OSVR_UVBI_TEST_RANSAC_REPROJECTION
+#undef UVBI_TEST_RANSAC_REPROJECTION
 
 static const float MAX_REPROJECTION_ERROR = 4.f;
 
@@ -146,7 +146,7 @@ namespace vbtracker {
 
         if (inlierIndices.rows > 0) {
 
-#ifdef OSVR_UVBI_TEST_RANSAC_REPROJECTION
+#ifdef UVBI_TEST_RANSAC_REPROJECTION
             //==========================================================================
             // Reproject the inliers into the image and make sure they are
             // actually

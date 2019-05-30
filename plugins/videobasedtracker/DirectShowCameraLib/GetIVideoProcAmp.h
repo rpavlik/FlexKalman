@@ -28,10 +28,10 @@
 #ifdef _MSC_VER
 /// Apparently no vidcap header in MinGW64 yet.
 /// @todo actually test for vidcap.h
-#define OSVR_HAVE_IVIDEOPROCAMP
+#define UVBI_HAVE_IVIDEOPROCAMP
 #endif
 
-#ifdef OSVR_HAVE_IVIDEOPROCAMP
+#ifdef UVBI_HAVE_IVIDEOPROCAMP
 // Internal Includes
 #include "comutils/ComPtr.h"
 
@@ -76,6 +76,6 @@ inline comutils::Ptr<IVideoProcAmp> getIVideoProcAmp(IBaseFilter &filter) {
     }
     return ret;
 }
-#endif // OSVR_HAVE_IVIDEOPROCAMP
+#endif // UVBI_HAVE_IVIDEOPROCAMP
 
 #endif // INCLUDED_GetIVideoProcAmp_h_GUID_F35BD30E_FB93_45BF_9957_8E7F69290E46

@@ -27,7 +27,7 @@
 
 /// @todo Disabled for now because in one testing/timing run with ETW, measured
 /// to increase average blob extraction time from 2.17ms to 2.53ms...
-#undef OSVR_USE_REALTIME_LAPLACIAN
+#undef UVBI_USE_REALTIME_LAPLACIAN
 
 // Internal Includes
 #include <BlobExtractor.h>
@@ -45,20 +45,20 @@
 #include <tuple>
 #include <vector>
 
-#if defined(OSVR_OPENCV_3PLUS) && defined(OSVR_USE_REALTIME_LAPLACIAN)
+#if defined(UVBI_OPENCV_3PLUS) && defined(UVBI_USE_REALTIME_LAPLACIAN)
 /// @todo Realtime Laplacian currently not ported to OpenCV 3+
-#undef OSVR_USE_REALTIME_LAPLACIAN
+#undef UVBI_USE_REALTIME_LAPLACIAN
 #endif
 
 /// @todo Can't enable this even though we now have a persistent thread, because
 /// we don't have a timing guarantee on the operations and it may actually be
 /// slower (as it was in initial testing for me on an Intel Core i7-4600)
-#undef OSVR_PERMIT_OPENCL
+#undef UVBI_PERMIT_OPENCL
 
-#if defined(OSVR_OPENCV_3PLUS) && defined(OSVR_PERMIT_OPENCL)
-#define OSVR_EDGEHOLE_UMAT 1
+#if defined(UVBI_OPENCV_3PLUS) && defined(UVBI_PERMIT_OPENCL)
+#define UVBI_EDGEHOLE_UMAT 1
 #else
-#define OSVR_EDGEHOLE_UMAT 0
+#define UVBI_EDGEHOLE_UMAT 0
 #endif
 
 namespace osvr {
@@ -69,7 +69,7 @@ namespace vbtracker {
     enum class RejectReason { Area, CenterPointValue, Circularity, Convexity };
     class EdgeHoleBasedLedExtractor {
       public:
-#if OSVR_EDGEHOLE_UMAT
+#if UVBI_EDGEHOLE_UMAT
         using MatType = cv::UMat;
         using ExternalMatGetterReturn = cv::Mat;
 #else
@@ -107,7 +107,7 @@ namespace vbtracker {
         RejectList const &getRejectList() const { return rejectList_; }
 
       private:
-#if OSVR_EDGEHOLE_UMAT
+#if UVBI_EDGEHOLE_UMAT
         static ExternalMatGetterReturn externalMatGetter(MatType const &input) {
             return input.getMat(cv::ACCESS_READ);
         }
@@ -154,11 +154,11 @@ namespace vbtracker {
         /// Erosion filter to remove spurious edges pointing out the camera gave
         /// us an mjpeg-compressed stream.
         cv::Mat compressionArtifactRemovalKernel_;
-#ifdef OSVR_OPENCV_2
+#ifdef UVBI_OPENCV_2
         cv::Ptr<cv::FilterEngine> compressionArtifactRemoval_;
 #endif
 
-#ifdef OSVR_USE_REALTIME_LAPLACIAN
+#ifdef UVBI_USE_REALTIME_LAPLACIAN
         std::unique_ptr<RealtimeLaplacian> laplacianImpl_;
 #endif
 

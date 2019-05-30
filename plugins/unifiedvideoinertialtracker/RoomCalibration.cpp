@@ -24,7 +24,7 @@
 
 /// Define to enable dumping to CSV the first several frames of tracked data to
 /// help analyze the progression of room calibration.
-#undef OSVR_UVBI_DUMP_CALIB_LOG
+#undef UVBI_DUMP_CALIB_LOG
 
 // Internal Includes
 #include "RoomCalibration.h"
@@ -37,7 +37,7 @@
 #include <KalmanFramework/EigenExtras.h>
 #include <KalmanFramework/ExtractYaw.h>
 
-#ifdef OSVR_UVBI_DUMP_CALIB_LOG
+#ifdef UVBI_DUMP_CALIB_LOG
 #include <KalmanFramework/CSV.h>
 #include <KalmanFramework/CSVCellGroup.h>
 #endif
@@ -46,7 +46,7 @@
 #include <iostream>
 #include <stdexcept>
 
-#ifdef OSVR_UVBI_DUMP_CALIB_LOG
+#ifdef UVBI_DUMP_CALIB_LOG
 #include <fstream>
 #endif
 
@@ -153,7 +153,7 @@ namespace vbtracker {
                 QuatDeriv::compute(prevRot, m_poseFilter.getOrientation(), dt));
         }
 
-#ifdef OSVR_UVBI_DUMP_CALIB_LOG
+#ifdef UVBI_DUMP_CALIB_LOG
         {
             static util::CSV csv;
             static bool output = false;
@@ -174,7 +174,7 @@ namespace vbtracker {
                 msg() << "Done writing calibration log data." << std::endl;
             }
         }
-#endif // OSVR_UVBI_DUMP_CALIB_LOG
+#endif // UVBI_DUMP_CALIB_LOG
 
         // std::cout << "linear " << linearVel << " ang " << angVel << "\n";
         if (m_linVel < LINEAR_VELOCITY_CUTOFF &&
@@ -247,7 +247,7 @@ namespace vbtracker {
                                          Eigen::Quaterniond const &quat) {
         if (haveIMUData() && m_imuBody != body) {
 // Already got data from a different IMU
-#ifdef OSVR_UVBI_ASSUME_SINGLE_IMU
+#ifdef UVBI_ASSUME_SINGLE_IMU
             throw std::logic_error(
                 "RoomCalibration just received data from a second IMU, but the "
                 "single IMU assumption define is still in "
@@ -405,7 +405,7 @@ namespace vbtracker {
             ++numIMUs;
         });
 
-#ifdef OSVR_UVBI_ASSUME_SINGLE_IMU
+#ifdef UVBI_ASSUME_SINGLE_IMU
         if (numIMUs > 1) {
             throw std::logic_error("More than one IMU system wide, but the "
                                    "single IMU assumption define is still in "

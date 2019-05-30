@@ -35,10 +35,10 @@
 #include <cstddef>
 
 // configuration section - define or undefine here.
-#define OSVR_OUTPUT_CAMERA_POSE
-#undef OSVR_OUTPUT_IMU
-#undef OSVR_OUTPUT_IMU_CAM
-#undef OSVR_OUTPUT_HMD_CAM
+#define UVBI_OUTPUT_CAMERA_POSE
+#undef UVBI_OUTPUT_IMU
+#undef UVBI_OUTPUT_IMU_CAM
+#undef UVBI_OUTPUT_HMD_CAM
 
 // Past this point, we consume those definitions.
 
@@ -48,7 +48,7 @@ namespace vbtracker {
         using IndexOffset = int;
         static const IndexOffset outputIndexBase = -1;
 
-#ifdef OSVR_OUTPUT_CAMERA_POSE
+#ifdef UVBI_OUTPUT_CAMERA_POSE
         static const bool outputCam = true;
         static const IndexOffset outputCamIndex = outputIndexBase + 1;
 #else
@@ -56,7 +56,7 @@ namespace vbtracker {
         static const IndexOffset outputCamIndex = outputIndexBase;
 #endif
 
-#ifdef OSVR_OUTPUT_IMU
+#ifdef UVBI_OUTPUT_IMU
         static const bool outputImu = true;
         static const IndexOffset outputImuIndex = outputCamIndex + 1;
 #else
@@ -64,7 +64,7 @@ namespace vbtracker {
         static const IndexOffset outputImuIndex = outputCamIndex;
 #endif
 
-#ifdef OSVR_OUTPUT_IMU_CAM
+#ifdef UVBI_OUTPUT_IMU_CAM
         static const bool outputImuCam = true;
         static const IndexOffset outputImuCamIndex = outputImuIndex + 1;
 #else
@@ -72,7 +72,7 @@ namespace vbtracker {
         static const IndexOffset outputImuCamIndex = outputImuIndex;
 #endif
 
-#ifdef OSVR_OUTPUT_HMD_CAM
+#ifdef UVBI_OUTPUT_HMD_CAM
         static const bool outputHMDCam = true;
         static const IndexOffset outputHMDCamIndex = outputImuCamIndex + 1;
 #else

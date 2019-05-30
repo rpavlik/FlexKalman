@@ -41,8 +41,8 @@
 // Standard includes
 // - none
 
-#undef OSVR_USE_OLD_MEASUREMENT_CLASS
-#define OSVR_USE_CODEGEN
+#undef UVBI_USE_OLD_MEASUREMENT_CLASS
+#define UVBI_USE_CODEGEN
 
 namespace osvr {
 
@@ -55,7 +55,7 @@ namespace kalman {
             static Eigen::Matrix3d
             getCommonSingleQJacobian(Eigen::Quaterniond const &innovationQuat) {
                 auto &q = innovationQuat;
-#ifdef OSVR_USE_CODEGEN
+#ifdef UVBI_USE_CODEGEN
                 /// pre-compute the manually-extracted subexpressions.
                 Eigen::Vector3d q2(q.vec().cwiseProduct(q.vec()));
                 auto q_vecnorm = std::sqrt(q2.sum());
@@ -612,7 +612,7 @@ namespace vbtracker {
                               util::Angle /*yawCorrection*/) {
         return roomToCameraRotation * imuQuat;
     }
-#ifdef OSVR_USE_OLD_MEASUREMENT_CLASS
+#ifdef UVBI_USE_OLD_MEASUREMENT_CLASS
     using OrientationMeasurement =
         kalman::AbsoluteOrientationMeasurement<BodyState>;
 #else
@@ -620,7 +620,7 @@ namespace vbtracker {
     template <typename PolicyT>
     using OrientationMeasurementUsingPolicy =
         kalman::IMUOrientationMeasurement<BodyState, PolicyT>;
-#endif // OSVR_USE_OLD_MEASUREMENT_CLASS
+#endif // UVBI_USE_OLD_MEASUREMENT_CLASS
 } // namespace vbtracker
 } // namespace osvr
 

@@ -35,7 +35,7 @@
 #include <memory>
 #include <sstream>
 
-#undef OSVR_ENABLE_RECORDING
+#undef UVBI_ENABLE_RECORDING
 
 /// @brief OpenCV's simple highgui module refers to windows by their name, so we
 /// make this global for a simpler demo.
@@ -123,7 +123,7 @@ int main(int argc, char *argv[]) {
     auto captures = std::size_t{0};
     FrameCounter counter;
 
-#ifdef OSVR_ENABLE_RECORDING
+#ifdef UVBI_ENABLE_RECORDING
     std::cout << "\nThis build is also video capture enabled: continuously "
                  "recording to "
               << VIDEO_FILENAME << std::endl;
@@ -142,7 +142,7 @@ int main(int argc, char *argv[]) {
     do {
         cam->retrieve(frame, grayFrame);
 
-#ifdef OSVR_ENABLE_RECORDING
+#ifdef UVBI_ENABLE_RECORDING
         outputVideo.write(frame);
 #endif
 

@@ -45,8 +45,8 @@
 #include <ratio>
 #include <stdexcept>
 
-#undef OSVR_UVBI_DISABLE_AUTOCALIB
-#undef OSVR_UVBI_DEBUG_EMISSION_DIRECTION
+#undef UVBI_DISABLE_AUTOCALIB
+#undef UVBI_DEBUG_EMISSION_DIRECTION
 #undef DEBUG_REAR_BEACON_TRANSFORM
 
 namespace osvr {
@@ -217,7 +217,7 @@ namespace vbtracker {
         auto silent = params.silent;
 
         std::unique_ptr<TrackingSystem> sys(new TrackingSystem(params));
-#ifdef OSVR_UVBI_DEBUG_EMISSION_DIRECTION
+#ifdef UVBI_DEBUG_EMISSION_DIRECTION
         {
             auto xform = getTransform<float>();
             std::cout << "Transform matrix:\n" << xform << std::endl;
@@ -312,7 +312,7 @@ namespace vbtracker {
                 numBeacons,
                 transformFromHDKData(EmissionDirectionVec(0, 0, -1)));
         }
-#ifdef OSVR_UVBI_DEBUG_EMISSION_DIRECTION
+#ifdef UVBI_DEBUG_EMISSION_DIRECTION
         for (auto &beaconOneBased : sampleBeacons) {
             std::cout << "Beacon ID " << beaconOneBased
                       << " emission direction "
@@ -321,7 +321,7 @@ namespace vbtracker {
         }
 #endif
 
-#ifdef OSVR_UVBI_DISABLE_AUTOCALIB
+#ifdef UVBI_DISABLE_AUTOCALIB
         for (decltype(numBeacons) i = 0; i < numBeacons; ++i) {
             /// mark everybody fixed for testing.
             data.markBeaconFixed(makeOneBased(ZeroBasedBeaconId(i)));

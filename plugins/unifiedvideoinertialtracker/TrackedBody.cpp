@@ -164,11 +164,11 @@ namespace vbtracker {
     void TrackedBody::replaceStateSnapshot(
         osvr::util::time::TimeValue const &origTime,
         osvr::util::time::TimeValue const &newTime, BodyState const &newState) {
-#if !(defined(OSVR_UVBI_ASSUME_SINGLE_CAMERA) &&                               \
-      defined(OSVR_UVBI_ASSUME_CAMERA_ALWAYS_SLOWER))
+#if !(defined(UVBI_ASSUME_SINGLE_CAMERA) &&                               \
+      defined(UVBI_ASSUME_CAMERA_ALWAYS_SLOWER))
 #error "Current code assumes that all we have to replay is IMU measurements."
-#endif // !(defined(OSVR_UVBI_ASSUME_SINGLE_CAMERA) &&
-        // defined(OSVR_UVBI_ASSUME_CAMERA_ALWAYS_SLOWER))
+#endif // !(defined(UVBI_ASSUME_SINGLE_CAMERA) &&
+        // defined(UVBI_ASSUME_CAMERA_ALWAYS_SLOWER))
 
         /// Clear off the state we're about to invalidate.
         auto numPopped = m_impl->stateHistory.pop_after(origTime);
