@@ -30,7 +30,7 @@
 // Library/third-party includes
 #include <opencv2/calib3d/calib3d.hpp>
 #include <opencv2/core/affine.hpp>
-#include <osvr/Kalman/EigenCoreGeometry.h>
+#include <KalmanFramework/EigenCoreGeometry.h>
 #include <osvr/Util/EigenInterop.h>
 
 // Standard includes

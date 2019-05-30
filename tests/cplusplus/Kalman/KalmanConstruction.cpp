@@ -23,8 +23,8 @@
 // limitations under the License.
 
 // Internal Includes
-#include <osvr/Kalman/FlexibleKalmanFilter.h>
-#include <osvr/Kalman/PoseConstantVelocity.h>
+#include <KalmanFramework/FlexibleKalmanFilter.h>
+#include <KalmanFramework/PoseConstantVelocity.h>
 
 // Library/third-party includes
 #include "gtest/gtest.h"

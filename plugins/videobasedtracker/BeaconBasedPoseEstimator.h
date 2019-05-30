@@ -33,9 +33,9 @@
 // Library/third-party includes
 #include <osvr/Util/TimeValue.h>
 #include <osvr/Util/ClientReportTypesC.h>
-#include <osvr/Kalman/PureVectorState.h>
-#include <osvr/Kalman/PoseState.h>
-#include <osvr/Kalman/PoseSeparatelyDampedConstantVelocity.h>
+#include <KalmanFramework/PureVectorState.h>
+#include <KalmanFramework/PoseState.h>
+#include <KalmanFramework/PoseSeparatelyDampedConstantVelocity.h>
 
 // Standard includes
 #include <vector>

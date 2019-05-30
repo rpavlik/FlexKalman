@@ -32,7 +32,7 @@
 #include "CannedIMUMeasurement.h"
 
 // Library/third-party includes
-#include <osvr/Kalman/EigenCoreGeometry.h>
+#include <KalmanFramework/EigenCoreGeometry.h>
 #include <osvr/Util/TimeValue.h>
 #include <boost/assert.hpp>
 

@@ -38,7 +38,7 @@ target_link_libraries(uvbi-image-sources PUBLIC
     opencv_videoio
     opencv_imgproc
     ${VIDEOTRACKER_EXTRA_LIBS}
-    osvr::osvrUtil)
+    KalmanFramework)
 if(WIN32)
     target_link_libraries(uvbi-image-sources PUBLIC
         directshow-camera

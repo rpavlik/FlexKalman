@@ -30,7 +30,7 @@
 
 // Library/third-party includes
 #include <osvr/Util/TimeValue.h>
-#include <osvr/Kalman/FlexibleKalmanBase.h>
+#include <KalmanFramework/FlexibleKalmanBase.h>
 
 // Standard includes
 #include <array>

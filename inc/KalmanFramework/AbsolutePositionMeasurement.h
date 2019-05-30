@@ -28,7 +28,7 @@
 // Internal Includes
 #include "FlexibleKalmanBase.h"
 #include "PoseState.h"
-#include <osvr/Util/EigenCoreGeometry.h>
+#include "EigenCoreGeometry.h"
 
 // Library/third-party includes
 // - none

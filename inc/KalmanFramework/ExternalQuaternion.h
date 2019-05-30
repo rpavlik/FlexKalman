@@ -29,7 +29,7 @@
 #include "FlexibleKalmanBase.h"
 
 // Library/third-party includes
-#include <osvr/Util/EigenQuatExponentialMap.h>
+#include "EigenQuatExponentialMap.h"
 
 // Standard includes
 #include <type_traits>

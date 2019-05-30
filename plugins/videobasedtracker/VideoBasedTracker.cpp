@@ -28,7 +28,7 @@
 #include <UndistortMeasurements.h>
 #include <cvToEigen.h>
 #include <osvr/Util/CSV.h>
-#include <osvr/Kalman/EigenCoreGeometry.h>
+#include <KalmanFramework/EigenCoreGeometry.h>
 
 // Library/third-party includes
 #include <opencv2/core/version.hpp>

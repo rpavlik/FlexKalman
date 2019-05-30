@@ -26,9 +26,9 @@
 #include "PoseEstimator_RANSACKalman.h"
 
 // Library/third-party includes
-#include <osvr/Kalman/AbsoluteOrientationMeasurement.h>
-#include <osvr/Kalman/AbsolutePositionMeasurement.h>
-#include <osvr/Kalman/FlexibleKalmanFilter.h>
+#include <KalmanFramework/AbsoluteOrientationMeasurement.h>
+#include <KalmanFramework/AbsolutePositionMeasurement.h>
+#include <KalmanFramework/FlexibleKalmanFilter.h>
 
 // Standard includes
 // - none

@@ -29,7 +29,7 @@
 // - none
 
 // Library/third-party includes
-#include <osvr/Kalman/EigenCoreGeometry.h>
+#include <KalmanFramework/EigenCoreGeometry.h>
 #include <opencv2/core/core.hpp>
 
 // Standard includes

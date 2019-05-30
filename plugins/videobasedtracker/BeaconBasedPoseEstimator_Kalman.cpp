@@ -24,7 +24,7 @@
 // limitations under the License.
 
 #include <iostream>
-#include <osvr/Kalman/EigenCoreGeometry.h>
+#include <KalmanFramework/EigenCoreGeometry.h>
 #if 0
 template <typename T>
 inline void dumpKalmanDebugOuput(const char name[], const char expr[],
@@ -40,10 +40,10 @@ inline void dumpKalmanDebugOuput(const char name[], const char expr[],
 #include "cvToEigen.h"
 
 // Library/third-party includes
-#include <osvr/Kalman/FlexibleKalmanFilter.h>
-#include <osvr/Kalman/AugmentedProcessModel.h>
-#include <osvr/Kalman/AugmentedState.h>
-#include <osvr/Kalman/ConstantProcess.h>
+#include <KalmanFramework/FlexibleKalmanFilter.h>
+#include <KalmanFramework/AugmentedProcessModel.h>
+#include <KalmanFramework/AugmentedState.h>
+#include <KalmanFramework/ConstantProcess.h>
 
 #include <osvr/Util/EigenInterop.h>
 

@@ -1,8 +1,8 @@
 set(VIDEOTRACKER_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../videobasedtracker")
 set(PROJ_FOLDER "OSVR Plugins/Unified Video-Inertial Tracker")
-osvr_convert_json(org_osvr_unifiedvideoinertial_json
-    org_osvr_unifiedvideoinertial.json
-    "${CMAKE_CURRENT_BINARY_DIR}/org_osvr_unifiedvideoinertial_json.h")
+# osvr_convert_json(org_osvr_unifiedvideoinertial_json
+#     org_osvr_unifiedvideoinertial.json
+#     "${CMAKE_CURRENT_BINARY_DIR}/org_osvr_unifiedvideoinertial_json.h")
 
 # Be able to find our generated header file, have shared files find us, and have us find shared files.
 include_directories("${CMAKE_CURRENT_BINARY_DIR}"
@@ -87,10 +87,8 @@ target_link_libraries(uvbi-core
     opencv_core
     opencv_imgproc
     opencv_videoio
-    osvr::osvrUtilCpp # for typedefs and boost headers
-    osvr::osvrKalman
+    KalmanFramework
     eigen-headers
-    osvr::osvrCommon # for tracing
     PRIVATE
     util-headers)
 set_target_properties(uvbi-core PROPERTIES
@@ -140,35 +138,35 @@ target_include_directories(uvbi-hdkdata
 set_target_properties(uvbi-hdkdata PROPERTIES
     FOLDER "${PROJ_FOLDER}")
 
-osvr_add_plugin(NAME org_osvr_unifiedvideoinertial
-    CPP # indicates we'd like to use the C++ wrapper
-    SOURCES
-    org_osvr_unifiedvideoinertial.cpp
-    "${CMAKE_CURRENT_BINARY_DIR}/org_osvr_unifiedvideoinertial_json.h"
-    AdditionalReports.h
-    ConfigurationParser.h
-    MakeHDKTrackingSystem.h
-    ImageProcessingThread.cpp
-    ImageProcessingThread.h
-    IMUMessage.h
-    ProcessIMUMessage.h
-    ThreadsafeBodyReporting.cpp
-    ThreadsafeBodyReporting.h
-    TrackerThread.cpp
-    TrackerThread.h
-    $<TARGET_OBJECTS:uvbi-hdkdata>
-    ${OSVR_VIDEOTRACKERSHARED_SOURCES_IO})
+# osvr_add_plugin(NAME org_osvr_unifiedvideoinertial
+#     CPP # indicates we'd like to use the C++ wrapper
+#     SOURCES
+#     org_osvr_unifiedvideoinertial.cpp
+#     "${CMAKE_CURRENT_BINARY_DIR}/org_osvr_unifiedvideoinertial_json.h"
+#     AdditionalReports.h
+#     ConfigurationParser.h
+#     MakeHDKTrackingSystem.h
+#     ImageProcessingThread.cpp
+#     ImageProcessingThread.h
+#     IMUMessage.h
+#     ProcessIMUMessage.h
+#     ThreadsafeBodyReporting.cpp
+#     ThreadsafeBodyReporting.h
+#     TrackerThread.cpp
+#     TrackerThread.h
+#     $<TARGET_OBJECTS:uvbi-hdkdata>
+#     ${OSVR_VIDEOTRACKERSHARED_SOURCES_IO})
 
-target_link_libraries(org_osvr_unifiedvideoinertial
-    osvr::osvrAnalysisPluginKit
-    uvbi-core
-    uvbi-image-sources
-    JsonCpp::JsonCpp
-    util-headers
-    folly-headers)
+# target_link_libraries(org_osvr_unifiedvideoinertial
+#     osvr::osvrAnalysisPluginKit
+#     uvbi-core
+#     uvbi-image-sources
+#     JsonCpp::JsonCpp
+#     util-headers
+#     folly-headers)
 
-set_target_properties(org_osvr_unifiedvideoinertial PROPERTIES
-    FOLDER "${PROJ_FOLDER}")
+# set_target_properties(org_osvr_unifiedvideoinertial PROPERTIES
+#     FOLDER "${PROJ_FOLDER}")
 
 
 if(BUILD_ADVANCED_DEV_TOOLS)

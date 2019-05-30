@@ -36,11 +36,11 @@ inline void dumpKalmanDebugOuput(const char name[], const char expr[],
 
 // Internal Includes
 #include "ContentsInvalid.h"
-#include <osvr/Kalman/FlexibleKalmanFilter.h>
-#include <osvr/Kalman/PoseConstantVelocity.h>
-#include <osvr/Kalman/PoseDampedConstantVelocity.h>
-#include <osvr/Kalman/AbsoluteOrientationMeasurement.h>
-#include <osvr/Kalman/AbsolutePositionMeasurement.h>
+#include <KalmanFramework/FlexibleKalmanFilter.h>
+#include <KalmanFramework/PoseConstantVelocity.h>
+#include <KalmanFramework/PoseDampedConstantVelocity.h>
+#include <KalmanFramework/AbsoluteOrientationMeasurement.h>
+#include <KalmanFramework/AbsolutePositionMeasurement.h>
 
 // Library/third-party includes
 #include "gtest/gtest.h"

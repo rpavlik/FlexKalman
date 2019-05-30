@@ -26,8 +26,8 @@
 #define INCLUDED_ContentsInvalid_h_GUID_E3C95D05_0BEF_4A9F_933A_35FD0B7D3745
 
 // Internal Includes
-#include <osvr/Kalman/FlexibleKalmanBase.h>
-#include <osvr/Kalman/PoseState.h>
+#include <KalmanFramework/FlexibleKalmanBase.h>
+#include <KalmanFramework/PoseState.h>
 
 // Library/third-party includes
 // - none

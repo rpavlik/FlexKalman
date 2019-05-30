@@ -26,7 +26,7 @@
 #define INCLUDED_FlexibleKalmanBase_h_GUID_E4CC84A0_1B4F_4389_95ED_9C37F5FEE95D
 
 // Internal Includes
-#include <osvr/Util/EigenCoreGeometry.h>
+#include "EigenCoreGeometry.h"
 
 // Library/third-party includes
 // - none

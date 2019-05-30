@@ -29,8 +29,8 @@
 #include "ExternalQuaternion.h"
 #include "FlexibleKalmanBase.h"
 #include "PoseState.h"
-#include <osvr/Util/EigenCoreGeometry.h>
-#include <osvr/Util/EigenQuatExponentialMap.h>
+#include "EigenCoreGeometry.h"
+#include "EigenQuatExponentialMap.h"
 
 // Library/third-party includes
 // - none

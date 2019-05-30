@@ -31,11 +31,11 @@
 #include "SpaceTransformations.h"
 
 // Library/third-party includes
-#include <osvr/Kalman/AbsoluteOrientationMeasurement.h>
-#include <osvr/Kalman/AngularVelocityMeasurement.h>
-#include <osvr/Kalman/FlexibleKalmanFilter.h>
-#include <osvr/Kalman/EigenExtras.h>
-#include <osvr/Kalman/EigenQuatExponentialMap.h>
+#include <KalmanFramework/AbsoluteOrientationMeasurement.h>
+#include <KalmanFramework/AngularVelocityMeasurement.h>
+#include <KalmanFramework/FlexibleKalmanFilter.h>
+#include <KalmanFramework/EigenExtras.h>
+#include <KalmanFramework/EigenQuatExponentialMap.h>
 #include <util/Stride.h>
 
 // Standard includes

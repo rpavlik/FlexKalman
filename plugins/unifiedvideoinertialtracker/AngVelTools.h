@@ -29,8 +29,8 @@
 // - none
 
 // Library/third-party includes
-#include <osvr/Kalman/EigenCoreGeometry.h>
-#include <osvr/Kalman/EigenQuatExponentialMap.h>
+#include <KalmanFramework/EigenCoreGeometry.h>
+#include <KalmanFramework/EigenQuatExponentialMap.h>
 
 // Standard includes
 #include <cmath>

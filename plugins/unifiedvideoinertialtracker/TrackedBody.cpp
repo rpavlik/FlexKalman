@@ -35,7 +35,7 @@
 
 // Library/third-party includes
 #include <boost/optional.hpp>
-#include <osvr/Kalman/FlexibleKalmanFilter.h>
+#include <KalmanFramework/FlexibleKalmanFilter.h>
 
 #include <util/Stride.h>
 

@@ -26,7 +26,7 @@
 #define INCLUDED_SigmaPointGenerator_h_GUID_1277DE61_21A1_42BD_0401_78E74169E598
 
 // Internal Includes
-#include <osvr/Kalman/FlexibleKalmanBase.h>
+#include <KalmanFramework/FlexibleKalmanBase.h>
 
 // Library/third-party includes
 #include <Eigen/Cholesky>
@@ -43,7 +43,7 @@ namespace kalman {
     }
     /// For further details on the scaling factors, refer to:
     /// Julier, S. J., & Uhlmann, J. K. (2004). Unscented filtering and
-    /// nonlinear estimation. Proceedings of the IEEE, 92(3), 401–422.
+    /// nonlinear estimation. Proceedings of the IEEE, 92(3), 401ï¿½422.
     /// http://doi.org/10.1109/JPROC.2003.823141
     /// Appendix V (for alpha), Appendix VI (for beta)
     struct SigmaPointParameters {

@@ -29,7 +29,7 @@
 // - none
 
 // Library/third-party includes
-#include <osvr/Util/EigenCoreGeometry.h>
+#include "EigenCoreGeometry.h"
 
 // Standard includes
 // - none

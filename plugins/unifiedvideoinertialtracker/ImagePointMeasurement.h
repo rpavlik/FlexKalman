@@ -27,10 +27,10 @@
 
 // Internal Includes
 #include "ProjectPoint.h"
-#include <osvr/Kalman/AugmentedState.h>
-#include <osvr/Kalman/FlexibleKalmanBase.h>
-#include <osvr/Kalman/PoseState.h>
-#include <osvr/Kalman/PureVectorState.h>
+#include <KalmanFramework/AugmentedState.h>
+#include <KalmanFramework/FlexibleKalmanBase.h>
+#include <KalmanFramework/PoseState.h>
+#include <KalmanFramework/PureVectorState.h>
 
 // Library/third-party includes
 // - none

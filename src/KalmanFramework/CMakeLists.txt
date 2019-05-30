@@ -1,4 +1,4 @@
-osvr_setup_lib_vars(Kalman)
+set(HEADER_LOCATION "${PROJECT_SOURCE_DIR}/inc/KalmanFramework")
 
 set(API
     "${HEADER_LOCATION}/AbsoluteOrientationMeasurement.h"
@@ -17,30 +17,36 @@ set(API
     "${HEADER_LOCATION}/PoseDampedConstantVelocity.h"
     "${HEADER_LOCATION}/PoseState.h"
     "${HEADER_LOCATION}/PureVectorState.h")
+list(APPEND API "${CMAKE_CURRENT_BINARY_DIR}/Export.h")
+source_group(API FILES ${API})
+set(SOURCES
+    TimeValueC.cpp)
 
-###
-# Add the dummy target to make the headers show up in IDEs
-add_custom_target(${LIBNAME_FULL}_Headers SOURCES ${API})
-set_target_properties(${LIBNAME_FULL}_Headers PROPERTIES
-    FOLDER "${LIB_FOLDER}")
-
-###
-# Add the interface target to actually use the files.
-add_library(${LIBNAME_FULL} INTERFACE)
-target_include_directories(${LIBNAME_FULL}
-    INTERFACE
-    $<BUILD_INTERFACE:${HEADER_BASE}>
+add_library(KalmanFramework STATIC ${API} ${SOURCES})
+target_include_directories(KalmanFramework
+    PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/..>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/inc>
     $<INSTALL_INTERFACE:include>)
-#target_link_libraries(${LIBNAME_FULL}
-#    INTERFACE
-#    $<BUILD_INTERFACE:osvr_cxx11_flags>)
+target_compile_features(KalmanFramework
+    PUBLIC
+    cxx_std_11)
 
+configure_file(Export.h.in
+    Export.h
+    @ONLY NEWLINE_STYLE LF)
+
+if(NOT BUILD_SHARED_LIBS)
+    target_compile_definitions(KalmanFramework PUBLIC KALMANFRAMEWORK_STATIC_DEFINE)
+endif()
 ###
 # Install things properly.
-install(TARGETS ${LIBNAME_FULL}
-    EXPORT osvrTargets
+install(TARGETS KalmanFramework
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT Runtime
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT Devel
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT Runtime
     INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 install(FILES ${API}
     DESTINATION
-    ${CMAKE_INSTALL_INCLUDEDIR}/osvr/${LIBNAME}
+    ${CMAKE_INSTALL_INCLUDEDIR}/KalmanFramework
     COMPONENT Devel)

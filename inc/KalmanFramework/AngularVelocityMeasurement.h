@@ -30,7 +30,7 @@
 #include "PoseState.h"
 #include "OrientationState.h"
 #include "ExternalQuaternion.h"
-#include <osvr/Util/EigenCoreGeometry.h>
+#include "EigenCoreGeometry.h"
 
 // Library/third-party includes
 // - none

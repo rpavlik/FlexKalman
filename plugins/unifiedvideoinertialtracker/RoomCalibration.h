@@ -30,7 +30,7 @@
 
 // Library/third-party includes
 #include <osvr/Util/Angles.h>
-#include <osvr/Kalman/EigenCoreGeometry.h>
+#include <KalmanFramework/EigenCoreGeometry.h>
 #include <osvr/Util/EigenFilters.h>
 #include <osvr/Util/TimeValue.h>
 

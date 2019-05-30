@@ -35,7 +35,7 @@
 
 // Library/third-party includes
 #include <boost/assert.hpp>
-#include <osvr/Kalman/PureVectorState.h>
+#include <KalmanFramework/PureVectorState.h>
 #include <osvr/Util/TimeValue.h>
 
 // Standard includes
