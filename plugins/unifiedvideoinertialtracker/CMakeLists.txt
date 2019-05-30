@@ -87,6 +87,8 @@ target_link_libraries(uvbi-core
     opencv_core
     opencv_imgproc
     opencv_videoio
+    opencv_calib3d
+    opencv_highgui
     KalmanFramework
     eigen-headers
     PRIVATE
@@ -105,6 +107,7 @@ set_target_properties(uvbi-view-camera PROPERTIES
 
 ###
 # Utility to measure capture latency of the IR camera, USB stack, etc.
+# Disabled due to lack of VRPN, used for serial communication
 ###
 # add_executable(uvbi-measure-camera-latency MeasureTrackingCameraLatency.cpp)
 # target_link_libraries(uvbi-measure-camera-latency PRIVATE uvbi-image-sources vendored-vrpn)
@@ -139,6 +142,7 @@ target_include_directories(uvbi-hdkdata
 set_target_properties(uvbi-hdkdata PROPERTIES
     FOLDER "${PROJ_FOLDER}")
 
+# Main plugin, disabled because you can't build an OSVR plugin without OSVR
 # osvr_add_plugin(NAME org_osvr_unifiedvideoinertial
 #     CPP # indicates we'd like to use the C++ wrapper
 #     SOURCES
@@ -166,11 +170,8 @@ set_target_properties(uvbi-hdkdata PROPERTIES
 #     util-headers
 #     folly-headers)
 
-# set_target_properties(org_osvr_unifiedvideoinertial PROPERTIES
-#     FOLDER "${PROJ_FOLDER}")
 
 
-if(BUILD_ADVANCED_DEV_TOOLS)
-    add_subdirectory(ParameterFinder)
-    add_subdirectory(OfflineProcessing)
-endif()
+add_subdirectory(ParameterFinder)
+add_subdirectory(OfflineProcessing)
+

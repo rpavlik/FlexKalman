@@ -12,5 +12,4 @@ set_target_properties(uvbi-offline-processing PROPERTIES
 target_link_libraries(uvbi-offline-processing
     PRIVATE
     uvbi-core
-    JsonCpp::JsonCpp
-    vendored-quatlib)
+    JsonCpp::JsonCpp)

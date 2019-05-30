@@ -31,7 +31,6 @@
 // Library/third-party includes
 #include <Eigen/Core>
 #include <Eigen/Geometry>
-#include <quat.h>
 
 // Standard includes
 // - none
@@ -41,32 +40,16 @@ namespace util {
     struct QuatAsEulerTag;
 
     inline Eigen::Vector3d getEuler(Eigen::Quaterniond const &q) {
-        /// Convert an Eigen quat to a Quatlib quat.
-        q_type quat;
-        quat[Q_W] = q.w();
-        quat[Q_X] = q.x();
-        quat[Q_Y] = q.y();
-        quat[Q_Z] = q.z();
         Eigen::Vector3d ret;
-        // Actually gets yaw, pitch, roll in that order - not just any Euler
-        // angles.
-        q_to_euler(ret.data(), quat);
-        // This method seems terribly unreliable.
-        // return q.toRotationMatrix().eulerAngles(2, 0, 2);
-        return ret;
+        // This method seems terribly unreliable, but we're using it because we lack quatlib.
+        return q.toRotationMatrix().eulerAngles(2, 0, 2);
     }
 
     template <typename T>
     inline void operator<<(CellGroupProxy<T, QuatAsEulerTag> &group,
                            Eigen::Vector3d const &euler) {
-#if 0
-        group << cell("rot.zprime", euler[0]) << cell("rot.xprime", euler[1])
-              << cell("rot.z", euler[2]);
-#else
         group << cell("yaw", euler[0]) << cell("pitch", euler[1])
               << cell("roll", euler[2]);
-
-#endif
     }
     template <typename T>
     inline void operator<<(CellGroupProxy<T, QuatAsEulerTag> &group,
