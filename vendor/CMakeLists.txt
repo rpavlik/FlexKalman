@@ -21,6 +21,8 @@ if(BUILD_TESTING)
     # Create an interface target to consume Catch
     add_library(vendored-catch INTERFACE)
     target_include_directories(vendored-catch INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/catch-single-header-1.5.8")
+
+    add_subdirectory(catch-single-header-2.8.0)
 endif()
 
 # Interface target for util headers

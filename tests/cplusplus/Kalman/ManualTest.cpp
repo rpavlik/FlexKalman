@@ -23,7 +23,7 @@
 // limitations under the License.
 
 #include <iostream>
-#include <osvr/Util/EigenCoreGeometry.h>
+#include <KalmanFramework/EigenCoreGeometry.h>
 template <typename T>
 inline void dumpKalmanDebugOuput(const char name[], const char expr[],
                                  T const &value) {
@@ -31,7 +31,7 @@ inline void dumpKalmanDebugOuput(const char name[], const char expr[],
               << value << std::endl;
 }
 
-#define OSVR_KALMAN_DEBUG_OUTPUT(Name, Value)                                  \
+#define KALMANFRAMEWORK_KALMAN_DEBUG_OUTPUT(Name, Value)                                  \
     dumpKalmanDebugOuput(Name, #Value, Value)
 
 // Internal Includes

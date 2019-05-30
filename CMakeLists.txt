@@ -59,5 +59,5 @@ add_subdirectory(src/KalmanFramework)
 
 add_subdirectory(plugins)
 if(BUILD_TESTING)
-    # add_subdirectory(tests)
+    add_subdirectory(tests)
 endif()
