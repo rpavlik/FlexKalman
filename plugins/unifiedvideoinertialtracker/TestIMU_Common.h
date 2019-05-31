@@ -9,6 +9,7 @@
 */
 
 // Copyright 2016 Sensics, Inc.
+// Copyright 2019 Collabora, Ltd.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -92,18 +93,6 @@ inline std::ostream &operator<<(std::ostream &os, Quaterniond const &q) {
     return os;
 }
 } // namespace Eigen
-
-// namespace Catch {
-// template <> struct TypelistTypeNameTrait<kalman::QFirst> {
-//     static const char *get() { return "kalman::QFirst"; }
-// };
-// template <> struct TypelistTypeNameTrait<kalman::QLast> {
-//     static const char *get() { return "kalman::QLast"; }
-// };
-// template <> struct TypelistTypeNameTrait<kalman::SplitQ> {
-//     static const char *get() { return "kalman::SplitQ"; }
-// };
-// } // namespace Catch
 
 static const double SMALL_VALUE = 0.1;
 

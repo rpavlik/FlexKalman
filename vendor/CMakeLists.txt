@@ -1,6 +1,6 @@
 
 if(BUILD_TESTING)
-    # WIll search for a system install first.
+    # Will search for a system install first.
     add_subdirectory(catch-single-header-2.8.0)
 endif()
 

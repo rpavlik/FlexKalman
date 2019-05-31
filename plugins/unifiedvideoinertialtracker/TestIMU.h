@@ -29,10 +29,6 @@
 /// messages.
 #define CATCH_CONFIG_CONSOLE_WIDTH 120
 
-// Library/third-party includes
 #include <catch2/catch.hpp>
-
-// Standard includes
-// - none
 
 #endif // INCLUDED_TestIMU_h_GUID_955733BE_EFEE_4C8E_6D9B_F1A8FDBC8F6C
