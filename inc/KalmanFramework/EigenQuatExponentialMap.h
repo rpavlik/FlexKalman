@@ -129,121 +129,14 @@ namespace util {
             // When the angle approaches zero, we compute the coefficient
             // differently, since it gets a bit like sinc in that we want it
             // continuous but 0 is undefined.
-            Scalar phiOverSin =
-                vecnorm < 1e-4 ? cscTaylorExpansion<Scalar>(phi)
-                               : (phi / std::sin(phi));
+            Scalar phiOverSin = vecnorm < 1e-4 ? cscTaylorExpansion<Scalar>(phi)
+                                               : (phi / std::sin(phi));
             return quat.vec() * phiOverSin;
         }
 
-        template <typename Derived> struct ScalarTrait;
-
-        template <typename Derived>
-        using ScalarType = typename ScalarTrait<Derived>::type;
-
-        template <typename Derived>
-        using QuatType = Eigen::Quaternion<ScalarType<Derived>>;
-
-        template <typename Derived>
-        using VecType = Eigen::Matrix<ScalarType<Derived>, 3, 1>;
-
-        /// CRTP base for quaternion exponential map
-        template <typename Derived_> class QuatExpMapBase {
-          public:
-            using Derived = Derived_;
-            QuatType<Derived> exp() const { return quat_exp(derived().vec()); }
-
-            Derived const &derived() const {
-                return *static_cast<Derived const *>(this);
-            }
-
-            VecType<Derived> avoidSingularities() const {
-                /// @todo assert Derived::AlwaysPureVec || derived().pureVec()
-                VecType<Derived> myVec = derived().vec();
-                static const double eps = 1.e-2;
-                ScalarType<Derived> vecNorm = myVec.norm();
-                if (vecNorm > M_PI - eps) {
-                    // Too close to the sphere of 2pi - replace with the
-                    // equivalent rotation.
-                    myVec *= ((1. - 2. * M_PI) / vecNorm);
-                }
-                return myVec;
-            }
-        };
-        // forward declaration
-        template <typename Scalar_> class VecWrapper;
-        // traits declaration
-        template <typename Scalar_> struct ScalarTrait<VecWrapper<Scalar_>> {
-            using type = Scalar_;
-        };
-
-        template <typename Scalar_>
-        class VecWrapper : public QuatExpMapBase<VecWrapper<Scalar_>> {
-          public:
-            using Scalar = Scalar_;
-            using VecType = Eigen::Matrix<Scalar, 3, 1>;
-            explicit VecWrapper(VecType const &vec) : m_vec(vec) {}
-
-            VecType const &vec() const { return m_vec; }
-
-            static const bool AlwaysPureVec = true;
-            static bool pureVec() { return true; }
-
-          private:
-            VecType const &m_vec;
-        };
-
-        // forward declaration
-        template <typename Scalar_> class QuatWrapper;
-        template <typename Scalar_> struct ScalarTrait<QuatWrapper<Scalar_>> {
-            using type = Scalar_;
-        };
-
-        /// Wrapper class for a quaternion to provide access to ln() in its
-        /// exponential-map meaning.
-        template <typename Scalar_>
-        class QuatWrapper : public QuatExpMapBase<QuatWrapper<Scalar_>> {
-          public:
-            using Scalar = Scalar_; // typename ScalarType<Derived>::type;
-            using QuatType = Eigen::Quaternion<Scalar>;
-            using LogVectorType = Eigen::Matrix<Scalar, 3, 1>;
-            using QuatCoefficients = typename QuatType::Coefficients;
-            using VecBlock = Eigen::VectorBlock<const QuatCoefficients, 3>;
-
-            explicit QuatWrapper(QuatType const &quat) : m_quat(quat) {}
-
-            /// Gets the log of the quat, in the exponential-map sense, as a 3d
-            /// vector.
-            LogVectorType ln() const { return quat_ln<Scalar>(m_quat); }
-
-            /// Access to just the vector part, in case we're actually trying to
-            /// exponentiate here.
-            VecBlock vec() const { return m_quat.vec(); }
-
-            static const bool AlwaysPureVec = false;
-            bool pureVec() const {
-                /// @todo floating point equality comparisons are bad
-                return m_quat.w() == 0;
-            }
-
-          private:
-            QuatType const &m_quat;
-        };
-
-        template <typename Scalar>
-        inline QuatWrapper<Scalar>
-        quat_exp_map(Eigen::Quaternion<Scalar> const &q) {
-            return QuatWrapper<Scalar>(q);
-        }
-
-        template <typename Scalar>
-        inline VecWrapper<Scalar>
-            quat_exp_map(Eigen::Matrix<Scalar, 3, 1> const &v) {
-            return VecWrapper<Scalar>(v);
-        }
     } // namespace ei_quat_exp_map
     using ei_quat_exp_map::quat_exp;
     using ei_quat_exp_map::quat_ln;
-    using ei_quat_exp_map::quat_exp_map;
 } // namespace util
 } // namespace osvr
 

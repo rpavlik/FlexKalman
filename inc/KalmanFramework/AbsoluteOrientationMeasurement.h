@@ -26,11 +26,11 @@
 #define INCLUDED_AbsoluteOrientationMeasurement_h_GUID_71285DD8_A6F1_47A8_4B2E_B10171C91248
 
 // Internal Includes
+#include "EigenCoreGeometry.h"
+#include "EigenQuatExponentialMap.h"
 #include "ExternalQuaternion.h"
 #include "FlexibleKalmanBase.h"
 #include "PoseState.h"
-#include "EigenCoreGeometry.h"
-#include "EigenQuatExponentialMap.h"
 
 // Library/third-party includes
 // - none
@@ -71,10 +71,9 @@ namespace kalman {
             // Two equivalent quaternions: but their logs are typically
             // different: one is the "short way" and the other is the "long
             // way". We'll compute both and pick the "short way".
-            MeasurementVector residual = util::quat_exp_map(residualq).ln();
+            MeasurementVector residual = util::quat_ln(residualq);
             MeasurementVector equivResidual =
-                util::quat_exp_map(Eigen::Quaterniond(-(residualq.coeffs())))
-                    .ln();
+                util::quat_ln(Eigen::Quaterniond(-(residualq.coeffs())));
             return residual.squaredNorm() < equivResidual.squaredNorm()
                        ? residual
                        : equivResidual;

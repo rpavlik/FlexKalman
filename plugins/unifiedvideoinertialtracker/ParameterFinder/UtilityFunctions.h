@@ -69,7 +69,7 @@ namespace vbtracker {
     template <typename VecType>
     inline Eigen::Quaterniond rot_exp(VecType const &v) {
         Eigen::Vector3d vec = v;
-        return util::quat_exp_map(vec).exp();
+        return util::quat_exp(vec);
     }
 
     inline Eigen::Isometry3d makeIsometry(Eigen::Vector3d const &xlate,
