@@ -2,7 +2,7 @@
 foreach(test KalmanConstruction KalmanNoNaNs)
     add_executable(Test${test}
         ${test}.cpp)
-    target_link_libraries(Test${test} KalmanFramework eigen-headers kf-catch2-interface)
+    target_link_libraries(Test${test} KalmanFramework eigen-headers kf-catch2-main)
     add_test(NAME Test${test} COMMAND Test${test})
 endforeach()
 
