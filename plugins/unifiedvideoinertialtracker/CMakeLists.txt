@@ -91,6 +91,8 @@ target_link_libraries(uvbi-core
     opencv_highgui
     KalmanFramework
     eigen-headers
+    optional-lite
+    variant-lite
     PRIVATE
     util-headers)
 set_target_properties(uvbi-core PROPERTIES

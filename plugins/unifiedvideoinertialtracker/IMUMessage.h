@@ -32,14 +32,15 @@
 #include <KalmanFramework/ClientReportTypesC.h>
 #include <KalmanFramework/TimeValue.h>
 #include <KalmanFramework/TypePack/List.h>
-#include <boost/none_t.hpp>
-#include <boost/variant.hpp>
+#include <nonstd/variant.hpp>
 
 // Standard includes
 // - none
 
 namespace osvr {
 namespace vbtracker {
+    using nonstd::monostate;
+    using nonstd::variant;
 
     // Forward declaration
     class TrackedBodyIMU;
@@ -89,8 +90,8 @@ namespace vbtracker {
     /// A "typesafe tagged-union" variant that can hold an IMU report data along
     /// with the timestamp and the pointer to the tracking system's IMU object
     /// that it applies to.
-    using IMUMessage = boost::variant<boost::none_t, TimestampedOrientation,
-                                      TimestampedAngVel>;
+    using IMUMessage =
+        variant<monostate, TimestampedOrientation, TimestampedAngVel>;
 
 } // namespace vbtracker
 } // namespace osvr

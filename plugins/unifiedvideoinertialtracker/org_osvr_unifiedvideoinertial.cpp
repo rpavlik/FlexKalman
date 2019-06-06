@@ -61,7 +61,7 @@
 
 #include <boost/assert.hpp>
 #include <boost/noncopyable.hpp>
-#include <boost/variant.hpp>
+#include <nonstd/variant.hpp>
 
 #include <util/Stride.h>
 

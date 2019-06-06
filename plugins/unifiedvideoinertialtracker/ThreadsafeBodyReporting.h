@@ -31,8 +31,8 @@
 // Library/third-party includes
 #include <KalmanFramework/ClientReportTypesC.h>
 #include <KalmanFramework/TimeValue.h>
-#include <boost/optional.hpp>
 #include <folly/ProducerConsumerQueue.h>
+#include <nonstd/optional.hpp>
 
 // Standard includes
 #include <array>
@@ -40,6 +40,7 @@
 
 namespace osvr {
 namespace vbtracker {
+    using nonstd::optional;
     enum class ReportStatus { Valid, MutexLocked, NoReportAvailable };
     struct BodyReport {
 

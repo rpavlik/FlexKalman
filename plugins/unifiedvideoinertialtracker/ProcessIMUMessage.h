@@ -33,6 +33,7 @@
 // Library/third-party includes
 #include <KalmanFramework/EigenInterop.h>
 #include <KalmanFramework/TypePack/Contains.h>
+#include <nonstd/variant.hpp>
 
 // Standard includes
 #include <type_traits>
@@ -40,6 +41,7 @@
 namespace osvr {
 namespace vbtracker {
     namespace detail {
+        using nonstd::visit;
 
         /// Alias to determine if a class is in fact a "Timestamped Report"
         /// type.
@@ -48,51 +50,52 @@ namespace vbtracker {
             typepack::contains<TimestampedReports, Report>;
 
         /// Implementation detail of unpacking and handling the IMU messages.
-        class IMUMessageProcessor : public boost::static_visitor<> {
+        class IMUMessageProcessor {
           public:
-            BodyId bodyId;
-            ImuMessageCategory messageType = ImuMessageCategory::Empty;
+            IMUMessageProcessor(BodyId &id, ImuMessageCategory &msgType)
+                : bodyId(id), messageType(msgType) {}
+            BodyId &bodyId;
+            ImuMessageCategory &messageType;
 
-            void operator()(boost::none_t const &) const {
+            template <typename Report>
+            void setBodyIdFromReport(Report const &report) const {
+                bodyId = report.imu().getBody().getId();
+            }
+
+            void operator()(monostate const &) const {
                 /// dummy overload to handle empty messages
             }
 
-            template <typename Report>
-            typename std::enable_if<is_timestamped_report<Report>::value>::type
-            operator()(Report const &report) {
-                /// templated overload to handle real messages since they're
-                /// identical except for the final data member.
-                bodyId = report.imu().getBody().getId();
-
-                /// Go off to individual methods for the last argument.
-                updatePose(report.imu(), report.timestamp, report.data);
-            }
-
-            void updatePose(TrackedBodyIMU &imu,
-                            util::time::TimeValue const &timestamp,
-                            OSVR_OrientationReport const &ori) {
+            void operator()(TimestampedImuReport<OSVR_OrientationReport> const
+                                &report) const {
                 messageType = ImuMessageCategory::Orientation;
-                imu.updatePoseFromOrientation(
-                    timestamp, util::eigen_interop::map(ori.rotation).quat());
+                setBodyIdFromReport(report);
+                report.imu().updatePoseFromOrientation(
+                    report.timestamp,
+                    util::eigen_interop::map(report.data.rotation).quat());
             }
 
-            void updatePose(TrackedBodyIMU &imu,
-                            util::time::TimeValue const &timestamp,
-                            OSVR_AngularVelocityReport const &angVel) {
+            void operator()(
+                TimestampedImuReport<OSVR_AngularVelocityReport> const &report)
+                const {
+                setBodyIdFromReport(report);
                 messageType = ImuMessageCategory::AngularVelocity;
-                imu.updatePoseFromAngularVelocity(
-                    timestamp,
-                    util::eigen_interop::map(angVel.state.incrementalRotation)
+                report.imu().updatePoseFromAngularVelocity(
+                    report.timestamp,
+                    util::eigen_interop::map(
+                        report.data.state.incrementalRotation)
                         .quat(),
-                    angVel.state.dt);
+                    report.data.state.dt);
             }
         };
     } // namespace detail
     inline std::pair<BodyId, ImuMessageCategory>
     processImuMessage(IMUMessage const &m) {
 
-        detail::IMUMessageProcessor processor;
-        boost::apply_visitor(processor, m);
+        BodyId bodyId;
+        ImuMessageCategory messageType = ImuMessageCategory::Empty;
+        detail::IMUMessageProcessor processor{bodyId, messageType};
+        visit(processor, m);
         return std::make_pair(processor.bodyId, processor.messageType);
     }
 } // namespace vbtracker

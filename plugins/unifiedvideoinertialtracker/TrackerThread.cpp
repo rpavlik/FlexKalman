@@ -246,8 +246,9 @@ namespace vbtracker {
                 /// This means we got out of waiting on the condition variable
                 /// because of an IMU message. Handle one.
 
-                IMUMessage message = boost::none;
-                if (!m_imuMessages.read(message) || message.empty()) {
+                IMUMessage message;
+                if (!m_imuMessages.read(message) ||
+                    message.index() == 0 /* empty */) {
                     // couldn't read a message, or read an empty message
                     continue;
                 }
@@ -315,7 +316,7 @@ namespace vbtracker {
         // stuck here in a loop without servicing the camera.
         std::size_t numMessages = m_imuMessages.sizeGuess();
         {
-            IMUMessage message = boost::none;
+            IMUMessage message;
             for (std::size_t i = 0; i < numMessages; ++i) {
                 if (!m_imuMessages.read(message)) {
                     // ran out of messages earlier than expected.

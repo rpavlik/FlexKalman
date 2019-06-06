@@ -35,7 +35,7 @@
 
 // Library/third-party includes
 #include <KalmanFramework/FlexibleKalmanFilter.h>
-#include <boost/optional.hpp>
+#include <nonstd/optional.hpp>
 
 #include <util/Stride.h>
 
@@ -44,6 +44,7 @@
 
 namespace osvr {
 namespace vbtracker {
+    using nonstd::optional;
     using BodyStateHistoryEntry = StateHistoryEntry<BodyState>;
 
     struct TrackedBody::Impl {

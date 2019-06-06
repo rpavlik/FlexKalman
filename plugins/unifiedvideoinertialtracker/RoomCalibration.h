@@ -34,7 +34,7 @@
 #include <KalmanFramework/EigenFilters.h>
 #include <KalmanFramework/TimeValue.h>
 
-#include <boost/optional.hpp>
+#include <nonstd/optional.hpp>
 
 // Standard includes
 #include <cstddef>
@@ -42,6 +42,7 @@
 
 namespace osvr {
 namespace vbtracker {
+    using nonstd::optional;
     class TrackingSystem;
     /// Takes care of the initial room calibration startup step, when we learn
     /// the pose of the camera in space and the yaw offset of the IMU.
@@ -77,8 +78,7 @@ namespace vbtracker {
         /// Gets the calibration yaw for the IMU on a body. Returns an empty
         /// optional if the body ID given was not the one with the IMU used to
         /// calibrate.
-        boost::optional<util::Angle>
-        getCalibrationYaw(BodyId const &body) const;
+        optional<util::Angle> getCalibrationYaw(BodyId const &body) const;
         /// Gets the pose of the camera in the room (the transform from camera
         /// space to room space)
         Eigen::Isometry3d getCameraPose() const;

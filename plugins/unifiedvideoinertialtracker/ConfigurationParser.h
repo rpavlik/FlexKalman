@@ -32,8 +32,8 @@
 #include <ParseBlobParams.h>
 
 // Library/third-party includes
-#include <boost/optional.hpp>
 #include <json/value.h>
+#include <nonstd/optional.hpp>
 
 // Standard includes
 #include <initializer_list>
@@ -41,6 +41,7 @@
 
 namespace osvr {
 namespace vbtracker {
+    using nonstd::optional;
     inline const char *getConfigStringForTargetSet(BuiltInTargetSets target) {
         switch (target) {
         case osvr::vbtracker::BuiltInTargetSets::HDK1xChassis:
@@ -54,13 +55,12 @@ namespace vbtracker {
     static const std::initializer_list<BuiltInTargetSets> AllBuiltInTargetSets =
         {BuiltInTargetSets::HDK1xChassis, BuiltInTargetSets::HDK2Chassis};
     template <typename EnumType, typename StringifyFunctor>
-    inline std::pair<boost::optional<EnumType>, boost::optional<std::string>>
+    inline std::pair<optional<EnumType>, optional<std::string>>
     getEnumFromStringParameter(
         Json::Value const &root, const char memberName[],
         StringifyFunctor &&stringifyEnum,
         std::initializer_list<EnumType> const &possibleValues) {
-        using ReturnType =
-            std::pair<boost::optional<EnumType>, boost::optional<std::string>>;
+        using ReturnType = std::pair<optional<EnumType>, optional<std::string>>;
         ReturnType ret;
         if (!root.isMember(memberName)) {
             return ret;

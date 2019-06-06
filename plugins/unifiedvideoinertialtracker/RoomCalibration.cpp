@@ -52,6 +52,7 @@
 
 namespace osvr {
 namespace vbtracker {
+    using nonstd::nullopt;
     namespace filters = util::filters;
 
     using osvr::util::time::duration;
@@ -357,7 +358,7 @@ namespace vbtracker {
         return true;
     }
 
-    boost::optional<util::Angle>
+    optional<util::Angle>
     RoomCalibration::getCalibrationYaw(BodyId const &body) const {
         BOOST_ASSERT_MSG(calibrationComplete(), "Not valid to call "
                                                 "getCalibrationYaw() unless "
@@ -365,7 +366,7 @@ namespace vbtracker {
         if (m_imuBody == body) {
             return m_imuYaw;
         }
-        return boost::none;
+        return nullopt;
     }
 
     Eigen::Isometry3d RoomCalibration::getCameraPose() const {

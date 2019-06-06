@@ -191,7 +191,7 @@ namespace vbtracker {
         }
 
         our_clock::time_point m_nextImuOverrideReport;
-        boost::optional<our_clock::time_point> m_nextCameraPoseReport;
+        optional<our_clock::time_point> m_nextCameraPoseReport;
 
         /// a void promise, as suggested by Scott Meyers, to hold the thread
         /// operation at the beginning until we want it to really start running.
