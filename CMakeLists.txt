@@ -28,6 +28,10 @@ if(WIN32)
     # TODO fix this package so it finds things on MSYS2/MinGW64
     # - the lib is in /mingw64/lib
     # - qedit.h is in /mingw64/x86_64-w64-mingw32/include
+    if(MSVC)
+        # We vendored an MIT-tagged copy from a Microsoft project.
+        list(APPEND CMAKE_PREFIX_PATH ${CMAKE_CURRENT_SOURCE_DIR}/vendor/qedit)
+    endif()
     find_package(DirectShow QUIET)
     if(MINGW OR (DIRECTSHOW_QEDIT_INCLUDE_DIR AND DIRECTSHOW_STRMIIDS_LIBRARY))
         # MinGW may include the header/lib in such a way that the find module
