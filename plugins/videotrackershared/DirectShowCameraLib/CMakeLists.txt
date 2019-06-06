@@ -44,15 +44,12 @@ target_include_directories(directshow-camera
     "${CMAKE_CURRENT_BINARY_DIR}")
 target_link_libraries(directshow-camera
     PUBLIC
-    vendored-vrpn
     comutils
-    osvrUtil
+    KalmanFramework
     PRIVATE
-    osvrUtilCpp
-    osvr_codecvt
     ${DIRECTSHOW_STRMIIDS_LIBRARY}
     )
-
+target_include_directories(directshow-camera PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/..)
 target_compile_options(directshow-camera
     PUBLIC
     ${OSVR_CXX11_FLAGS})

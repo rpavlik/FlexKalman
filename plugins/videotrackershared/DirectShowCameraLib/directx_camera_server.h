@@ -38,6 +38,7 @@
 #include <KalmanFramework/TimeValue.h>
 
 // Standard includes
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <stdexcept>
@@ -115,10 +116,10 @@ class directx_camera_server : public base_camera_server {
                                       double exposure_millisecs = 250.0);
 
     /// Get pixels out of the memory buffer, RGB indexes the colors
-    virtual bool get_pixel_from_memory(unsigned X, unsigned Y, vrpn_uint8 &val,
-                                       int RGB = 0) const;
-    virtual bool get_pixel_from_memory(unsigned X, unsigned Y, vrpn_uint16 &val,
-                                       int RGB = 0) const;
+    virtual bool get_pixel_from_memory(unsigned X, unsigned Y,
+                                       std::uint8_t &val, int RGB = 0) const;
+    virtual bool get_pixel_from_memory(unsigned X, unsigned Y,
+                                       std::uint16_t &val, int RGB = 0) const;
 
     /// Get the actual memory buffer.
     BufferType const &get_pixel_buffer() const { return _buffer; }

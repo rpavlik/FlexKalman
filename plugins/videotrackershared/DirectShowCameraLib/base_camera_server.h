@@ -10,6 +10,7 @@
 */
 
 // Copyright 2015 Sensics, Inc.
+// Copyright 2019 Collabora, Ltd.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -27,14 +28,13 @@
 #define INCLUDED_base_camera_server_h_GUID_AE8BD56F_793F_4693_9B94_4E4CC953511C
 
 // Internal Includes
-#include <vrpn_Shared.h>
+// - none
 
 // Library/third-party includes
 // - none
 
 // Standard includes
-#include <math.h>  // For floor()
-#include <stdio.h> // For NULL
+#include <cmath> // For floor()
 #include <string>
 #include <vector>
 
@@ -79,18 +79,18 @@ class image_wrapper {
                             unsigned rgb = 0) const = 0;
 
     // Overloaded by result type to enable optimization later but use by any.
-    virtual bool read_pixel(int x, int y, vrpn_uint8 &result,
+    virtual bool read_pixel(int x, int y, std::uint8_t &result,
                             unsigned rgb = 0) const {
         double double_pix;
         bool err = read_pixel(x, y, double_pix, rgb);
-        result = static_cast<vrpn_uint8>(double_pix);
+        result = static_cast<std::uint8_t>(double_pix);
         return err;
     }
-    virtual bool read_pixel(int x, int y, vrpn_uint16 &result,
+    virtual bool read_pixel(int x, int y, std::uint16_t &result,
                             unsigned rgb = 0) const {
         double double_pix;
         bool err = read_pixel(x, y, double_pix, rgb);
-        result = static_cast<vrpn_uint16>(double_pix);
+        result = static_cast<std::uint16_t>(double_pix);
         return err;
     }
 
@@ -107,6 +107,7 @@ class image_wrapper {
     // inside.
     inline bool read_pixel_bilerp(double x, double y, double &result,
                                   unsigned rgb = 0) const {
+        using std::floor;
         result = 0; // In case of failure.
         // The order of the following statements is optimized for speed.
         // The double version is used below for xlowfrac comp, ixlow also used
@@ -156,6 +157,7 @@ class image_wrapper {
     // Does not check boundaries to make sure they are inside the image.
     inline double read_pixel_bilerp_nocheck(double x, double y,
                                             unsigned rgb = 0) const {
+        using std::floor;
         // The order of the following statements is optimized for speed.
         // The double version is used below for xlowfrac comp, ixlow also used
         // later.
@@ -218,18 +220,20 @@ class base_camera_server : public image_wrapper {
                                       double exposure_time = 250.0) = 0;
 
     /// Get pixels out of the memory buffer, RGB indexes the colors
-    virtual bool get_pixel_from_memory(unsigned X, unsigned Y, vrpn_uint8 &val,
+    virtual bool get_pixel_from_memory(unsigned X, unsigned Y,
+                                       std::uint8_t &val,
                                        int RGB = 0) const = 0;
-    virtual bool get_pixel_from_memory(unsigned X, unsigned Y, vrpn_uint16 &val,
+    virtual bool get_pixel_from_memory(unsigned X, unsigned Y,
+                                       std::uint16_t &val,
                                        int RGB = 0) const = 0;
 
     // Makes the read routines in the base class faster by calling the above
     // methods.
-    virtual bool read_pixel(int x, int y, vrpn_uint8 &result,
+    virtual bool read_pixel(int x, int y, std::uint8_t &result,
                             unsigned rgb = 0) const {
         return get_pixel_from_memory(x, y, result, rgb);
     }
-    virtual bool read_pixel(int x, int y, vrpn_uint16 &result,
+    virtual bool read_pixel(int x, int y, std::uint16_t &result,
                             unsigned rgb = 0) const {
         return get_pixel_from_memory(x, y, result, rgb);
     }
@@ -238,7 +242,7 @@ class base_camera_server : public image_wrapper {
     // was in the image, false if it was not.
     virtual bool read_pixel(int x, int y, double &result,
                             unsigned rgb = 0) const {
-        vrpn_uint16 val = 0;
+        std::uint16_t val = 0;
         result = 0.0; // Until we get a better one
         if (get_pixel_from_memory(x, y, val, rgb)) {
             result = val;
@@ -250,7 +254,7 @@ class base_camera_server : public image_wrapper {
 
     /// Read a pixel from the image into a double; Don't check boundaries.
     virtual double read_pixel_nocheck(int x, int y, unsigned rgb = 0) const {
-        vrpn_uint16 val = 0;
+        std::uint16_t val = 0;
         get_pixel_from_memory(x, y, val, rgb);
         return val;
     };

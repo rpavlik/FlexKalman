@@ -798,7 +798,7 @@ bool directx_camera_server::read_image_to_memory(unsigned minX, unsigned maxX,
 }
 
 bool directx_camera_server::get_pixel_from_memory(unsigned X, unsigned Y,
-                                                  vrpn_uint8 &val,
+                                                  std::uint8_t &val,
                                                   int RGB) const {
     if (!_status) {
         return false;
@@ -823,7 +823,7 @@ bool directx_camera_server::get_pixel_from_memory(unsigned X, unsigned Y,
 }
 
 bool directx_camera_server::get_pixel_from_memory(unsigned X, unsigned Y,
-                                                  vrpn_uint16 &val,
+                                                  std::uint16_t &val,
                                                   int RGB) const {
     if (!_status) {
         return false;
