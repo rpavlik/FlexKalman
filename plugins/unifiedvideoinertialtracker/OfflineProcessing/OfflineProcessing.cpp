@@ -311,9 +311,8 @@ namespace vbtracker {
     TrackerOfflineProcessing::getFractionalRemainder() const {
         auto remainderFrames = getFrameCount() % fps_;
         auto ret = remainderFrames * frameTime_;
-        BOOST_ASSERT_MSG(
-            ret < std::chrono::seconds(1),
-            "This is a remainder - it must be less than a second!");
+        UVBI_ASSERT_MSG(ret < std::chrono::seconds(1),
+                        "This is a remainder - it must be less than a second!");
         return ret;
     }
 

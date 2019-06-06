@@ -95,6 +95,9 @@ target_link_libraries(uvbi-core
     variant-lite
     PRIVATE
     util-headers)
+target_include_directories(uvbi-core
+    PUBLIC
+    ${KALMANFRAMEWORK_VIDEOTRACKERSHARED_INCLUDE_DIR})
 set_target_properties(uvbi-core PROPERTIES
     FOLDER "${PROJ_FOLDER}")
 target_compile_definitions(uvbi-core PRIVATE UVBI_CORE)

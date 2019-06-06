@@ -33,9 +33,9 @@
 #include "TrackedBodyIMU.h"
 
 // Library/third-party includes
+#include "UVBIAssert.h"
 #include <KalmanFramework/EigenExtras.h>
 #include <KalmanFramework/ExtractYaw.h>
-#include <boost/assert.hpp>
 
 #ifdef UVBI_DUMP_CALIB_LOG
 #include <KalmanFramework/CSV.h>
@@ -281,9 +281,9 @@ namespace vbtracker {
             m_imuBody = body;
             first = true;
         }
-        BOOST_ASSERT_MSG(m_imuBody == body, "BodyID for incoming data and "
-                                            "known IMU must be identical at "
-                                            "this point");
+        UVBI_ASSERT_MSG(m_imuBody == body, "BodyID for incoming data and "
+                                           "known IMU must be identical at "
+                                           "this point");
 
         if (first) {
             // for setup purposes, we'll constrain w to be positive.
@@ -360,9 +360,9 @@ namespace vbtracker {
 
     optional<util::Angle>
     RoomCalibration::getCalibrationYaw(BodyId const &body) const {
-        BOOST_ASSERT_MSG(calibrationComplete(), "Not valid to call "
-                                                "getCalibrationYaw() unless "
-                                                "calibration is complete!");
+        UVBI_ASSERT_MSG(calibrationComplete(), "Not valid to call "
+                                               "getCalibrationYaw() unless "
+                                               "calibration is complete!");
         if (m_imuBody == body) {
             return m_imuYaw;
         }
@@ -370,9 +370,9 @@ namespace vbtracker {
     }
 
     Eigen::Isometry3d RoomCalibration::getCameraPose() const {
-        BOOST_ASSERT_MSG(calibrationComplete(), "Not valid to call "
-                                                "getCameraPose() unless "
-                                                "calibration is complete!");
+        UVBI_ASSERT_MSG(calibrationComplete(), "Not valid to call "
+                                               "getCameraPose() unless "
+                                               "calibration is complete!");
         return m_cameraPose;
     }
 

@@ -80,7 +80,7 @@ SampleGrabberWrapper::SampleGrabberWrapper()
 SampleGrabberWrapper::~SampleGrabberWrapper() { shutdown(); }
 
 void SampleGrabberWrapper::getConnectedMediaType(AM_MEDIA_TYPE &mt) {
-    BOOST_ASSERT(impl_ && impl_->grabber);
+    UVBI_ASSERT(impl_ && impl_->grabber);
     auto hr = impl_->grabber->GetConnectedMediaType(&mt);
     if (FAILED(hr)) {
         throw std::runtime_error("Could not get connected media type - is "
@@ -91,7 +91,7 @@ void SampleGrabberWrapper::getConnectedMediaType(AM_MEDIA_TYPE &mt) {
 
 void SampleGrabberWrapper::shutdown() {
     // Clear the callback
-    BOOST_ASSERT(impl_ && impl_->grabber);
+    UVBI_ASSERT(impl_ && impl_->grabber);
     impl_->grabber->SetCallback(nullptr, 0 /* to call the SampleCB method */);
     // Tell the callback object to finish up.
     if (callback_) {

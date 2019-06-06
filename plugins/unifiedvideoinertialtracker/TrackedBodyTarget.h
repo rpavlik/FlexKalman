@@ -34,9 +34,9 @@
 #include "Types.h"
 
 // Library/third-party includes
+#include "UVBIAssert.h"
 #include <KalmanFramework/PureVectorState.h>
 #include <KalmanFramework/TimeValue.h>
-#include <boost/assert.hpp>
 
 // Standard includes
 #include <iosfwd>
@@ -214,17 +214,17 @@ namespace vbtracker {
 
         ConfigParams const &getParams() const;
         void m_verifyInvariants() const {
-            BOOST_ASSERT_MSG(m_beacons.size() ==
-                                 m_beaconMeasurementVariance.size(),
-                             "Must have the same number of beacons as default "
-                             "measurement variances.");
-            BOOST_ASSERT_MSG(
+            UVBI_ASSERT_MSG(m_beacons.size() ==
+                                m_beaconMeasurementVariance.size(),
+                            "Must have the same number of beacons as default "
+                            "measurement variances.");
+            UVBI_ASSERT_MSG(
                 m_beacons.size() == m_beaconFixed.size(),
                 "Must have the same number of beacons as beacon fixed flags.");
-            BOOST_ASSERT_MSG(m_beacons.size() ==
-                                 m_beaconEmissionDirection.size(),
-                             "Must have the same number of beacons as beacon "
-                             "emission directions.");
+            UVBI_ASSERT_MSG(m_beacons.size() ==
+                                m_beaconEmissionDirection.size(),
+                            "Must have the same number of beacons as beacon "
+                            "emission directions.");
         }
         using BeaconState = kalman::PureVectorState<3>;
         using BeaconStateVec = std::vector<std::unique_ptr<BeaconState>>;

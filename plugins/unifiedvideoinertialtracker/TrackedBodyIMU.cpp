@@ -30,7 +30,7 @@
 #include <KalmanFramework/EigenExtras.h>
 
 // Library/third-party includes
-#include <boost/assert.hpp>
+#include "UVBIAssert.h"
 
 // Standard includes
 #include <cmath>
@@ -97,18 +97,16 @@ namespace vbtracker {
 
     Eigen::Quaterniond TrackedBodyIMU::transformRawIMUOrientation(
         Eigen::Quaterniond const &input) const {
-        BOOST_ASSERT_MSG(
-            calibrationYawKnown(),
-            "transform called before calibration transform known!");
+        UVBI_ASSERT_MSG(calibrationYawKnown(),
+                        "transform called before calibration transform known!");
         return m_yawCorrection * input;
         // return input;
     }
 
     Eigen::Quaterniond TrackedBodyIMU::transformRawIMUAngularVelocity(
         Eigen::Quaterniond const &deltaquat) const {
-        BOOST_ASSERT_MSG(
-            calibrationYawKnown(),
-            "transform called before calibration transform known!");
+        UVBI_ASSERT_MSG(calibrationYawKnown(),
+                        "transform called before calibration transform known!");
         /// @todo handle transform for off-center velocity!
 
         /// Transform for yaw correction.

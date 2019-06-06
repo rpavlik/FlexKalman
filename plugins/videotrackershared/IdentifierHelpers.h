@@ -29,7 +29,7 @@
 #include "BasicTypes.h"
 
 // Library/third-party includes
-#include <boost/assert.hpp>
+#include "UVBIAssert.h"
 
 // Standard includes
 #include <algorithm>
@@ -65,7 +65,7 @@ namespace vbtracker {
     inline BrightnessMinMax
     findMinMaxBrightness(const BrightnessList &brightnesses) {
 
-        BOOST_ASSERT_MSG(!brightnesses.empty(), "Must be a non-empty list!");
+        UVBI_ASSERT_MSG(!brightnesses.empty(), "Must be a non-empty list!");
         auto extremaIterators =
             std::minmax_element(begin(brightnesses), end(brightnesses));
         return std::make_pair(*extremaIterators.first,

@@ -26,7 +26,7 @@
 #include "directx_samplegrabber_callback.h"
 
 // Library/third-party includes
-#include <boost/assert.hpp>
+#include "UVBIAssert.h"
 
 // Standard includes
 #include <chrono>
@@ -94,7 +94,7 @@ HRESULT directx_samplegrabber_callback::SampleCB(double time,
                                                  IMediaSample *sample) {
     // Point the image sample to the media sample we have and then set the flag
     // to tell the application it can process it.
-    BOOST_ASSERT_MSG(_stayAlive, "Should be alive when samplecb is called");
+    UVBI_ASSERT_MSG(_stayAlive, "Should be alive when samplecb is called");
     sampleExchange_->signalSampleProduced(sample);
 
     // Wait for either this object to be destroyed/shutdown (_stayAlive ==

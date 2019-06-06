@@ -29,8 +29,8 @@
 #include "BodyIdTypes.h"
 
 // Library/third-party includes
+#include "UVBIAssert.h"
 #include <KalmanFramework/TypeSafeId.h>
-#include <boost/assert.hpp>
 
 // Standard includes
 #include <stdexcept>
@@ -126,9 +126,9 @@ namespace vbtracker {
     /// Turn a (valid non-sentinel, i.e. identified) beacon id into an array
     /// index.
     inline std::size_t asIndex(ZeroBasedBeaconId id) {
-        BOOST_ASSERT_MSG(beaconIdentified(id), "A beacon id must correspond to "
-                                               "an identified beacon to be "
-                                               "used as an index!");
+        UVBI_ASSERT_MSG(beaconIdentified(id), "A beacon id must correspond to "
+                                              "an identified beacon to be "
+                                              "used as an index!");
         if (!beaconIdentified(id)) {
             throw std::logic_error("A beacon id must correspond to an "
                                    "identified beacon to be used as an index!");

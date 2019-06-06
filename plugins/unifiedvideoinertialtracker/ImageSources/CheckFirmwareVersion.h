@@ -29,7 +29,7 @@
 // - none
 
 // Library/third-party includes
-#include <boost/assert.hpp>
+#include "UVBIAssert.h"
 #ifdef _WIN32
 #include <boost/algorithm/string/erase.hpp>
 #include <boost/algorithm/string/predicate.hpp>
@@ -99,7 +99,7 @@ namespace vbtracker {
         {
             static const auto prefixString = "\\\\?\\";
             static const auto prefixLength = 4;
-            BOOST_ASSERT(std::strlen(prefixString) == prefixLength);
+            UVBI_ASSERT(std::strlen(prefixString) == prefixLength);
 
             if (boost::algorithm::starts_with(path, prefixString)) {
                 boost::algorithm::erase_head(path, prefixLength);

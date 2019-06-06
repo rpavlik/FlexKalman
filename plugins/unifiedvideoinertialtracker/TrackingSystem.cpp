@@ -33,7 +33,7 @@
 #include "UndistortMeasurements.h"
 
 // Library/third-party includes
-#include <boost/assert.hpp>
+#include "UVBIAssert.h"
 
 #include <util/Stride.h>
 
@@ -127,9 +127,9 @@ namespace vbtracker {
     inline void
     validateTargetPointerFromUpdateList(TrackedBodyTarget *targetPtr) {
 
-        BOOST_ASSERT_MSG(targetPtr != nullptr, "We should never be "
-                                               "retrieving a nullptr for a "
-                                               "target with measurements!");
+        UVBI_ASSERT_MSG(targetPtr != nullptr, "We should never be "
+                                              "retrieving a nullptr for a "
+                                              "target with measurements!");
         if (!targetPtr) {
             throw std::logic_error("Logical impossibility: Couldn't "
                                    "retrieve a valid pointer for a target "

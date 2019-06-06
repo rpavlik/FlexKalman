@@ -59,7 +59,7 @@
 #include <opencv2/highgui/highgui.hpp> // for image capture
 #include <opencv2/imgproc/imgproc.hpp> // for image scaling
 
-#include <boost/assert.hpp>
+#include "UVBIAssert.h"
 #include <nonstd/variant.hpp>
 
 #include <util/Stride.h>
@@ -258,10 +258,10 @@ class UnifiedVideoInertialTracker {
             Json::Reader reader;
             /// This call can't fail, but...
             if (!reader.parse(origJson, root)) {
-                BOOST_ASSERT_MSG(false,
-                                 "Not possible for parsing to fail: loading "
-                                 "a file that was parsed before "
-                                 "transformation into string literal!");
+                UVBI_ASSERT_MSG(false,
+                                "Not possible for parsing to fail: loading "
+                                "a file that was parsed before "
+                                "transformation into string literal!");
                 return origJson;
             }
         }

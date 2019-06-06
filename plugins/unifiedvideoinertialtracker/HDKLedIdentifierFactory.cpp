@@ -27,7 +27,7 @@
 #include "HDKLedIdentifier.h"
 
 // Library/third-party includes
-#include <boost/assert.hpp>
+#include "UVBIAssert.h"
 
 // Standard includes
 // - none
@@ -75,7 +75,7 @@ namespace vbtracker {
             , ".*...**........."    // 29 23
             , ".........*....**"    // 30 24
             , "..*.....**......"    // 31 25
-            , "*......**......."    // 32 26 
+            , "*......**......."    // 32 26
             , "...*.......**..."    // 33 27
             , "...**.....*....."    // 34 28
             , ".**....*........"    // 35 29
@@ -110,7 +110,7 @@ namespace vbtracker {
           , ".*...**........."    //  3
           , ".........*....**"    //  4
           , "..*.....**......"    //  1
-          , "*......**......."    //  2 
+          , "*......**......."    //  2
           , "....*.*..*......"    // 10
           , ".*.*.*.........."    //  8
           , ".........*.**..."    //  9
@@ -163,7 +163,7 @@ namespace vbtracker {
         case 1:
             ret = createHDKLedIdentifier(OsvrHdkLedIdentifier_SENSOR1_PATTERNS);
         default:
-            BOOST_ASSERT_MSG(sensor < 2, "Valid sensors are only 0 or 1!");
+            UVBI_ASSERT_MSG(sensor < 2, "Valid sensors are only 0 or 1!");
             break;
         }
         return ret;
@@ -191,7 +191,7 @@ namespace vbtracker {
             ret = createHDKLedIdentifier(
                 OsvrHdkLedIdentifier_SENSOR1_PATTERNS_ORIGINAL);
         default:
-            BOOST_ASSERT_MSG(sensor < 2, "Valid sensors are only 0 or 1!");
+            UVBI_ASSERT_MSG(sensor < 2, "Valid sensors are only 0 or 1!");
             break;
         }
         return ret;

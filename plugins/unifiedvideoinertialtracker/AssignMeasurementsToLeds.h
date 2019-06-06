@@ -31,7 +31,7 @@
 #include <LedMeasurement.h>
 
 // Library/third-party includes
-#include <boost/assert.hpp>
+#include "UVBIAssert.h"
 #include <opencv2/core/core.hpp>
 
 // Standard includes
@@ -94,8 +94,8 @@ namespace vbtracker {
 
         /// Must call first, and only once.
         void populateStructures() {
-            BOOST_ASSERT_MSG(!populated_,
-                             "Can only call populateStructures() once.");
+            UVBI_ASSERT_MSG(!populated_,
+                            "Can only call populateStructures() once.");
             populated_ = true;
             {
                 /// Clean up LEDs and populate their ref vector.
@@ -245,9 +245,9 @@ namespace vbtracker {
                           << ledIndex(distanceHeap_.front()) << "\tMeas Index "
                           << measIndex(distanceHeap_.front()) << std::endl;
             }
-            BOOST_ASSERT_MSG(isTopValid(), "Shouldn't be able to get here "
-                                           "without a valid top element on the "
-                                           "heap.");
+            UVBI_ASSERT_MSG(isTopValid(), "Shouldn't be able to get here "
+                                          "without a valid top element on the "
+                                          "heap.");
 
             auto &topLed = *getTopLed();
             auto &topMeas = *getTopMeasurement();
@@ -257,7 +257,7 @@ namespace vbtracker {
 
             /// Postcondition check - shouldn't be valid anymore, we just
             /// consumed it.
-            BOOST_ASSERT(!isTopValid());
+            UVBI_ASSERT(!isTopValid());
 
             /// Now, remove this entry from the heap.
             popHeap();
@@ -274,9 +274,9 @@ namespace vbtracker {
         bool haveMadeMaxMatches() const {
             /// Not terribly harmful here, just illogical, so assert instead
             /// of unconditional check and throw.
-            BOOST_ASSERT_MSG(populated_, "Should have called "
-                                         "populateStructures() before calling "
-                                         "haveMadeMaxMatches().");
+            UVBI_ASSERT_MSG(populated_, "Should have called "
+                                        "populateStructures() before calling "
+                                        "haveMadeMaxMatches().");
             return numMatches_ == maxMatches_;
         }
 
@@ -289,9 +289,9 @@ namespace vbtracker {
         bool empty() const {
             /// Not terribly harmful here, just illogical, so assert instead
             /// of unconditional check and throw.
-            BOOST_ASSERT_MSG(populated_, "Should have called "
-                                         "populateStructures() before calling "
-                                         "empty().");
+            UVBI_ASSERT_MSG(populated_, "Should have called "
+                                        "populateStructures() before calling "
+                                        "empty().");
             return distanceHeap_.empty();
         }
 
@@ -299,9 +299,9 @@ namespace vbtracker {
         size_type size() const {
             /// Not terribly harmful here, just illogical, so assert instead
             /// of nconditional check and throw.
-            BOOST_ASSERT_MSG(populated_, "Should have called "
-                                         "populateStructures() before "
-                                         "calling size().");
+            UVBI_ASSERT_MSG(populated_, "Should have called "
+                                        "populateStructures() before "
+                                        "calling size().");
             return distanceHeap_.size();
         }
 
@@ -315,9 +315,9 @@ namespace vbtracker {
         double heapSizeFraction() const {
             /// Not terribly harmful here, just illogical, so assert instead
             /// of unconditional check and throw.
-            BOOST_ASSERT_MSG(populated_, "Should have called "
-                                         "populateStructures() before calling "
-                                         "heapSizeFraction().");
+            UVBI_ASSERT_MSG(populated_, "Should have called "
+                                        "populateStructures() before calling "
+                                        "heapSizeFraction().");
             return static_cast<double>(size()) /
                    static_cast<double>(theoreticalMaxSize());
         }
@@ -445,8 +445,8 @@ namespace vbtracker {
             ledRefs_[ledIndex(elt)] = ledsEnd_;
             measRefs_[measIndex(elt)] = nullptr;
             /// Postcondition assertion.
-            BOOST_ASSERT(!isLedValid(elt));
-            BOOST_ASSERT(!isMeasValid(elt));
+            UVBI_ASSERT(!isLedValid(elt));
+            UVBI_ASSERT(!isMeasValid(elt));
         }
 
         /// For a given measurement, compute the corresponding search distance
@@ -478,8 +478,8 @@ namespace vbtracker {
 
         /// Resizes for you too.
         void popHeap() {
-            BOOST_ASSERT_MSG(!distanceHeap_.empty(),
-                             "Cannot pop from an empty heap");
+            UVBI_ASSERT_MSG(!distanceHeap_.empty(),
+                            "Cannot pop from an empty heap");
             /// Puts the new thing in the front, and moves the old front to the
             /// back.
             std::pop_heap(begin(distanceHeap_), end(distanceHeap_),

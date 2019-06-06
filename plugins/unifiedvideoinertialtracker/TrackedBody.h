@@ -32,9 +32,9 @@
 #include "ModelTypes.h"
 
 // Library/third-party includes
+#include "UVBIAssert.h"
 #include <KalmanFramework/EigenCoreGeometry.h>
 #include <KalmanFramework/TimeValue.h>
-#include <boost/assert.hpp>
 
 // Standard includes
 #include <memory>
@@ -111,13 +111,13 @@ namespace vbtracker {
 
         /// Get the IMU - only valid if hasIMU is true.
         TrackedBodyIMU &getIMU() {
-            BOOST_ASSERT_MSG(m_imu, "getIMU() called when hasIMU() is false!");
+            UVBI_ASSERT_MSG(m_imu, "getIMU() called when hasIMU() is false!");
             return *m_imu;
         }
 
         /// Get the IMU - only valid if hasIMU is true.
         TrackedBodyIMU const &getIMU() const {
-            BOOST_ASSERT_MSG(m_imu, "getIMU() called when hasIMU() is false!");
+            UVBI_ASSERT_MSG(m_imu, "getIMU() called when hasIMU() is false!");
             return *m_imu;
         }
 

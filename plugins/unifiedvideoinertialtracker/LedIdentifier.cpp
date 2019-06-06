@@ -26,7 +26,7 @@
 #include "LedIdentifier.h"
 
 // Library/third-party includes
-#include <boost/assert.hpp>
+#include "UVBIAssert.h"
 
 // Standard includes
 #include <algorithm>

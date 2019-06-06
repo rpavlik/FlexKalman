@@ -509,15 +509,15 @@ bool directx_camera_server::open_moniker_and_finish_setup(
 
     // pSrc is the capture filter for the video device we found above.
     auto hr = _pGraph->AddFilter(pSrc.get(), L"Video Capture");
-    BOOST_ASSERT_MSG(SUCCEEDED(hr), "Adding Video Capture filter to graph");
+    UVBI_ASSERT_MSG(SUCCEEDED(hr), "Adding Video Capture filter to graph");
 
     // Add the sample grabber filter
     hr = _pGraph->AddFilter(sampleGrabberFilter.get(), L"SampleGrabber");
-    BOOST_ASSERT_MSG(SUCCEEDED(hr), "Adding SampleGrabber filter to graph");
+    UVBI_ASSERT_MSG(SUCCEEDED(hr), "Adding SampleGrabber filter to graph");
 
     // Add the null renderer filter
     hr = _pGraph->AddFilter(pNullRender.get(), L"NullRenderer");
-    BOOST_ASSERT_MSG(SUCCEEDED(hr), "Adding NullRenderer filter to graph");
+    UVBI_ASSERT_MSG(SUCCEEDED(hr), "Adding NullRenderer filter to graph");
 
     // Connect the output of the video reader to the sample grabber input
     // ConnectTwoFilters(*_pGraph, *pSrc, *sampleGrabberFilter);

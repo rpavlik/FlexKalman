@@ -38,7 +38,7 @@
 #include <KalmanFramework/CSVCellGroup.h>
 
 // Library/third-party includes
-#include <boost/assert.hpp>
+#include "UVBIAssert.h"
 #include <util/Stride.h>
 
 // Standard includes
@@ -283,21 +283,21 @@ namespace vbtracker {
 
     Eigen::Vector3d
     TrackedBodyTarget::getBeaconAutocalibPosition(ZeroBasedBeaconId i) const {
-        BOOST_ASSERT(!i.empty());
-        BOOST_ASSERT_MSG(i.value() < getNumBeacons(),
-                         "Beacon ID must be less than number of beacons.");
-        BOOST_ASSERT_MSG(i.value() >= 0,
-                         "Beacon ID must not be a sentinel value!");
+        UVBI_ASSERT(!i.empty());
+        UVBI_ASSERT_MSG(i.value() < getNumBeacons(),
+                        "Beacon ID must be less than number of beacons.");
+        UVBI_ASSERT_MSG(i.value() >= 0,
+                        "Beacon ID must not be a sentinel value!");
         return m_beacons.at(i.value())->stateVector() + m_beaconOffset;
     }
 
     Eigen::Vector3d
     TrackedBodyTarget::getBeaconAutocalibVariance(ZeroBasedBeaconId i) const {
-        BOOST_ASSERT(!i.empty());
-        BOOST_ASSERT_MSG(i.value() < getNumBeacons(),
-                         "Beacon ID must be less than number of beacons.");
-        BOOST_ASSERT_MSG(i.value() >= 0,
-                         "Beacon ID must not be a sentinel value!");
+        UVBI_ASSERT(!i.empty());
+        UVBI_ASSERT_MSG(i.value() < getNumBeacons(),
+                        "Beacon ID must be less than number of beacons.");
+        UVBI_ASSERT_MSG(i.value() >= 0,
+                        "Beacon ID must not be a sentinel value!");
         return m_beacons.at(i.value())->errorCovariance().diagonal();
     }
 

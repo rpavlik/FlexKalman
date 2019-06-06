@@ -28,7 +28,7 @@
 #include "cvUtils.h"
 
 // Library/third-party includes
-#include <boost/assert.hpp>
+#include "UVBIAssert.h"
 #include <opencv2/features2d/features2d.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
@@ -325,7 +325,7 @@ namespace vbtracker {
         if (Algo::EdgeHoleExtractor == m_algo) {
             return m_extractor.getEdgeDetectedImage().clone();
         }
-        BOOST_ASSERT(Algo::SimpleBlobDetector == m_algo);
+        UVBI_ASSERT(Algo::SimpleBlobDetector == m_algo);
         // Fake the thresholded image to give an idea of what the
         // blob detector is doing.
         auto getCurrentThresh = [&](int i) {
