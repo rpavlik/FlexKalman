@@ -69,7 +69,7 @@ namespace vbtracker {
         getOptionalParameter(p.postEdgeDetectionBlurThreshold, config,
                              "postEdgeDetectionBlurThreshold");
     }
-} // End namespace vbtracker
-} // End namespace osvr
+} // namespace vbtracker
+} // namespace osvr
 
 #endif // INCLUDED_ParseBlobParams_h_GUID_D159000A_2DAE_4C96_3DB1_C22A119C7513

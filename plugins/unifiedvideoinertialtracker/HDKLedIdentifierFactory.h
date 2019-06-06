@@ -56,7 +56,7 @@ namespace vbtracker {
     /// @brief Factory function to create an HDK Led Identifier object using the
     /// random images patterns.
     LedIdentifierPtr createRandomHDKLedIdentifier();
-} // End namespace vbtracker
-} // End namespace osvr
+} // namespace vbtracker
+} // namespace osvr
 
 #endif // INCLUDED_HDKLedIdentifierFactory_h_GUID_7CB9381C_A55F_49B4_7322_DB88F3B8AD65

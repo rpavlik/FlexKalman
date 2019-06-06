@@ -246,6 +246,6 @@ namespace vbtracker {
         return config;
     }
 #undef PARAMNAME
-} // End namespace vbtracker
-} // End namespace osvr
+} // namespace vbtracker
+} // namespace osvr
 #endif // INCLUDED_ConfigurationParser_h_GUID_933C79EE_3392_4C8D_74D5_D9A72580DA6A

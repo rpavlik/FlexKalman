@@ -238,6 +238,6 @@ namespace vbtracker {
 
         return CameraParameters(fx, cv::Size(640, 480), {k1, k2, p1, p2, k3});
     }
-} // End namespace vbtracker
-} // End namespace osvr
+} // namespace vbtracker
+} // namespace osvr
 #endif // INCLUDED_CameraParameters_h_GUID_5BBC6151_6C1F_44B1_14FC_34CB6BF601E9

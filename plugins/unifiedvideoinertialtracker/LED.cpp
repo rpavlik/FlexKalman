@@ -81,5 +81,5 @@ namespace vbtracker {
         }
     }
 
-} // End namespace vbtracker
-} // End namespace osvr
+} // namespace vbtracker
+} // namespace osvr

@@ -178,7 +178,7 @@ namespace vbtracker {
         bool m_wasUsedLastFrame = false;
     };
 
-} // End namespace vbtracker
-} // End namespace osvr
+} // namespace vbtracker
+} // namespace osvr
 
 #endif // INCLUDED_LED_h_GUID_C53E1134_AD6B_46B0_4808_19C7EAA7D0EC

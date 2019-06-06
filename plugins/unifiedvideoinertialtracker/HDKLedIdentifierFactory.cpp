@@ -242,5 +242,5 @@ namespace vbtracker {
         return createHDKLedIdentifier(
             OsvrHdkLedIdentifier_RANDOM_IMAGES_PATTERNS);
     }
-} // End namespace vbtracker
-} // End namespace osvr
+} // namespace vbtracker
+} // namespace osvr

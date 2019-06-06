@@ -60,7 +60,7 @@ namespace vbtracker {
         PatternList d_patterns; //< Patterns by index
     };
 
-} // End namespace vbtracker
-} // End namespace osvr
+} // namespace vbtracker
+} // namespace osvr
 
 #endif // INCLUDED_HDKLedIdentifier_h_GUID_A1204292_1F90_459E_44AD_18BA932C0E93

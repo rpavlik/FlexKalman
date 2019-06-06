@@ -34,5 +34,5 @@
 namespace osvr {
 namespace vbtracker {
     LedIdentifier::~LedIdentifier() {}
-} // End namespace vbtracker
-} // End namespace osvr
+} // namespace vbtracker
+} // namespace osvr
