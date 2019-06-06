@@ -81,7 +81,7 @@ namespace util {
         template <typename Tag> struct SentinelValue {
             typedef typename WrappedType<Tag>::type wrapped_type;
             static wrapped_type get() {
-                return std::numeric_limits<wrapped_type>::max();
+                return (std::numeric_limits<wrapped_type>::max)();
             }
         };
 
