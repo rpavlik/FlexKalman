@@ -60,7 +60,6 @@
 #include <opencv2/imgproc/imgproc.hpp> // for image scaling
 
 #include <boost/assert.hpp>
-#include <boost/noncopyable.hpp>
 #include <nonstd/variant.hpp>
 
 #include <util/Stride.h>
@@ -87,9 +86,14 @@ using osvr::vbtracker::TrackedBody;
 using osvr::vbtracker::TrackedBodyIMU;
 using osvr::vbtracker::TrackerThread;
 
-class UnifiedVideoInertialTracker : boost::noncopyable {
+class UnifiedVideoInertialTracker {
   public:
     using size_type = std::size_t;
+
+    // noncopyable
+    UnifiedVideoInertialTracker(UnifiedVideoInertialTracker const &) = delete;
+    UnifiedVideoInertialTracker &
+    operator=(UnifiedVideoInertialTracker const &) = delete;
 
   private:
     osvr::pluginkit::DeviceToken m_dev;

@@ -35,7 +35,6 @@
 // Library/third-party includes
 #include <KalmanFramework/EigenCoreGeometry.h>
 #include <KalmanFramework/TimeValue.h>
-#include <boost/noncopyable.hpp>
 #include <opencv2/core/core.hpp>
 
 // Standard includes
@@ -49,6 +48,11 @@ namespace vbtracker {
     struct TrackingSystem::Impl : private boost::noncopyable {
         Impl(ConfigParams const &params);
         ~Impl();
+
+        // noncopyable
+        Impl(Impl const &) = delete;
+        Impl &operator=(Impl const &) = delete;
+
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
         void triggerDebugDisplay(TrackingSystem &tracking);
 

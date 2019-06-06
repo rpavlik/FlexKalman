@@ -38,7 +38,6 @@
 
 #include <opencv2/core/core.hpp> // for basic OpenCV types
 
-#include <boost/noncopyable.hpp>
 #include <folly/ProducerConsumerQueue.h>
 #include <folly/sorted_vector_types.h>
 
@@ -73,7 +72,7 @@ namespace vbtracker {
 
     class ImageProcessingThread;
 
-    class TrackerThread : boost::noncopyable {
+    class TrackerThread {
       public:
         TrackerThread(TrackingSystem &trackingSystem, ImageSource &imageSource,
                       BodyReportingVector &reportingVec,
@@ -81,6 +80,10 @@ namespace vbtracker {
                       std::int32_t cameraUsecOffset = 0, bool bufferImu = false,
                       bool debugData = false);
         ~TrackerThread();
+
+        // Non-copyable
+        TrackerThread(TrackerThread const &) = delete;
+        TrackerThread &operator=(TrackerThread const &) = delete;
 
         /// Thread function-call operator: should be invoked by a lambda in a
         /// dedicated thread.
