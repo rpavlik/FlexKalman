@@ -44,6 +44,7 @@ if(WIN32)
         directshow-camera
         osvr_codecvt
         wbemuuid)
+    target_include_directories(uvbi-image-sources PRIVATE ${BOOST_INCLUDE_DIRS})
 else()
     target_link_libraries(uvbi-image-sources PRIVATE ${libuvc_LIBRARIES} ${LIBUSB1_LIBRARIES})
     target_include_directories(uvbi-image-sources PRIVATE ${libuvc_INCLUDE_DIRS} ${LIBUSB1_INCLUDE_DIRS})

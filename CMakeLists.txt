@@ -16,6 +16,13 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin")
 find_package(OpenCV REQUIRED)
 find_package(JsonCpp REQUIRED)
 
+# Only required on Windows - elsewhere, just used for extra tools.
+if(WIN32)
+    find_package(Boost REQUIRED)
+else()
+    find_package(Boost QUIET)
+endif()
+
 if(WIN32)
     # On Win32, for best experience, enforce the use of the DirectShow capture library.
     # TODO fix this package so it finds things on MSYS2/MinGW64
