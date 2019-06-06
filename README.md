@@ -15,4 +15,6 @@ Some directories under `/vendor` are in fact not external libraries vendored-in,
 - `/vendor/eigen` - Unpacked release from <http://eigen.tuxfamily.org/> - header-only library under the MPL2 (a file-level copyleft, compatible with proprietary software), define `EIGEN_MPL2_ONLY` to exclude modules with other license from the build (done in OSVR-Core build system).
 - `/vendor/FloatExceptions` - Modified code ([original author: Bruce Dawson](http://randomascii.wordpress.com/2012/04/21/exceptional-floating-point/) for development use only, usage should not be committed or merged into master. MIT licensed.
 - `/vendor/folly` - Submodule of [C++11 components originally developed and widely used at Facebook](https://github.com/facebook/folly). Apache License, Version 2.0.
+- `/vendor/optional-lite-1.2.2` - Single-header std::optional implementation/backport from <https://github.com/martinmoene/optional-lite>. BSL 1.0.
 - `/vendor/util-headers` - Subset of headers installed from <https://github.com/rpavlik/util-headers>. BSL 1.0.
+- `/vendor/variant-lite-3.2.0` - Single-header std::variant implementation/backport from <https://github.com/martinmoene/variant-lite>. BSL 1.0.

@@ -4,6 +4,14 @@ if(BUILD_TESTING)
     add_subdirectory(catch-single-header-2.8.0)
 endif()
 
+# Interface target for optional-lite (std::optional wrapper/backport)
+add_library(optional-lite INTERFACE)
+target_include_directories(optional-lite INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/optional-lite-3.2.0/include")
+
+# Interface target for variant-lite (std::variant wrapper/backport)
+add_library(variant-lite INTERFACE)
+target_include_directories(variant-lite INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/variant-lite-1.2.2/include")
+
 # Interface target for util headers
 add_library(util-headers INTERFACE)
 target_include_directories(util-headers INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/util-headers")
