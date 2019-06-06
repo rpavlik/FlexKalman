@@ -32,22 +32,15 @@
 
 // Library/third-party includes
 #include <KalmanFramework/EigenInterop.h>
-#include <KalmanFramework/TypePack/Contains.h>
 #include <nonstd/variant.hpp>
 
 // Standard includes
-#include <type_traits>
+// - none
 
 namespace osvr {
 namespace vbtracker {
     namespace detail {
         using nonstd::visit;
-
-        /// Alias to determine if a class is in fact a "Timestamped Report"
-        /// type.
-        template <typename Report>
-        using is_timestamped_report =
-            typepack::contains<TimestampedReports, Report>;
 
         /// Implementation detail of unpacking and handling the IMU messages.
         class IMUMessageProcessor {
@@ -96,7 +89,7 @@ namespace vbtracker {
         ImuMessageCategory messageType = ImuMessageCategory::Empty;
         detail::IMUMessageProcessor processor{bodyId, messageType};
         visit(processor, m);
-        return std::make_pair(processor.bodyId, processor.messageType);
+        return std::make_pair(bodyId, messageType);
     }
 } // namespace vbtracker
 } // namespace osvr

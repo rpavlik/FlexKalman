@@ -31,7 +31,6 @@
 // Library/third-party includes
 #include <KalmanFramework/ClientReportTypesC.h>
 #include <KalmanFramework/TimeValue.h>
-#include <KalmanFramework/TypePack/List.h>
 #include <nonstd/variant.hpp>
 
 // Standard includes
@@ -81,11 +80,6 @@ namespace vbtracker {
     /// An angular velocity report data structure, along with the report time
     /// and the internal tracking system's pointer to IMU object.
     using TimestampedAngVel = TimestampedImuReport<OSVR_AngularVelocityReport>;
-
-    /// Typelist containing only the member types of the MessageEntry variant
-    /// type that actually constitute valid report types.
-    using TimestampedReports =
-        typepack::list<TimestampedOrientation, TimestampedAngVel>;
 
     /// A "typesafe tagged-union" variant that can hold an IMU report data along
     /// with the timestamp and the pointer to the tracking system's IMU object
