@@ -45,7 +45,7 @@ namespace vbtracker {
     class TrackingDebugDisplay;
 
     /// Private implementation structure for TrackingSystem
-    struct TrackingSystem::Impl : private boost::noncopyable {
+    struct TrackingSystem::Impl {
         Impl(ConfigParams const &params);
         ~Impl();
 
