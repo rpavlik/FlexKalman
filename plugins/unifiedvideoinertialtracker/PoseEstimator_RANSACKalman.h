@@ -29,6 +29,7 @@
 #include "ConfigParams.h"
 #include "PoseEstimatorTypes.h"
 #include "PoseEstimator_RANSAC.h"
+#include "Types.h"
 
 // Library/third-party includes
 // - none

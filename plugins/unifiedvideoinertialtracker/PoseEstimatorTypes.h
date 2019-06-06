@@ -34,6 +34,7 @@
 
 // Library/third-party includes
 #include <KalmanFramework/EigenCoreGeometry.h>
+#include <KalmanFramework/TimeValue.h>
 
 // Standard includes
 #include <vector>
