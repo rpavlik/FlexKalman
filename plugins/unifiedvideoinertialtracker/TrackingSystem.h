@@ -35,7 +35,6 @@
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 #include <KalmanFramework/TimeValue.h>
-#include <KalmanFramework/TypeSafeIdHash.h>
 #include <opencv2/core/core.hpp>
 
 // Standard includes

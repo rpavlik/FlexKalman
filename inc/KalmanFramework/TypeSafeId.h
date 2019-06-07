@@ -1,14 +1,20 @@
 /** @file
     @brief Header
 
+    Based on OSVR header inc/osvr/Util/TypeSafeId.h
+    but simplified to remove reference accessor
+    and explicitly pass config type, instead
+
     @date 2015
 
-    @author
-    Sensics, Inc.
-    <http://sensics.com/osvr>
+    @author Sensics, Inc. <http://sensics.com/osvr>
+    @author Ryan Pavlik <ryan.pavlik@collabora.com>
 */
 
 // Copyright 2015 Sensics, Inc.
+// Copyright 2018-2019 Collabora, Ltd.
+//
+// SPDX-License-Identifier: Apache-2.0
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,164 +28,139 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_TypeSafeId_h_GUID_137CA336_382A_4796_7735_4521F02D5AC2
-#define INCLUDED_TypeSafeId_h_GUID_137CA336_382A_4796_7735_4521F02D5AC2
+#pragma once
 
 // Internal Includes
-#include <KalmanFramework/StdInt.h>
-#include <KalmanFramework/BasicTypeTraits.h>
+// - none
 
 // Library/third-party includes
 // - none
 
 // Standard includes
+#include <cstdint>
+#include <functional>
 #include <limits>
 
-namespace osvr {
+namespace flexkalman {
 namespace util {
-
-    template <class Tag> class TypeSafeId;
-    template <class Tag> class TypeSafeIdBase;
-    template <class Tag> class TypeSafeIdRefAccessorBase;
-    /// @brief Namespace for traits templates associated with
-    /// ::osvr::util::TypeSafeId
-    namespace typesafeid_traits {
-        /// @brief Explicitly specialize for your tag type if you want a
-        /// different underlying type.
-        template <typename Tag> struct WrappedType { typedef uint32_t type; };
-
-        /// Class for your specialization of ProvideReferenceAccessor
-        /// to inherit from if you want to provide a non-const l-value reference
-        /// accessor, weakening the typesafety of this wrapper.
-        struct ShouldHaveReferenceAccessor {
-            enum { value = true };
-        };
-
-        /// Explicitly specialize this for your tag type to derive from
-        /// ProvideLValueReferenceAccessor if you want a `value()` member that
-        /// returns a non-const reference (an l-value reference) - which does
-        /// make it slightly less typesafe. For example,
-        /// <code>
-        /// template<> struct ProvideReferenceAccessor<MyTag> :
-        /// ShouldHaveReferenceAccessor {};
-        /// </code>
-        template <typename Tag> struct ProvideReferenceAccessor {
-            enum { value = false };
-        };
-
-        /// Selects one of the base classes based on whether we need that
-        /// reference accessor.
-        template <typename Tag> struct ComputeBaseClass {
-            typedef typename Conditional<ProvideReferenceAccessor<Tag>::value,
-                                         TypeSafeIdRefAccessorBase<Tag>,
-                                         TypeSafeIdBase<Tag> >::type type;
-        };
-
-        /// @brief Explicitly specialize for your tag type if you want a
-        /// different signal value for invalid/empty: default is the
-        /// maximum representable value for your type.
-        template <typename Tag> struct SentinelValue {
-            typedef typename WrappedType<Tag>::type wrapped_type;
-            static wrapped_type get() {
-                return (std::numeric_limits<wrapped_type>::max)();
-            }
-        };
-
-    } // namespace typesafeid_traits
+    template <typename T> struct TypeSafeIdMaxIntPolicy {
+        using type = T;
+        static constexpr type sentinel_value =
+            (std::numeric_limits<type>::max)();
+    };
+    using TypeSafeIdUint32Policy = TypeSafeIdMaxIntPolicy<std::uint32_t>;
 
     /// @brief A generic typesafe (as long as you use differing tag types)
     /// wrapper for identifiers (typically integers).
     ///
     /// @tparam Tag any type - does not have to be defined, just declared
     /// (so `struct mytag;` somewhere is fine). The tag serves to make integer
-    /// IDs have distinct types, and also serves as a look-up key in the
-    /// ::osvr::util::typesafeid_traits classes for underlying integer type
-    /// and sentinel empty/invalid value.
+    /// IDs have distinct types.
+    /// @tparam Policy A type providing a `type` typedef indicating the wrapped
+    /// type, and a static constexpr sentinel_value, used for default "empty"
+    /// construction.
     ///
     /// Initial implementation inspired by
     /// http://www.ilikebigbits.com/blog/2014/5/6/type-safe-identifiers-in-c
     /// though this version now strays quite far by strengthening
     /// type-safety and encapsulation, and by using traits classes to specify
     /// details based on tag type alone.
-    template <class Tag> class TypeSafeIdBase {
+    template <typename Tag, typename Policy = TypeSafeIdUint32Policy>
+    class TypeSafeId {
       public:
-        /// @brief The "public" type of the current class.
-        typedef TypeSafeId<Tag> type;
+        //! The type of the current class.
+        using type = TypeSafeId<Tag, Policy>;
 
-        /// @brief The contained/wrapped type.
-        typedef typename typesafeid_traits::WrappedType<Tag>::type wrapped_type;
+        //! The contained/wrapped type.
+        using wrapped_type = typename Policy::type;
 
-        /// @brief Static factory method to return an invalid/empty ID.
-        static type invalid() { return type(); }
+        //! The sentinel value.
+        static constexpr wrapped_type sentinel_value = Policy::sentinel_value;
 
-        /// Default constructor which will set m_val to the empty/invalid
-        /// value.
-        TypeSafeIdBase() : m_val(sentinel()) {}
+        /*! Default constructor which will set value_ to the
+         * sentinel (empty/invalid) value.
+         */
+        constexpr TypeSafeId() : value_(sentinel_value) {}
 
-        /// Explicit constructor from the wrapped type
-        explicit TypeSafeIdBase(wrapped_type val) : m_val(val) {}
+        //! Explicit constructor from the wrapped type
+        constexpr explicit TypeSafeId(wrapped_type val) : value_(val) {}
 
-        /// Copy constructor
-        TypeSafeIdBase(TypeSafeIdBase const &other) : m_val(other.m_val) {}
+        //! Check whether the ID is empty/invalid
+        constexpr bool empty() const { return value_ == sentinel_value; }
 
-        /// @brief Check whether the ID is empty/invalid
-        bool empty() const { return m_val == sentinel(); }
+        //! Check if ID is non-empty
+        constexpr explicit operator bool() const { return !empty(); }
 
-        /// @brief Read-only accessor to the (non-type-safe!) wrapped value
-        wrapped_type value() const { return m_val; }
+        //! Read-only accessor to the (non-type-safe!) wrapped value
+        constexpr wrapped_type value() const { return value_; }
 
-      protected:
-        /// @brief Utility function to access the SentinelValue trait.
-        static wrapped_type sentinel() {
-            return typesafeid_traits::SentinelValue<Tag>::get();
-        }
-        wrapped_type m_val;
+      private:
+        //! Wrapped value
+        wrapped_type value_;
     };
-
-    template <class Tag>
-    class TypeSafeIdRefAccessorBase : public TypeSafeIdBase<Tag> {
-      public:
-        typedef TypeSafeIdBase<Tag> Base;
-        typedef typename typesafeid_traits::WrappedType<Tag>::type wrapped_type;
-        TypeSafeIdRefAccessorBase() : Base() {}
-        explicit TypeSafeIdRefAccessorBase(wrapped_type val) : Base(val) {}
-        TypeSafeIdRefAccessorBase(TypeSafeIdRefAccessorBase const &other)
-            : Base(other) {}
-
-        /// @brief Non-const reference accessor to the (non-type-safe!)
-        /// wrapped value - only available if specifically provided for by a tag
-        /// specialization of traits.
-        wrapped_type &value() { return Base::m_val; }
-    };
-
-    template <class Tag>
-    class TypeSafeId : public typesafeid_traits::ComputeBaseClass<Tag>::type {
-      public:
-        /// @brief The type of the current class.
-        typedef TypeSafeId<Tag> type;
-        /// @brief The implementation base.
-        typedef typename typesafeid_traits::ComputeBaseClass<Tag>::type Base;
-        typedef typename typesafeid_traits::WrappedType<Tag>::type wrapped_type;
-        TypeSafeId() : Base() {}
-        explicit TypeSafeId(wrapped_type val) : Base(val) {}
-        TypeSafeId(TypeSafeId const &other) : Base(other) {}
-    };
-
-    /// @brief Equality comparison operator for type-safe IDs
-    /// @relates ::osvr::util::TypeSafeId
-    template <typename Tag>
-    inline bool operator==(TypeSafeId<Tag> const a, TypeSafeId<Tag> const b) {
-        return a.value() == b.value();
+    /*! Find out if a TypeSafeId if empty/invalid.
+     *
+     * @relates ::flexkalman::util::TypeSafeId
+     */
+    template <typename Tag, typename Policy>
+    inline constexpr bool is_empty(TypeSafeId<Tag, Policy> const id) noexcept {
+        return id.empty();
     }
 
-    /// @brief Inequality comparison operator for type-safe IDs
-    /// @relates ::osvr::util::TypeSafeId
-    template <typename Tag>
-    inline bool operator!=(TypeSafeId<Tag> const a, TypeSafeId<Tag> const b) {
-        return a.value() != b.value();
+    /*! Get the (type-unsafe) wrapped value of a TypeSafeId value.
+     *
+     * If the ID is empty, you will get the sentinel value back.
+     *
+     * Can be found through argument-dependent lookup, in theory. I think
+     * this means you could use it unqualified.
+     *
+     * @relates ::flexkalman::util::TypeSafeId
+     */
+    template <typename Tag, typename Policy>
+    inline constexpr typename Policy::type
+    get(TypeSafeId<Tag, Policy> const id) noexcept {
+        return id.value();
+    }
+
+    /*! @brief Equality comparison operator for type-safe IDs.
+     *
+     * @relates ::flexkalman::util::TypeSafeId
+     */
+    template <typename Tag, typename Policy>
+    inline constexpr bool operator==(TypeSafeId<Tag, Policy> const a,
+                                     TypeSafeId<Tag, Policy> const b) {
+        return get(a) == get(b);
+    }
+
+    /*! @brief Inequality comparison operator for type-safe IDs.
+     *
+     * @relates ::flexkalman::util::TypeSafeId
+     */
+    template <typename Tag, typename Policy>
+    inline constexpr bool operator!=(TypeSafeId<Tag, Policy> const a,
+                                     TypeSafeId<Tag, Policy> const b) {
+        return get(a) != get(b);
+    }
+    /*! @brief Less-than comparison operator for type-safe IDs.
+     *
+     * @relates ::flexkalman::util::TypeSafeId
+     */
+    template <typename Tag, typename Policy>
+    inline constexpr bool operator<(TypeSafeId<Tag, Policy> const a,
+                                    TypeSafeId<Tag, Policy> const b) {
+        return get(a) < get(b);
     }
 
 } // namespace util
-} // namespace osvr
+} // namespace flexkalman
 
-#endif // INCLUDED_TypeSafeId_h_GUID_137CA336_382A_4796_7735_4521F02D5AC2
+namespace std {
+template <typename Tag, typename Policy>
+struct hash<::flexkalman::util::TypeSafeId<Tag, Policy>> {
+    using Type = ::flexkalman::util::TypeSafeId<Tag, Policy>;
+    using WrappedType = typename Type::wrapped_type;
+    size_t operator()(const Type &x) const {
+        return std::hash<WrappedType>{}(get(x));
+    }
+};
+} // namespace std

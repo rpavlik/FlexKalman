@@ -30,7 +30,6 @@
 
 // Library/third-party includes
 #include <KalmanFramework/TypeSafeId.h>
-#include <KalmanFramework/TypeSafeIdHash.h>
 
 // Standard includes
 #include <cstdint>
@@ -38,31 +37,20 @@
 
 namespace osvr {
 namespace vbtracker {
-    namespace detail {
-        /// Type tag for type-safe body ID
-        struct BodyIdTag;
-        /// Type tag for type-safe target ID (per body)
-        struct TargetIdTag;
-    } // namespace detail
-} // namespace vbtracker
-namespace util {
-    namespace typesafeid_traits {
-        /// Tag-based specialization of underlying value type for body ID
-        template <> struct WrappedType<vbtracker::detail::BodyIdTag> {
-            using type = std::uint16_t;
-        };
-        /// Tag-based specialization of underlying value type for target ID
-        template <> struct WrappedType<vbtracker::detail::TargetIdTag> {
-            using type = std::uint8_t;
-        };
-    } // namespace typesafeid_traits
-} // namespace util
 
-namespace vbtracker {
+    namespace detail {
+
+        using BodyIdPolicy =
+            flexkalman::util::TypeSafeIdMaxIntPolicy<std::uint16_t>;
+        using TargetIdPolicy =
+            flexkalman::util::TypeSafeIdMaxIntPolicy<std::uint8_t>;
+    } // namespace detail
+
+    using flexkalman::util::TypeSafeId;
     /// Type-safe zero-based body ID.
-    using BodyId = util::TypeSafeId<detail::BodyIdTag>;
+    using BodyId = TypeSafeId<struct BodyIdTag, detail::BodyIdPolicy>;
     /// Type-safe zero-based target ID.
-    using TargetId = util::TypeSafeId<detail::TargetIdTag>;
+    using TargetId = TypeSafeId<struct TargetIdTag, detail::TargetIdPolicy>;
     /// Type-safe zero-based target ID qualified with its body ID.
     using BodyTargetId = std::pair<BodyId, TargetId>;
 
@@ -76,9 +64,20 @@ namespace vbtracker {
 } // namespace osvr
 
 namespace std {
-template <>
-struct hash<osvr::vbtracker::BodyTargetId>
-    : osvr::util::HashIdAggregate<osvr::vbtracker::BodyTargetId> {};
+template <> struct hash<osvr::vbtracker::BodyTargetId> {
+
+    size_t operator()(const osvr::vbtracker::BodyTargetId &x) const {
+        /// Using xor for safety internally, in case I got the shifts wrong,
+        /// but it should be:
+        /// [padding][bits from first element][bits from second element]
+        std::uint32_t composed =
+            (get(x.first) << sizeof(x.second)) ^ get(x.second);
+
+        static_assert(sizeof(composed) <= sizeof(x),
+                      "Should not lose data here!");
+        return std::hash<std::uint32_t>{}(composed);
+    }
+};
 } // namespace std
 
 #endif // INCLUDED_BodyIdTypes_h_GUID_4FD241A3_25E9_42AF_F075_8EE8191C02F0

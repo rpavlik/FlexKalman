@@ -37,42 +37,20 @@
 
 namespace osvr {
 namespace vbtracker {
-    namespace detail {
-        /// Type tag for type-safe zero-based beacon id
-        struct ZeroBasedBeaconIdTag;
-        /// Type tag for type-safe one-based beacon id
-        struct OneBasedBeaconIdTag;
-
-    } // namespace detail
-
     /// All beacon IDs, whether 0 or 1 based, are ints on the inside.
     using UnderlyingBeaconIdType = int;
-} // namespace vbtracker
-} // namespace osvr
+    namespace detail {
+        using BeaconIdPolicy =
+            flexkalman::util::TypeSafeIdMaxIntPolicy<UnderlyingBeaconIdType>;
+    } // namespace detail
 
-namespace osvr {
-namespace util {
-    namespace typesafeid_traits {
-        /// Tag-based specialization of underlying value type for beacon ID
-        template <>
-        struct WrappedType<vbtracker::detail::ZeroBasedBeaconIdTag> {
-            using type = vbtracker::UnderlyingBeaconIdType;
-        };
-        /// Tag-based specialization of underlying value type for beacon ID
-        template <> struct WrappedType<vbtracker::detail::OneBasedBeaconIdTag> {
-            using type = vbtracker::UnderlyingBeaconIdType;
-        };
-    } // namespace typesafeid_traits
-
-} // namespace util
-} // namespace osvr
-
-namespace osvr {
-namespace vbtracker {
+    using flexkalman::util::TypeSafeId;
     /// Type-safe zero-based beacon ID.
-    using ZeroBasedBeaconId = util::TypeSafeId<detail::ZeroBasedBeaconIdTag>;
+    using ZeroBasedBeaconId =
+        TypeSafeId<struct ZeroBasedBeaconIdTag, detail::BeaconIdPolicy>;
     /// Type-safe one-based beacon ID.
-    using OneBasedBeaconId = util::TypeSafeId<detail::OneBasedBeaconIdTag>;
+    using OneBasedBeaconId =
+        TypeSafeId<struct OneBasedBeaconIdTag, detail::BeaconIdPolicy>;
 
     /// Overloaded conversion function to turn any beacon ID into one-based,
     /// respecting the convention that negative values don't change.
