@@ -106,7 +106,7 @@ class StringField {
 
     StringField(StringField const &other, const std::size_t b,
                 const std::size_t e)
-        : line_(other.line_), b_(b), e_(e_), ve_(virtualEndPos(line_, e_)) {
+        : line_(other.line_), b_(b), e_(e), ve_(virtualEndPos(line_, e_)) {
         checkInvariants();
     }
 
