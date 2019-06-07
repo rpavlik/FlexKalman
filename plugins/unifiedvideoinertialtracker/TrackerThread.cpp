@@ -34,7 +34,6 @@
 
 // Library/third-party includes
 #include <KalmanFramework/EigenInterop.h>
-#include <KalmanFramework/Finally.h>
 
 // Standard includes
 #include <future>
