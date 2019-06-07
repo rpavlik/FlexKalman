@@ -16,6 +16,7 @@ if(Boost_FOUND)
     target_link_libraries(TrackerParameterFinder
         PRIVATE
         uvbi-core
+        typepack-headers
         JsonCpp::JsonCpp)
     target_include_directories(TrackerParameterFinder PRIVATE ${BOOST_INCLUDE_DIRS})
 endif()

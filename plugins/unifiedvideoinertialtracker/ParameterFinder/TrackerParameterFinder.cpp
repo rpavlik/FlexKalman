@@ -28,11 +28,8 @@
 #include "ParameterSets.h"
 #include "TransformFindingRoutine.h"
 
-#include <KalmanFramework/TypePack/ForEachType.h>
-#include <KalmanFramework/TypePack/Head.h>
-#include <KalmanFramework/TypePack/List.h>
-
 // Library/third-party includes
+#include <TypePack.h>
 #include <boost/algorithm/string/predicate.hpp> // for argument handling
 
 // Standard includes
@@ -45,9 +42,9 @@
 namespace ps {
 using namespace osvr::vbtracker::optimization_param_sets;
 using ParamSets =
-    osvr::typepack::list<ProcessNoiseAndDecay, ProcessNoiseVarianceAndDecay,
-                         BrightAndNew, HighResidual, VariancePenalties>;
-using DefaultParamSet = osvr::typepack::head<ps::ParamSets>;
+    typepack::list<ProcessNoiseAndDecay, ProcessNoiseVarianceAndDecay,
+                   BrightAndNew, HighResidual, VariancePenalties>;
+using DefaultParamSet = typepack::head<ps::ParamSets>;
 } // namespace ps
 
 /// Adding a new entry here means you must also add it to RECOGNIZED_ROUTINES,
@@ -114,7 +111,7 @@ int usage(const char *argv0) {
            "argument specifying the parameter set that they optimize, one "
            "of:\n";
 
-    osvr::typepack::for_each_type<ps::ParamSets>(PrintParamSetOptions{});
+    typepack::for_each_type<ps::ParamSets>(PrintParamSetOptions{});
     std::cerr << "as well as an additional optional switch, --cost, if you'd "
                  "like to just run the current parameters through and compute "
                  "the cost, rather than optimize.\n\n";
@@ -179,7 +176,7 @@ int parseParamSetForParamOptimizer(osvr::vbtracker::ParamOptimizerFunc &func,
     osvr::vbtracker::ParamOptimizerFunc result;
     std::string paramSetName;
     ParseArgumentAsParamSet<RefSource> functor(result, paramSetName);
-    osvr::typepack::for_each_type<ps::ParamSets>(functor, argv[2]);
+    typepack::for_each_type<ps::ParamSets>(functor, argv[2]);
     if (result) {
         std::cout << "Will process parameter set " << paramSetName
                   << " as specified on the command line.\n";
