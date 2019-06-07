@@ -30,11 +30,8 @@
 #define INCLUDED_ClientReportTypesC_h_GUID_E79DAB07_78B7_4795_1EB9_CA6EEB274AEE
 
 /* Internal Includes */
-#include <KalmanFramework/Pose3C.h>
-
+#include <KalmanFramework/MathTypesC.h>
 #include <KalmanFramework/SkeletonC.h>
-#include <KalmanFramework/Vec2C.h>
-#include <KalmanFramework/Vec3C.h>
 
 /* Library/third-party includes */
 /* none */

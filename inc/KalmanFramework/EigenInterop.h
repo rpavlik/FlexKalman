@@ -27,7 +27,7 @@
 #define INCLUDED_EigenInterop_h_GUID_A07DFDC3_BA71_4894_6593_732B364A2AE7
 
 // Internal Includes
-#include <KalmanFramework/Pose3C.h>
+#include <KalmanFramework/MathTypesC.h>
 
 // Library/third-party includes
 #include <Eigen/Core>
