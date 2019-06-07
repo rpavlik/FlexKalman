@@ -30,7 +30,6 @@
 
 /* Internal Includes */
 #include <KalmanFramework/MathTypesC.h>
-#include <KalmanFramework/SkeletonC.h>
 
 /* Library/third-party includes */
 /* none */
@@ -55,6 +54,9 @@ typedef uint32_t OSVR_ChannelCount;
 /** @addtogroup ClientKit
     @{
 */
+
+/** @brief Opaque type of a skeleton configuration. */
+typedef struct OSVR_SkeletonObject *OSVR_Skeleton;
 
 /** @name State types
 @{

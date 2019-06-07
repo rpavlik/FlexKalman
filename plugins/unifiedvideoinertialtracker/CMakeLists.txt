@@ -62,7 +62,6 @@ add_library(uvbi-core STATIC
     RoomCalibration.h
     SpaceTransformations.h
     StateHistory.h
-    TimeValueChrono.h
     TrackedBody.cpp
     TrackedBody.h
     TrackedBodyIMU.cpp

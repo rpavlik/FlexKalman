@@ -264,6 +264,7 @@ inline bool operator!=(const OSVR_TimeValue &tvA, const OSVR_TimeValue &tvB) {
     return (tvA.seconds != tvB.seconds) ||
            (tvA.microseconds != tvB.microseconds);
 }
+
 #endif
 
 /** @} */

@@ -24,7 +24,7 @@
 
 // Internal Includes
 #include "ImageSourceFactories.h"
-#include <KalmanFramework/TimeValueChrono.h>
+#include <KalmanFramework/TimeValue.h>
 
 // Library/third-party includes
 #include <opencv2/highgui/highgui.hpp> // for image capture

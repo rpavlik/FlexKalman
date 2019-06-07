@@ -26,10 +26,21 @@
 #include "BeaconSetupData.h"
 
 // Library/third-party includes
-#include <KalmanFramework/Verbosity.h>
+// - none
 
 // Standard includes
 // - none
+
+// Dummy defines since logging framework was removed.
+#define KALMANFRAMEWORK_TRACE(...)                                             \
+    do {                                                                       \
+    } while (0)
+#define KALMANFRAMEWORK_DEBUG(...)                                             \
+    do {                                                                       \
+    } while (0)
+#define KALMANFRAMEWORK_DEV_VERBOSE(...)                                       \
+    do {                                                                       \
+    } while (0)
 
 namespace osvr {
 namespace vbtracker {

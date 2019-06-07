@@ -31,7 +31,7 @@
 #include <Eigen/Geometry>
 #include <KalmanFramework/EigenInterop.h>
 #include <KalmanFramework/EigenQuatExponentialMap.h>
-#include <KalmanFramework/TimeValueChrono.h>
+#include <KalmanFramework/TimeValue.h>
 
 // Standard includes
 // - none

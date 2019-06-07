@@ -31,6 +31,7 @@
 // - none
 
 // Standard includes
+#include <chrono>
 #include <iomanip>
 #include <sstream>
 
@@ -128,3 +129,25 @@ namespace util {
     } // namespace time
 } // namespace util
 } // namespace osvr
+
+/// Add a util::time::TimeValue and a std::chrono::duration
+///
+/// NB: Can't have this in the usual namespaces because TimeValue is actually a
+/// typedef for the (un-namespaced) C struct, so ADL doesn't go looking in those
+/// namespaces, just in std:: and std::chrono:: (because of the second
+/// argument).
+template <typename Rep, typename Period>
+inline OSVR_TimeValue
+operator+(OSVR_TimeValue const &tv,
+          std::chrono::duration<Rep, Period> const &additionalTime) {
+    using namespace std::chrono;
+    using SecondsDuration = duration<OSVR_TimeValue_Seconds>;
+    using USecondsDuration = duration<OSVR_TimeValue_Microseconds, std::micro>;
+    auto ret = tv;
+    auto seconds = duration_cast<SecondsDuration>(additionalTime);
+    ret.seconds += seconds.count();
+    ret.microseconds +=
+        duration_cast<USecondsDuration>(additionalTime - seconds).count();
+    osvrTimeValueNormalize(&ret);
+    return ret;
+}

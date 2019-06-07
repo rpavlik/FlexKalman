@@ -102,42 +102,6 @@ namespace common {
         inline void markConcatenation(const char *, std::string const &) {}
 #endif // !KALMANFRAMEWORK_COMMON_TRACING_ENABLED
 
-        // -- Common code between dummy implementation and real implementation
-
-        /// @brief "Guard"-type class to trace the region of a server update
-        class ServerUpdate : public TracingRegion<MainTracePolicy> {
-          public:
-            ServerUpdate() : TracingRegion<MainTracePolicy>("ServerUpdate") {}
-        };
-
-        inline void markPathTreeBroadcast() {
-            MainTracePolicy::mark("Path Tree Broadcast");
-        }
-        inline void markHardwareDetect() {
-            MainTracePolicy::mark("Hardware Detection");
-        }
-
-        /// @brief "Guard"-type class to trace the region of a server update
-        class ClientUpdate : public TracingRegion<MainTracePolicy> {
-          public:
-            ClientUpdate() : TracingRegion<MainTracePolicy>("ClientUpdate") {}
-        };
-        inline void markTimestampOutOfOrder() {
-            MainTracePolicy::mark("Timestamp out of order");
-        }
-        inline void markNewTrackerData() {
-            MainTracePolicy::mark("New tracker data");
-        }
-        inline void markGetState(std::string const &path) {
-            markConcatenation<WorkerTracePolicy>("GetState ", path);
-        }
-        inline void markGetInterface(std::string const &path) {
-            markConcatenation<WorkerTracePolicy>("GetInterface ", path);
-        }
-        inline void markReleaseInterface(std::string const &path) {
-            markConcatenation<WorkerTracePolicy>("ReleaseInterface ", path);
-        }
-
     } // namespace tracing
 } // namespace common
 } // namespace osvr
