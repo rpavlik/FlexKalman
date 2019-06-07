@@ -38,7 +38,9 @@
 /* Standard includes */
 /* none */
 
-KALMANFRAMEWORK_EXTERN_C_BEGIN
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /** @addtogroup UtilMath
     @{
@@ -78,7 +80,9 @@ KALMANFRAMEWORK_INLINE void osvrQuatSetIdentity(OSVR_Quaternion *q) {
 
 /** @} */
 
-KALMANFRAMEWORK_EXTERN_C_END
+#ifdef __cplusplus
+} // extern "C"
+#endif
 
 #ifdef __cplusplus
 template <typename StreamType>

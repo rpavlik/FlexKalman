@@ -42,7 +42,9 @@
 /* Standard includes */
 /* none */
 
-KALMANFRAMEWORK_EXTERN_C_BEGIN
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /** @addtogroup UtilMath
     @{
@@ -65,6 +67,8 @@ KALMANFRAMEWORK_INLINE void osvrPose3SetIdentity(OSVR_Pose3 *pose) {
 }
 /** @} */
 
-KALMANFRAMEWORK_EXTERN_C_END
+#ifdef __cplusplus
+} // extern "C"
+#endif
 
 #endif

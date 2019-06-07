@@ -73,11 +73,11 @@ namespace vbtracker {
             report.vel.angularVelocity.incrementalRotation) =
             angVelVecToQuat(orientation, VELOCITY_DT, state.angularVelocity());
         report.vel.angularVelocity.dt = VELOCITY_DT;
-        report.vel.angularVelocityValid = OSVR_TRUE;
+        report.vel.angularVelocityValid = true;
 
         util::eigen_interop::map(report.vel.linearVelocity) =
             trackerToRoom * state.velocity();
-        report.vel.linearVelocityValid = OSVR_TRUE;
+        report.vel.linearVelocityValid = true;
     }
 
     std::unique_ptr<BodyReporting> BodyReporting::make() {

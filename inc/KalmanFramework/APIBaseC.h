@@ -12,6 +12,9 @@
 
 /*
 // Copyright 2014 Sensics, Inc.
+// Copyright 2019 Collabora, Ltd.
+//
+// SPDX-License-Identifier: Apache-2.0
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,25 +29,14 @@
 // limitations under the License.
 */
 
-#ifndef INCLUDED_APIBaseC_h_GUID_C5A2E769_2ADC_429E_D250_DF0883E6E5DB
-#define INCLUDED_APIBaseC_h_GUID_C5A2E769_2ADC_429E_D250_DF0883E6E5DB
+#pragma once
 
 #ifdef __cplusplus
-#define KALMANFRAMEWORK_C_ONLY(X)
-#define KALMANFRAMEWORK_CPP_ONLY(X) X
-#define KALMANFRAMEWORK_EXTERN_C_BEGIN extern "C" {
-#define KALMANFRAMEWORK_EXTERN_C_END }
 #define KALMANFRAMEWORK_INLINE inline
 #else
-#define KALMANFRAMEWORK_C_ONLY(X) X
-#define KALMANFRAMEWORK_CPP_ONLY(X)
-#define KALMANFRAMEWORK_EXTERN_C_BEGIN
-#define KALMANFRAMEWORK_EXTERN_C_END
 #ifdef _MSC_VER
 #define KALMANFRAMEWORK_INLINE static __inline
 #else
 #define KALMANFRAMEWORK_INLINE static inline
 #endif
-#endif
-
 #endif

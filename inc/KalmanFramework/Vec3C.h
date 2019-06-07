@@ -38,7 +38,9 @@
 /* Standard includes */
 /* none */
 
-KALMANFRAMEWORK_EXTERN_C_BEGIN
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /** @addtogroup UtilMath
     @{
@@ -75,7 +77,9 @@ KALMANFRAMEWORK_INLINE void osvrVec3Zero(OSVR_Vec3 *v) {
 
 /** @} */
 
-KALMANFRAMEWORK_EXTERN_C_END
+#ifdef __cplusplus
+} // extern "C"
+#endif
 
 #ifdef __cplusplus
 template <typename StreamType>

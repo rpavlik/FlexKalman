@@ -26,7 +26,7 @@
 #define INCLUDED_SkeletonC_h_GUID_0ED703E0_E838_4099_95A5_288FA779BF66
 
 /* Internal Includes */
-#include <KalmanFramework/APIBaseC.h>
+/* none */
 
 /* Library/third-party includes */
 /* none */
@@ -34,11 +34,15 @@
 /* Standard includes */
 /* none */
 
-KALMANFRAMEWORK_EXTERN_C_BEGIN
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /** @brief Opaque type of a skeleton configuration. */
 typedef struct OSVR_SkeletonObject *OSVR_Skeleton;
 
-KALMANFRAMEWORK_EXTERN_C_END
+#ifdef __cplusplus
+} // extern "C"
+#endif
 
 #endif // INCLUDED_SkeletonC_h_GUID_0ED703E0_E838_4099_95A5_288FA779BF66

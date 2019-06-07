@@ -30,12 +30,8 @@
 #define INCLUDED_ClientReportTypesC_h_GUID_E79DAB07_78B7_4795_1EB9_CA6EEB274AEE
 
 /* Internal Includes */
-#include <KalmanFramework/APIBaseC.h>
 #include <KalmanFramework/Pose3C.h>
-#include <KalmanFramework/StdInt.h>
 
-#include <KalmanFramework/BoolC.h>
-#include <KalmanFramework/ChannelCountC.h>
 #include <KalmanFramework/SkeletonC.h>
 #include <KalmanFramework/Vec2C.h>
 #include <KalmanFramework/Vec3C.h>
@@ -44,10 +40,22 @@
 /* none */
 
 /* Standard includes */
-/* none */
+#include <stdint.h>
 
-KALMANFRAMEWORK_EXTERN_C_BEGIN
+#ifdef __cplusplus
+extern "C" {
+#endif
 
+/** @addtogroup PluginKit
+@{
+*/
+
+/** @brief The integer type specifying a number of channels/sensors or a
+channel/sensor index.
+*/
+typedef uint32_t OSVR_ChannelCount;
+
+/** @} */
 /** @addtogroup ClientKit
     @{
 */
@@ -88,12 +96,12 @@ typedef struct OSVR_VelocityState {
     OSVR_LinearVelocityState linearVelocity;
     /** @brief Whether the data source reports valid data for
         #OSVR_VelocityState::linearVelocity */
-    OSVR_CBool linearVelocityValid;
+    bool linearVelocityValid;
 
     OSVR_AngularVelocityState angularVelocity;
     /** @brief Whether the data source reports valid data for
     #OSVR_VelocityState::angularVelocity */
-    OSVR_CBool angularVelocityValid;
+    bool angularVelocityValid;
 } OSVR_VelocityState;
 
 /** @brief Type of linear acceleration state */
@@ -108,12 +116,12 @@ typedef struct OSVR_AccelerationState {
     OSVR_LinearAccelerationState linearAcceleration;
     /** @brief Whether the data source reports valid data for
     #OSVR_AccelerationState::linearAcceleration */
-    OSVR_CBool linearAccelerationValid;
+    bool linearAccelerationValid;
 
     OSVR_AngularAccelerationState angularAcceleration;
     /** @brief Whether the data source reports valid data for
     #OSVR_AccelerationState::angularAcceleration */
-    OSVR_CBool angularAccelerationValid;
+    bool angularAccelerationValid;
 } OSVR_AccelerationState;
 
 /** @brief Type of button state */
@@ -278,9 +286,9 @@ typedef OSVR_DirectionState OSVR_EyeGazeDirectionState;
 
 /** @brief State for 3D gaze report */
 typedef struct OSVR_EyeTracker3DState {
-    OSVR_CBool directionValid;
+    bool directionValid;
     OSVR_DirectionState direction;
-    OSVR_CBool basePointValid;
+    bool basePointValid;
     OSVR_PositionState basePoint;
 } OSVR_EyeTracker3DState;
 
@@ -377,6 +385,8 @@ typedef struct OSVR_SkeletonReport {
 /** @} */
 
 /** @} */
-KALMANFRAMEWORK_EXTERN_C_END
+#ifdef __cplusplus
+} // extern "C"
+#endif
 
 #endif
