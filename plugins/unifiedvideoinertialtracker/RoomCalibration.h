@@ -29,8 +29,9 @@
 #include "BodyIdTypes.h"
 
 // Library/third-party includes
+#include <Eigen/Core>
+#include <Eigen/Geometry>
 #include <KalmanFramework/Angles.h>
-#include <KalmanFramework/EigenCoreGeometry.h>
 #include <KalmanFramework/EigenFilters.h>
 #include <KalmanFramework/TimeValue.h>
 

@@ -26,10 +26,11 @@
 #define INCLUDED_FlexibleKalmanBase_h_GUID_E4CC84A0_1B4F_4389_95ED_9C37F5FEE95D
 
 // Internal Includes
-#include "EigenCoreGeometry.h"
+// - none
 
 // Library/third-party includes
-// - none
+#include <Eigen/Core>
+#include <Eigen/Geometry>
 
 // Standard includes
 #include <type_traits>

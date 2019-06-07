@@ -29,7 +29,8 @@
 // - none
 
 // Library/third-party includes
-#include "EigenCoreGeometry.h"
+#include <Eigen/Core>
+#include <Eigen/Geometry>
 
 // Standard includes
 // - none

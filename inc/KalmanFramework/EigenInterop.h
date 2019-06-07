@@ -30,7 +30,8 @@
 #include <KalmanFramework/Pose3C.h>
 
 // Library/third-party includes
-#include <KalmanFramework/EigenCoreGeometry.h>
+#include <Eigen/Core>
+#include <Eigen/Geometry>
 #include <KalmanFramework/EigenExtras.h>
 
 // Standard includes

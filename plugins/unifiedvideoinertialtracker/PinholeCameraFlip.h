@@ -29,7 +29,8 @@
 #include "UsefulQuaternions.h"
 
 // Library/third-party includes
-#include <KalmanFramework/EigenCoreGeometry.h>
+#include <Eigen/Core>
+#include <Eigen/Geometry>
 
 // Standard includes
 #include <type_traits>

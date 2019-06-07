@@ -33,7 +33,8 @@
 
 // Library/third-party includes
 #include "UVBIAssert.h"
-#include <KalmanFramework/EigenCoreGeometry.h>
+#include <Eigen/Core>
+#include <Eigen/Geometry>
 #include <KalmanFramework/TimeValue.h>
 
 // Standard includes

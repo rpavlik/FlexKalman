@@ -26,14 +26,14 @@
 #define INCLUDED_AbsoluteOrientationMeasurement_h_GUID_71285DD8_A6F1_47A8_4B2E_B10171C91248
 
 // Internal Includes
-#include "EigenCoreGeometry.h"
 #include "EigenQuatExponentialMap.h"
 #include "ExternalQuaternion.h"
 #include "FlexibleKalmanBase.h"
 #include "PoseState.h"
 
 // Library/third-party includes
-// - none
+#include <Eigen/Core>
+#include <Eigen/Geometry>
 
 // Standard includes
 // - none

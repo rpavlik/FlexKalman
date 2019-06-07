@@ -26,7 +26,8 @@
 #define INCLUDED_EigenFilters_h_GUID_ECD959BF_587B_4ABB_30B3_E881B4520AC8
 
 // Internal Includes
-#include <KalmanFramework/EigenCoreGeometry.h>
+#include <Eigen/Core>
+#include <Eigen/Geometry>
 #include <KalmanFramework/EigenExtras.h>
 #include <KalmanFramework/EigenQuatExponentialMap.h>
 

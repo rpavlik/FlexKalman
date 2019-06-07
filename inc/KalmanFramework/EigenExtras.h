@@ -26,7 +26,8 @@
 #define INCLUDED_EigenExtras_h_GUID_7AE6CABA_333B_408A_C898_A2CBBE5BCE5D
 
 // Internal Includes
-#include <KalmanFramework/EigenCoreGeometry.h>
+#include <Eigen/Core>
+#include <Eigen/Geometry>
 
 // Library/third-party includes
 // - none

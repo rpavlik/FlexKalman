@@ -27,7 +27,8 @@
 #include "AngVelTools.h"
 
 // Library/third-party includes
-#include <KalmanFramework/EigenCoreGeometry.h>
+#include <Eigen/Core>
+#include <Eigen/Geometry>
 #include <KalmanFramework/EigenInterop.h>
 #include <KalmanFramework/EigenQuatExponentialMap.h>
 #include <KalmanFramework/TimeValueChrono.h>

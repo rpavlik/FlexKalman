@@ -28,10 +28,10 @@
 // Internal Includes
 #include "FlexibleKalmanBase.h"
 #include "PoseState.h"
-#include "EigenCoreGeometry.h"
 
 // Library/third-party includes
-// - none
+#include <Eigen/Core>
+#include <Eigen/Geometry>
 
 // Standard includes
 // - none

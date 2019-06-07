@@ -22,7 +22,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <KalmanFramework/EigenCoreGeometry.h>
+#include <Eigen/Core>
+#include <Eigen/Geometry>
 #include <iostream>
 #include <util/Stride.h>
 static ::util::Stride debugStride{401};

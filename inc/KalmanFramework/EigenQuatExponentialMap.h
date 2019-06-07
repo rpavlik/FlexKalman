@@ -26,10 +26,11 @@
 #define INCLUDED_EigenQuatExponentialMap_h_GUID_7E15BC44_BCFB_438B_902B_BA0787BEE405
 
 // Internal Includes
-#include "EigenCoreGeometry.h"
+// - none
 
 // Library/third-party includes
-// - none
+#include <Eigen/Core>
+#include <Eigen/Geometry>
 
 // Standard includes
 // - none

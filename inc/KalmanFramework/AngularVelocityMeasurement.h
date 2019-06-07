@@ -30,10 +30,10 @@
 #include "PoseState.h"
 #include "OrientationState.h"
 #include "ExternalQuaternion.h"
-#include "EigenCoreGeometry.h"
 
 // Library/third-party includes
-// - none
+#include <Eigen/Core>
+#include <Eigen/Geometry>
 
 // Standard includes
 // - none

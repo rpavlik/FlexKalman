@@ -30,8 +30,9 @@
 
 // Library/third-party includes
 #include "UVBIAssert.h"
+#include <Eigen/Core>
+#include <Eigen/Geometry>
 #include <KalmanFramework/Angles.h>
-#include <KalmanFramework/EigenCoreGeometry.h>
 
 // Standard includes
 #include <array>
