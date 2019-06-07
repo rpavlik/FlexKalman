@@ -20,8 +20,8 @@
 #define INCLUDED_PushBack_h_GUID_86DCDCD9_8EF3_4E95_FB45_B2209B97104A
 
 // Internal Includes
-#include "List.h"
 #include "ApplyList.h"
+#include "List.h"
 
 // Library/third-party includes
 // - none

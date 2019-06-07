@@ -77,7 +77,8 @@ namespace common {
                                       std::string const &string) {
             Policy::mark((fixedString + string).c_str());
         }
-#else  // KALMANFRAMEWORK_COMMON_TRACING_ENABLED ^^ // vv !KALMANFRAMEWORK_COMMON_TRACING_ENABLED
+#else  // KALMANFRAMEWORK_COMMON_TRACING_ENABLED ^^ // vv
+       // !KALMANFRAMEWORK_COMMON_TRACING_ENABLED
         struct MainTracePolicy {
             static TraceBeginStamp begin(const char *) { return 0; }
             static void end(const char *, TraceBeginStamp) {}

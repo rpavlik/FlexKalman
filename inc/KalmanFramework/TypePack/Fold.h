@@ -20,10 +20,10 @@
 #define INCLUDED_Fold_h_GUID_63DEE2B1_33B4_47B3_1289_B30F2B5BEA6B
 
 // Internal Includes
+#include "Apply.h"
+#include "List.h"
 #include "SplitList.h"
 #include "T.h"
-#include "List.h"
-#include "Apply.h"
 
 // Library/third-party includes
 // - none

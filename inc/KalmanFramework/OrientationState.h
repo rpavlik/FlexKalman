@@ -26,8 +26,8 @@
 #define INCLUDED_OrientationState_h_GUID_B2EA5856_0B18_43B1_CE18_8B7385E607CA
 
 // Internal Includes
-#include "FlexibleKalmanBase.h"
 #include "ExternalQuaternion.h"
+#include "FlexibleKalmanBase.h"
 
 // Library/third-party includes
 #include <Eigen/Core>

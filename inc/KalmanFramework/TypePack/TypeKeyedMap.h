@@ -23,9 +23,9 @@
 #define INCLUDED_TypeKeyedMap_h_GUID_29C6B905_4493_43AF_A811_71589CFD6FBC
 
 // Internal Includes
-#include "TypeKeyed.h"
 #include "Contains.h"
 #include "Length.h"
+#include "TypeKeyed.h"
 
 // Library/third-party includes
 // - none

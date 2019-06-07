@@ -3,8 +3,8 @@
    sophisticated, just enough to keep the hand-written stuff from taking over
    main().
 
-   Define KALMANFRAMEWORK_HAVE_BOOST before including if you want to be able to use the
-   case-insensitive comparisons, etc.
+   Define KALMANFRAMEWORK_HAVE_BOOST before including if you want to be able to
+   use the case-insensitive comparisons, etc.
 
     @date 2016
 

@@ -43,7 +43,7 @@
 #endif
 
 // Check for OpenCV 3.x
-#if !defined(KALMANFRAMEWORK_OPENCV_VER) && defined(CV_MAJOR_VERSION) &&                  \
+#if !defined(KALMANFRAMEWORK_OPENCV_VER) && defined(CV_MAJOR_VERSION) &&       \
     CV_MAJOR_VERSION == 3
 #define KALMANFRAMEWORK_OPENCV_VER 3
 #define KALMANFRAMEWORK_OPENCV_3
@@ -51,7 +51,7 @@
 #endif
 
 // Check for future versions
-#if !defined(KALMANFRAMEWORK_OPENCV_VER) && defined(CV_MAJOR_VERSION) &&                  \
+#if !defined(KALMANFRAMEWORK_OPENCV_VER) && defined(CV_MAJOR_VERSION) &&       \
     CV_MAJOR_VERSION > 3
 #define KALMANFRAMEWORK_OPENCV_VER CV_MAJOR_VERSION
 #define KALMANFRAMEWORK_OPENCV_POST3
@@ -59,7 +59,7 @@
 #endif
 
 // Check for OpenCV 2 that didn't get caught by the CV_VERSION_EPOCH check.
-#if !defined(KALMANFRAMEWORK_OPENCV_VER) && defined(CV_MAJOR_VERSION) &&                  \
+#if !defined(KALMANFRAMEWORK_OPENCV_VER) && defined(CV_MAJOR_VERSION) &&       \
     CV_MAJOR_VERSION == 2
 #define KALMANFRAMEWORK_OPENCV_VER 2
 #define KALMANFRAMEWORK_OPENCV_2
@@ -110,10 +110,12 @@
 
 /// Version checking macro: true at preprocessor time if OpenCV is at least
 /// version X.Y.Z
-#define KALMANFRAMEWORK_OPENCV_AT_LEAST_VERSION(X, Y, Z)                                  \
-    ((KALMANFRAMEWORK_OPENCV_VER > X) ||                                                  \
-     (KALMANFRAMEWORK_OPENCV_VER == X && KALMANFRAMEWORK_OPENCV_VER_COMPONENT_2 > Y) ||              \
-     (KALMANFRAMEWORK_OPENCV_VER == X && KALMANFRAMEWORK_OPENCV_VER_COMPONENT_2 == Y &&              \
+#define KALMANFRAMEWORK_OPENCV_AT_LEAST_VERSION(X, Y, Z)                       \
+    ((KALMANFRAMEWORK_OPENCV_VER > X) ||                                       \
+     (KALMANFRAMEWORK_OPENCV_VER == X &&                                       \
+      KALMANFRAMEWORK_OPENCV_VER_COMPONENT_2 > Y) ||                           \
+     (KALMANFRAMEWORK_OPENCV_VER == X &&                                       \
+      KALMANFRAMEWORK_OPENCV_VER_COMPONENT_2 == Y &&                           \
       KALMANFRAMEWORK_OPENCV_VER_COMPONENT_3 >= Z))
 
 #endif // INCLUDED_OpenCVVersion_h_GUID_503D3091_E553_4AA0_435D_7CCAF2791E32

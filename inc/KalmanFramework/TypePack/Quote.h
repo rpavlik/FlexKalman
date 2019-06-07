@@ -29,8 +29,8 @@
 #define INCLUDED_Quote_h_GUID_0665E3E5_DDFC_489F_AC33_6AF40B7454A6
 
 // Internal Includes
-#include "T.h"
 #include "Defer.h"
+#include "T.h"
 
 // Library/third-party includes
 // - none

@@ -20,9 +20,9 @@
 #define INCLUDED_FindFirst_h_GUID_FA5855C9_2243_4DA5_B9B7_ED766E8348FE
 
 // Internal Includes
-#include "T.h"
-#include "SizeT.h"
 #include "List.h"
+#include "SizeT.h"
+#include "T.h"
 
 // Library/third-party includes
 // - none

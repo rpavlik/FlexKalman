@@ -29,9 +29,9 @@
 #define INCLUDED_ApplyList_h_GUID_9B48A805_89F9_48A8_3AC8_1C477B7328C7
 
 // Internal Includes
+#include "Apply.h"
 #include "List.h"
 #include "T.h"
-#include "Apply.h"
 
 // Library/third-party includes
 // - none

@@ -20,8 +20,8 @@
 #define INCLUDED_PushFront_h_GUID_71A57FB9_64D6_4AA1_E968_0F91E951C7B4
 
 // Internal Includes
-#include "List.h"
 #include "ApplyList.h"
+#include "List.h"
 
 // Library/third-party includes
 // - none
@@ -35,7 +35,7 @@ namespace typepack {
         template <typename T> struct push_front_impl {
             template <typename... Ts> using apply = list<T, Ts...>;
         };
-    }
+    } // namespace detail
 
     template <typename List, typename T>
     using push_front = apply_list<detail::push_front_impl<T>, List>;

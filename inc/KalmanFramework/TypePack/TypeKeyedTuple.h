@@ -20,10 +20,10 @@
 #define INCLUDED_TypeKeyedTuple_h_GUID_04E79266_BD2F_458D_B7AC_DF5F35CC6EC4
 
 // Internal Includes
-#include "TypeKeyed.h"
 #include "Apply.h"
-#include "Transform.h"
 #include "ApplyList.h"
+#include "Transform.h"
+#include "TypeKeyed.h"
 
 // Library/third-party includes
 // - none

@@ -26,10 +26,10 @@
 #define INCLUDED_AngularVelocityMeasurement_h_GUID_73F00F72_643C_45BC_C0BC_291214F14CF3
 
 // Internal Includes
-#include "FlexibleKalmanBase.h"
-#include "PoseState.h"
-#include "OrientationState.h"
 #include "ExternalQuaternion.h"
+#include "FlexibleKalmanBase.h"
+#include "OrientationState.h"
+#include "PoseState.h"
 
 // Library/third-party includes
 #include <Eigen/Core>

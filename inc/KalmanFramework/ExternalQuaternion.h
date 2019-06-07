@@ -32,8 +32,8 @@
 #include "EigenQuatExponentialMap.h"
 
 // Standard includes
-#include <type_traits>
 #include <cassert>
+#include <type_traits>
 
 namespace osvr {
 namespace kalman {

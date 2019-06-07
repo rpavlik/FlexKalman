@@ -42,10 +42,10 @@ namespace kalman {
     void predict(StateType &state, ProcessModelType &processModel, double dt) {
         processModel.predictState(state, dt);
         KALMANFRAMEWORK_KALMAN_DEBUG_OUTPUT("Predicted state",
-                                 state.stateVector().transpose());
+                                            state.stateVector().transpose());
 
         KALMANFRAMEWORK_KALMAN_DEBUG_OUTPUT("Predicted error covariance",
-                                 state.errorCovariance());
+                                            state.errorCovariance());
     }
 
     /// @param cancelIfNotFinite If the state correction or new error covariance

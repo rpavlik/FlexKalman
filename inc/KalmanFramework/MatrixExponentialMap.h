@@ -239,7 +239,7 @@ namespace kalman {
             Eigen::Quaterniond m_quat;
         };
 
-    } // namespace exponential_map
+    } // namespace matrix_exponential_map
 } // namespace kalman
 } // namespace osvr
 #endif // INCLUDED_ExponentialMap_h_GUID_FB61635E_CF8A_4FAE_5343_2258F4BC1E60

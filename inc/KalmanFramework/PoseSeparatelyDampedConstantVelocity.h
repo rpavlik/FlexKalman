@@ -26,8 +26,8 @@
 #define INCLUDED_PoseSeparatelyDampedConstantVelocity_h_GUID_4BB00A8D_B12F_47BF_EA91_599233CED644
 
 // Internal Includes
-#include "PoseState.h"
 #include "PoseConstantVelocity.h"
+#include "PoseState.h"
 
 // Library/third-party includes
 // - none

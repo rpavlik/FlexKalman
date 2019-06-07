@@ -29,8 +29,8 @@
 #define INCLUDED_Void_h_GUID_C0BDC2E5_4EB7_4BA1_93F7_841769EB1655
 
 // Internal Includes
-#include "Apply.h"
 #include "Always.h"
+#include "Apply.h"
 
 // Library/third-party includes
 // - none
