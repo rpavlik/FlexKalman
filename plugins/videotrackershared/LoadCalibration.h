@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_LoadCalibration_h_GUID_50FCDBB2_367E_4589_A034_FCFDF13C8714
-#define INCLUDED_LoadCalibration_h_GUID_50FCDBB2_367E_4589_A034_FCFDF13C8714
+#pragma once
 
 // Internal Includes
 // - none
@@ -114,5 +113,3 @@ namespace vbtracker {
 
 } // namespace vbtracker
 } // namespace osvr
-
-#endif // INCLUDED_LoadCalibration_h_GUID_50FCDBB2_367E_4589_A034_FCFDF13C8714

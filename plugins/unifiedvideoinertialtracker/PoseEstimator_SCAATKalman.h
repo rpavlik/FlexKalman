@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_PoseEstimator_SCAATKalman_h_GUID_F1FC2154_E59B_4598_70C2_253F8EA31485
-#define INCLUDED_PoseEstimator_SCAATKalman_h_GUID_F1FC2154_E59B_4598_70C2_253F8EA31485
+#pragma once
 
 // Internal Includes
 #include "ConfigParams.h"
@@ -114,5 +113,3 @@ namespace vbtracker {
     };
 } // namespace vbtracker
 } // namespace osvr
-
-#endif // INCLUDED_PoseEstimator_SCAATKalman_h_GUID_F1FC2154_E59B_4598_70C2_253F8EA31485

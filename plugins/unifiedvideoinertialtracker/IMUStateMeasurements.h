@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_IMUStateMeasurements_h_GUID_85352E66_9988_42AD_816D_C745E3D24097
-#define INCLUDED_IMUStateMeasurements_h_GUID_85352E66_9988_42AD_816D_C745E3D24097
+#pragma once
 
 // Internal Includes
 #include "AngVelTools.h"
@@ -626,5 +625,3 @@ namespace vbtracker {
 #endif // UVBI_USE_OLD_MEASUREMENT_CLASS
 } // namespace vbtracker
 } // namespace osvr
-
-#endif // INCLUDED_IMUStateMeasurements_h_GUID_85352E66_9988_42AD_816D_C745E3D24097

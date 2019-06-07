@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_TimeValue_h_GUID_AD9F3D81_382D_4394_433B_A8026BE803B6
-#define INCLUDED_TimeValue_h_GUID_AD9F3D81_382D_4394_433B_A8026BE803B6
+#pragma once
 
 // Internal Includes
 #include <KalmanFramework/TimeValueC.h>
@@ -129,5 +128,3 @@ namespace util {
     } // namespace time
 } // namespace util
 } // namespace osvr
-
-#endif // INCLUDED_TimeValue_h_GUID_AD9F3D81_382D_4394_433B_A8026BE803B6

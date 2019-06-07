@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_ContentsInvalid_h_GUID_E3C95D05_0BEF_4A9F_933A_35FD0B7D3745
-#define INCLUDED_ContentsInvalid_h_GUID_E3C95D05_0BEF_4A9F_933A_35FD0B7D3745
+#pragma once
 
 // Internal Includes
 #include <KalmanFramework/FlexibleKalmanBase.h>
@@ -77,5 +76,3 @@ inline bool
 contentsInvalid(osvr::kalman::pose_externalized_rotation::State const &state) {
     return stateContentsInvalid(state) || covarianceContentsInvalid(state);
 }
-
-#endif // INCLUDED_ContentsInvalid_h_GUID_E3C95D05_0BEF_4A9F_933A_35FD0B7D3745

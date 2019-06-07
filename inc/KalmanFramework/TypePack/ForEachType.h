@@ -16,8 +16,7 @@
 // file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef INCLUDED_ForEachType_h_GUID_42B22EE3_302E_4ABD_1FC8_9D5E7146ADEF
-#define INCLUDED_ForEachType_h_GUID_42B22EE3_302E_4ABD_1FC8_9D5E7146ADEF
+#pragma once
 
 // Internal Includes
 #include "Size.h"
@@ -84,4 +83,3 @@ namespace typepack {
     }
 } // namespace typepack
 } // namespace osvr
-#endif // INCLUDED_ForEachType_h_GUID_42B22EE3_302E_4ABD_1FC8_9D5E7146ADEF

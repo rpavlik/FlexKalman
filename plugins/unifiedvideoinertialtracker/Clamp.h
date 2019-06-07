@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_Clamp_h_GUID_E52D654C_917A_4587_39AF_38F98B352C51
-#define INCLUDED_Clamp_h_GUID_E52D654C_917A_4587_39AF_38F98B352C51
+#pragma once
 
 // Internal Includes
 // - none
@@ -43,4 +42,3 @@ namespace vbtracker {
     }
 } // namespace vbtracker
 } // namespace osvr
-#endif // INCLUDED_Clamp_h_GUID_E52D654C_917A_4587_39AF_38F98B352C51

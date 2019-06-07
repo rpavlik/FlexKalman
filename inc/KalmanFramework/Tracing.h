@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_Tracing_h_GUID_0D1E8891_2D51_4281_9CBC_2B9B4DFB28C1
-#define INCLUDED_Tracing_h_GUID_0D1E8891_2D51_4281_9CBC_2B9B4DFB28C1
+#pragma once
 
 // Internal Includes
 #include <KalmanFramework/Export.h>
@@ -142,5 +141,3 @@ namespace common {
     } // namespace tracing
 } // namespace common
 } // namespace osvr
-
-#endif // INCLUDED_Tracing_h_GUID_0D1E8891_2D51_4281_9CBC_2B9B4DFB28C1

@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_EdgeHoleBlobExtractor_h_GUID_31496B1F_52D8_4BBC_A7FA_3F81E68C2A47
-#define INCLUDED_EdgeHoleBlobExtractor_h_GUID_31496B1F_52D8_4BBC_A7FA_3F81E68C2A47
+#pragma once
 
 // Internal Includes
 #include "BlobParams.h"
@@ -67,4 +66,3 @@ namespace vbtracker {
     }
 } // namespace vbtracker
 } // namespace osvr
-#endif // INCLUDED_EdgeHoleBlobExtractor_h_GUID_31496B1F_52D8_4BBC_A7FA_3F81E68C2A47

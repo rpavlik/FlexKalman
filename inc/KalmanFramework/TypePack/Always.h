@@ -25,8 +25,7 @@
 // Project home: https://github.com/ericniebler/meta
 //
 
-#ifndef INCLUDED_Always_h_GUID_0FAFDF98_A560_45B9_A434_D3C02136BA6E
-#define INCLUDED_Always_h_GUID_0FAFDF98_A560_45B9_A434_D3C02136BA6E
+#pragma once
 
 // Internal Includes
 #include "T.h"
@@ -53,5 +52,3 @@ namespace typepack {
     };
 } // namespace typepack
 } // namespace osvr
-
-#endif // INCLUDED_Always_h_GUID_0FAFDF98_A560_45B9_A434_D3C02136BA6E

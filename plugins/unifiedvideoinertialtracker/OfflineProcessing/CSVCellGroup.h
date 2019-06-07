@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_CSVCellGroup_h_GUID_F36004E7_71A4_43AD_7353_B67BCBD8045A
-#define INCLUDED_CSVCellGroup_h_GUID_F36004E7_71A4_43AD_7353_B67BCBD8045A
+#pragma once
 
 // Internal Includes
 #include <KalmanFramework/CSV.h>
@@ -171,4 +170,3 @@ namespace util {
 
 } // namespace util
 } // namespace osvr
-#endif // INCLUDED_CSVCellGroup_h_GUID_F36004E7_71A4_43AD_7353_B67BCBD8045A

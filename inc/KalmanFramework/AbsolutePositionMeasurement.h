@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_AbsolutePositionMeasurement_h_GUID_F2854FEA_1E84_479E_1B5D_A302104DBF47
-#define INCLUDED_AbsolutePositionMeasurement_h_GUID_F2854FEA_1E84_479E_1B5D_A302104DBF47
+#pragma once
 
 // Internal Includes
 #include "FlexibleKalmanBase.h"
@@ -109,4 +108,3 @@ namespace kalman {
     };
 } // namespace kalman
 } // namespace osvr
-#endif // INCLUDED_AbsolutePositionMeasurement_h_GUID_F2854FEA_1E84_479E_1B5D_A302104DBF47

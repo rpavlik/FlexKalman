@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_TimeValueChrono_h_GUID_62662C09_CE8E_4394_87A9_26D2FC0D2920
-#define INCLUDED_TimeValueChrono_h_GUID_62662C09_CE8E_4394_87A9_26D2FC0D2920
+#pragma once
 
 // Internal Includes
 // - none
@@ -279,5 +278,3 @@ namespace util {
     } // namespace time
 } // namespace util
 } // namespace osvr
-
-#endif // INCLUDED_TimeValueChrono_h_GUID_62662C09_CE8E_4394_87A9_26D2FC0D2920

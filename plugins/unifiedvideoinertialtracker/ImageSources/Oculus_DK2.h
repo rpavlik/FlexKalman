@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_Oculus_DK2_h_GUID_EA07F823_BC38_47B0_F60A_E525110E2C1C
-#define INCLUDED_Oculus_DK2_h_GUID_EA07F823_BC38_47B0_F60A_E525110E2C1C
+#pragma once
 
 // Internal Includes
 // - none
@@ -111,5 +110,3 @@ namespace oculus_dk2 {
 
 } // namespace oculus_dk2
 } // namespace osvr
-
-#endif // INCLUDED_Oculus_DK2_h_GUID_EA07F823_BC38_47B0_F60A_E525110E2C1C

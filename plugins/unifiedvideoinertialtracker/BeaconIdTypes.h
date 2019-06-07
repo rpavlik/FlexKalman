@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_BeaconIdTypes_h_GUID_8C85DE41_5CAC_4DA2_6C2A_962680202E1B
-#define INCLUDED_BeaconIdTypes_h_GUID_8C85DE41_5CAC_4DA2_6C2A_962680202E1B
+#pragma once
 
 // Internal Includes
 #include "BodyIdTypes.h"
@@ -121,4 +120,3 @@ namespace vbtracker {
 
 } // namespace vbtracker
 } // namespace osvr
-#endif // INCLUDED_BeaconIdTypes_h_GUID_8C85DE41_5CAC_4DA2_6C2A_962680202E1B

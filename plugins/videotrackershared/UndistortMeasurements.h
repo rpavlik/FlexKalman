@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_UndistortMeasurements_h_GUID_EBA50677_306F_4985_BC70_393C58140FE4
-#define INCLUDED_UndistortMeasurements_h_GUID_EBA50677_306F_4985_BC70_393C58140FE4
+#pragma once
 
 // Internal Includes
 #include "CameraDistortionModel.h"
@@ -64,4 +63,3 @@ namespace vbtracker {
     }
 } // namespace vbtracker
 } // namespace osvr
-#endif // INCLUDED_UndistortMeasurements_h_GUID_EBA50677_306F_4985_BC70_393C58140FE4

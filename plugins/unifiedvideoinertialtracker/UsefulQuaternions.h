@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_UsefulQuaternions_h_GUID_BC5D8169_7ACB_46AA_A5E0_77C77FE44498
-#define INCLUDED_UsefulQuaternions_h_GUID_BC5D8169_7ACB_46AA_A5E0_77C77FE44498
+#pragma once
 
 // Internal Includes
 // - none
@@ -51,5 +50,3 @@ namespace vbtracker {
     }
 } // namespace vbtracker
 } // namespace osvr
-
-#endif // INCLUDED_UsefulQuaternions_h_GUID_BC5D8169_7ACB_46AA_A5E0_77C77FE44498

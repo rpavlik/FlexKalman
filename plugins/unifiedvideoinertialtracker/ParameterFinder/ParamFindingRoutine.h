@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_ParamFindingRoutine_h_GUID_C2088279_D54B_4D8B_562E_5748C748DAD0
-#define INCLUDED_ParamFindingRoutine_h_GUID_C2088279_D54B_4D8B_562E_5748C748DAD0
+#pragma once
 
 // Internal Includes
 #include "OptimizationBase.h"
@@ -125,4 +124,3 @@ namespace vbtracker {
         MeasurementsRows const &, bool, OptimCommonData const &, std::size_t)>;
 } // namespace vbtracker
 } // namespace osvr
-#endif // INCLUDED_ParamFindingRoutine_h_GUID_C2088279_D54B_4D8B_562E_5748C748DAD0

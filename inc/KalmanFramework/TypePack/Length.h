@@ -25,9 +25,6 @@
 // Project home: https://github.com/ericniebler/meta
 //
 
-#ifndef INCLUDED_Length_h_GUID_7C3F1769_4DC9_479B_92E2_041286FBBCFF
-#define INCLUDED_Length_h_GUID_7C3F1769_4DC9_479B_92E2_041286FBBCFF
+#pragma once
 
 #include "Size.h"
-
-#endif // INCLUDED_Length_h_GUID_7C3F1769_4DC9_479B_92E2_041286FBBCFF

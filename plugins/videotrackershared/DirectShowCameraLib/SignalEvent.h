@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_SignalEvent_h_GUID_DD338B8E_2CC9_43B8_0699_13169941BD2E
-#define INCLUDED_SignalEvent_h_GUID_DD338B8E_2CC9_43B8_0699_13169941BD2E
+#pragma once
 
 // Internal Includes
 // - none
@@ -75,5 +74,3 @@ class SignalEvent {
   private:
     HANDLE h_;
 };
-
-#endif // INCLUDED_SignalEvent_h_GUID_DD338B8E_2CC9_43B8_0699_13169941BD2E

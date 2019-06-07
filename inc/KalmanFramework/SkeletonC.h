@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_SkeletonC_h_GUID_0ED703E0_E838_4099_95A5_288FA779BF66
-#define INCLUDED_SkeletonC_h_GUID_0ED703E0_E838_4099_95A5_288FA779BF66
+#pragma once
 
 /* Internal Includes */
 /* none */
@@ -44,5 +43,3 @@ typedef struct OSVR_SkeletonObject *OSVR_Skeleton;
 #ifdef __cplusplus
 } // extern "C"
 #endif
-
-#endif // INCLUDED_SkeletonC_h_GUID_0ED703E0_E838_4099_95A5_288FA779BF66

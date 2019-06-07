@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_HDKLedIdentifier_h_GUID_A1204292_1F90_459E_44AD_18BA932C0E93
-#define INCLUDED_HDKLedIdentifier_h_GUID_A1204292_1F90_459E_44AD_18BA932C0E93
+#pragma once
 
 // Internal Includes
 #include "LedIdentifier.h"
@@ -62,5 +61,3 @@ namespace vbtracker {
 
 } // namespace vbtracker
 } // namespace osvr
-
-#endif // INCLUDED_HDKLedIdentifier_h_GUID_A1204292_1F90_459E_44AD_18BA932C0E93

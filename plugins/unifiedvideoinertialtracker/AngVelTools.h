@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_AngVelTools_h_GUID_628878EF_DAFC_4486_36BC_6C47BD452AB0
-#define INCLUDED_AngVelTools_h_GUID_628878EF_DAFC_4486_36BC_6C47BD452AB0
+#pragma once
 
 // Internal Includes
 // - none
@@ -60,4 +59,3 @@ namespace vbtracker {
 
 } // namespace vbtracker
 } // namespace osvr
-#endif // INCLUDED_AngVelTools_h_GUID_628878EF_DAFC_4486_36BC_6C47BD452AB0

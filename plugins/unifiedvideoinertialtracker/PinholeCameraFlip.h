@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_PinholeCameraFlip_h_GUID_3FDD8165_096C_4DBA_1E42_20EF78AD28C8
-#define INCLUDED_PinholeCameraFlip_h_GUID_3FDD8165_096C_4DBA_1E42_20EF78AD28C8
+#pragma once
 
 // Internal Includes
 #include "UsefulQuaternions.h"
@@ -79,5 +78,3 @@ namespace vbtracker {
 
 } // namespace vbtracker
 } // namespace osvr
-
-#endif // INCLUDED_PinholeCameraFlip_h_GUID_3FDD8165_096C_4DBA_1E42_20EF78AD28C8

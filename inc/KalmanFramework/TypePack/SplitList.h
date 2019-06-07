@@ -16,8 +16,7 @@
 // file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef INCLUDED_SplitList_h_GUID_471C8D69_CFAD_4083_5485_5DE0EAA24C7F
-#define INCLUDED_SplitList_h_GUID_471C8D69_CFAD_4083_5485_5DE0EAA24C7F
+#pragma once
 
 // Internal Includes
 #include "List.h"
@@ -58,4 +57,3 @@ namespace typepack {
     using tail = typename detail::split_list_<List...>::tail;
 } // namespace typepack
 } // namespace osvr
-#endif // INCLUDED_SplitList_h_GUID_471C8D69_CFAD_4083_5485_5DE0EAA24C7F

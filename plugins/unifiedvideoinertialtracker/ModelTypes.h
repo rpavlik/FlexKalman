@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_ModelTypes_h_GUID_F873E106_09BF_41A7_B7C7_CCE59466A590
-#define INCLUDED_ModelTypes_h_GUID_F873E106_09BF_41A7_B7C7_CCE59466A590
+#pragma once
 
 // Internal Includes
 // - none
@@ -49,5 +48,3 @@ namespace vbtracker {
     using BeaconStateVec = std::vector<BeaconStatePtr>;
 } // namespace vbtracker
 } // namespace osvr
-
-#endif // INCLUDED_ModelTypes_h_GUID_F873E106_09BF_41A7_B7C7_CCE59466A590

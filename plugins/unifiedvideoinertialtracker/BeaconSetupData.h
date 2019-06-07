@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_BeaconSetupData_h_GUID_AEDF8B01_FC4D_4388_2C88_0351E5E7FD83
-#define INCLUDED_BeaconSetupData_h_GUID_AEDF8B01_FC4D_4388_2C88_0351E5E7FD83
+#pragma once
 
 // Internal Includes
 #include "BeaconIdTypes.h"
@@ -132,5 +131,3 @@ namespace vbtracker {
     }
 } // namespace vbtracker
 } // namespace osvr
-
-#endif // INCLUDED_BeaconSetupData_h_GUID_AEDF8B01_FC4D_4388_2C88_0351E5E7FD83

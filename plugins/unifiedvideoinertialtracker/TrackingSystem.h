@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_TrackingSystem_h_GUID_B94B2C23_321F_45B4_5167_CB32D2624B50
-#define INCLUDED_TrackingSystem_h_GUID_B94B2C23_321F_45B4_5167_CB32D2624B50
+#pragma once
 
 // Internal Includes
 #include "BodyIdTypes.h"
@@ -176,5 +175,3 @@ namespace vbtracker {
 
 } // namespace vbtracker
 } // namespace osvr
-
-#endif // INCLUDED_TrackingSystem_h_GUID_B94B2C23_321F_45B4_5167_CB32D2624B50

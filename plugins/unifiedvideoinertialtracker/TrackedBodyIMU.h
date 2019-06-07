@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_TrackedBodyIMU_h_GUID_65A86547_8C4C_43B5_906C_361178DCCE06
-#define INCLUDED_TrackedBodyIMU_h_GUID_65A86547_8C4C_43B5_906C_361178DCCE06
+#pragma once
 
 // Internal Includes
 #include "CannedIMUMeasurement.h"
@@ -135,5 +134,3 @@ namespace vbtracker {
     };
 } // namespace vbtracker
 } // namespace osvr
-
-#endif // INCLUDED_TrackedBodyIMU_h_GUID_65A86547_8C4C_43B5_906C_361178DCCE06

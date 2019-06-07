@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_SBDBlobExtractor_h_GUID_E67E1F86_F827_48A3_5FA2_F9F241BA79AF
-#define INCLUDED_SBDBlobExtractor_h_GUID_E67E1F86_F827_48A3_5FA2_F9F241BA79AF
+#pragma once
 
 // Internal Includes
 #include "BlobParams.h"
@@ -113,5 +112,3 @@ namespace vbtracker {
     BlobExtractorPtr makeBlobExtractor(BlobParams const &blobParams);
 } // namespace vbtracker
 } // namespace osvr
-
-#endif // INCLUDED_SBDBlobExtractor_h_GUID_E67E1F86_F827_48A3_5FA2_F9F241BA79AF

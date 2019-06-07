@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_directx_samplegrabber_callback_h_GUID_F0A39DA1_440B_4E8A_AF25_1383D20934AA
-#define INCLUDED_directx_samplegrabber_callback_h_GUID_F0A39DA1_440B_4E8A_AF25_1383D20934AA
+#pragma once
 
 // Internal Includes
 #include "MediaSampleExchange.h"
@@ -70,5 +69,3 @@ class directx_samplegrabber_callback : public ISampleGrabberCB {
     volatile bool _stayAlive = true; //< Tells all threads to exit
     MediaSampleExchangePtr sampleExchange_;
 };
-
-#endif // INCLUDED_directx_samplegrabber_callback_h_GUID_F0A39DA1_440B_4E8A_AF25_1383D20934AA

@@ -16,8 +16,7 @@
 // file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef INCLUDED_CoerceList_h_GUID_9C85EF5E_4C36_41B6_C965_22CF8936CE04
-#define INCLUDED_CoerceList_h_GUID_9C85EF5E_4C36_41B6_C965_22CF8936CE04
+#pragma once
 
 // Internal Includes
 #include "List.h"
@@ -37,4 +36,3 @@ namespace typepack {
 
 } // namespace typepack
 } // namespace osvr
-#endif // INCLUDED_CoerceList_h_GUID_9C85EF5E_4C36_41B6_C965_22CF8936CE04

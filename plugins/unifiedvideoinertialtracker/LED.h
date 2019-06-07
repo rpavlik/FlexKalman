@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_LED_h_GUID_C53E1134_AD6B_46B0_4808_19C7EAA7D0EC
-#define INCLUDED_LED_h_GUID_C53E1134_AD6B_46B0_4808_19C7EAA7D0EC
+#pragma once
 
 // Internal Includes
 #include "LedIdentifier.h"
@@ -180,5 +179,3 @@ namespace vbtracker {
 
 } // namespace vbtracker
 } // namespace osvr
-
-#endif // INCLUDED_LED_h_GUID_C53E1134_AD6B_46B0_4808_19C7EAA7D0EC

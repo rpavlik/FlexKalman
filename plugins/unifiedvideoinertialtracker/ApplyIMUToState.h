@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_ApplyIMUToState_h_GUID_B896B3E1_97C6_44BE_50CE_EDA075299FED
-#define INCLUDED_ApplyIMUToState_h_GUID_B896B3E1_97C6_44BE_50CE_EDA075299FED
+#pragma once
 
 // Internal Includes
 #include "CannedIMUMeasurement.h"
@@ -46,4 +45,3 @@ namespace vbtracker {
                          CannedIMUMeasurement const &meas);
 } // namespace vbtracker
 } // namespace osvr
-#endif // INCLUDED_ApplyIMUToState_h_GUID_B896B3E1_97C6_44BE_50CE_EDA075299FED

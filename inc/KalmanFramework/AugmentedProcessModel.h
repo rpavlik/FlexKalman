@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_AugmentedProcessModel_h_GUID_8A98A9D0_A8E4_4094_639A_25C4285B5F56
-#define INCLUDED_AugmentedProcessModel_h_GUID_8A98A9D0_A8E4_4094_639A_25C4285B5F56
+#pragma once
 
 // Internal Includes
 #include "AugmentedState.h"
@@ -97,4 +96,3 @@ namespace kalman {
 
 } // namespace kalman
 } // namespace osvr
-#endif // INCLUDED_AugmentedProcessModel_h_GUID_8A98A9D0_A8E4_4094_639A_25C4285B5F56

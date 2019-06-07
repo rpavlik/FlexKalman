@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_ProjectPoint_h_GUID_11215CA6_05AF_4795_CD97_835F0B623864
-#define INCLUDED_ProjectPoint_h_GUID_11215CA6_05AF_4795_CD97_835F0B623864
+#pragma once
 
 // Internal Includes
 // - none
@@ -66,4 +65,3 @@ namespace vbtracker {
 
 } // namespace vbtracker
 } // namespace osvr
-#endif // INCLUDED_ProjectPoint_h_GUID_11215CA6_05AF_4795_CD97_835F0B623864

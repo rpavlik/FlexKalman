@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_RangeTransform_h_GUID_94F5FF2F_27AC_44A5_FE5A_F9294C3DCCEB
-#define INCLUDED_RangeTransform_h_GUID_94F5FF2F_27AC_44A5_FE5A_F9294C3DCCEB
+#pragma once
 
 // Internal Includes
 // - none
@@ -50,5 +49,3 @@ namespace vbtracker {
     }
 } // namespace vbtracker
 } // namespace osvr
-
-#endif // INCLUDED_RangeTransform_h_GUID_94F5FF2F_27AC_44A5_FE5A_F9294C3DCCEB

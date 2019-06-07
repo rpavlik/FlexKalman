@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_TrackingSystem_Impl_h_GUID_9EC4CAF8_58AA_45A5_59A0_6B1FB4B86BE7
-#define INCLUDED_TrackingSystem_Impl_h_GUID_9EC4CAF8_58AA_45A5_59A0_6B1FB4B86BE7
+#pragma once
 
 // Internal Includes
 #include "ConfigParams.h"
@@ -82,4 +81,3 @@ namespace vbtracker {
 
 } // namespace vbtracker
 } // namespace osvr
-#endif // INCLUDED_TrackingSystem_Impl_h_GUID_9EC4CAF8_58AA_45A5_59A0_6B1FB4B86BE7

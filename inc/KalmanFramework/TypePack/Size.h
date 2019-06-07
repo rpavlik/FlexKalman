@@ -25,8 +25,7 @@
 // Project home: https://github.com/ericniebler/meta
 //
 
-#ifndef INCLUDED_Size_h_GUID_138C49DE_2C02_4BA6_C173_58BC95D82363
-#define INCLUDED_Size_h_GUID_138C49DE_2C02_4BA6_C173_58BC95D82363
+#pragma once
 
 // Internal Includes
 #include "CoerceList.h"
@@ -60,4 +59,3 @@ namespace typepack {
 
 } // namespace typepack
 } // namespace osvr
-#endif // INCLUDED_Size_h_GUID_138C49DE_2C02_4BA6_C173_58BC95D82363

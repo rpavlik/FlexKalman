@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_ThreadsafeBodyReporting_h_GUID_EB81AB60_6C5C_4A92_CD3D_ADFA62489F70
-#define INCLUDED_ThreadsafeBodyReporting_h_GUID_EB81AB60_6C5C_4A92_CD3D_ADFA62489F70
+#pragma once
 
 // Internal Includes
 #include "ModelTypes.h"
@@ -130,5 +129,3 @@ namespace vbtracker {
     using BodyReportingVector = std::vector<BodyReportingPtr>;
 } // namespace vbtracker
 } // namespace osvr
-
-#endif // INCLUDED_ThreadsafeBodyReporting_h_GUID_EB81AB60_6C5C_4A92_CD3D_ADFA62489F70

@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_ConnectTwoFilters_h_GUID_2F465D2A_B6CB_4CBD_E976_22BB9613AC94
-#define INCLUDED_ConnectTwoFilters_h_GUID_2F465D2A_B6CB_4CBD_E976_22BB9613AC94
+#pragma once
 
 // Internal Includes
 #include "GetPin.h"
@@ -42,5 +41,3 @@ inline HRESULT ConnectTwoFilters(IGraphBuilder &pGraph, IBaseFilter &pFirst,
     auto pIn = GetPin(pSecond, PINDIR_INPUT);
     return pGraph.Connect(pOut.get(), pIn.get());
 }
-
-#endif // INCLUDED_ConnectTwoFilters_h_GUID_2F465D2A_B6CB_4CBD_E976_22BB9613AC94

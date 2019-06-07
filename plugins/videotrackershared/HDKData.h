@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_HDKData_h_GUID_89F92BAC_AB45_44B8_1402_D4F4D5E3A9B9
-#define INCLUDED_HDKData_h_GUID_89F92BAC_AB45_44B8_1402_D4F4D5E3A9B9
+#pragma once
 
 // Internal Includes
 #include "Types.h"
@@ -79,4 +78,3 @@ namespace vbtracker {
 
 } // namespace vbtracker
 } // namespace osvr
-#endif // INCLUDED_HDKData_h_GUID_89F92BAC_AB45_44B8_1402_D4F4D5E3A9B9

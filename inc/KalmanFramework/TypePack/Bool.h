@@ -25,8 +25,7 @@
 // Project home: https://github.com/ericniebler/meta
 //
 
-#ifndef INCLUDED_Bool_h_GUID_BD15BC1D_7D84_4CB7_1866_6FB218461737
-#define INCLUDED_Bool_h_GUID_BD15BC1D_7D84_4CB7_1866_6FB218461737
+#pragma once
 
 // Internal Includes
 // - none
@@ -43,5 +42,3 @@ namespace typepack {
     template <bool V> using bool_ = std::integral_constant<bool, V>;
 } // namespace typepack
 } // namespace osvr
-
-#endif // INCLUDED_Bool_h_GUID_BD15BC1D_7D84_4CB7_1866_6FB218461737

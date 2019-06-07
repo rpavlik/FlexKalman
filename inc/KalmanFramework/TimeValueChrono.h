@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_TimeValueChrono_h_GUID_19CA90DA_70CF_4CBD_2327_5B6335744E91
-#define INCLUDED_TimeValueChrono_h_GUID_19CA90DA_70CF_4CBD_2327_5B6335744E91
+#pragma once
 
 // Internal Includes
 // - none
@@ -55,5 +54,3 @@ operator+(OSVR_TimeValue const &tv,
     osvrTimeValueNormalize(&ret);
     return ret;
 }
-
-#endif // INCLUDED_TimeValueChrono_h_GUID_19CA90DA_70CF_4CBD_2327_5B6335744E91

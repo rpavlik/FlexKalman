@@ -30,8 +30,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_FlexibleUnscentedCorrect_h_GUID_21E01E3B_5BD0_4F85_3B75_BBF6C657DBB4
-#define INCLUDED_FlexibleUnscentedCorrect_h_GUID_21E01E3B_5BD0_4F85_3B75_BBF6C657DBB4
+#pragma once
 
 // Internal Includes
 #include "SigmaPointGenerator.h"
@@ -232,4 +231,3 @@ namespace kalman {
     }
 } // namespace kalman
 } // namespace osvr
-#endif // INCLUDED_FlexibleUnscentedCorrect_h_GUID_21E01E3B_5BD0_4F85_3B75_BBF6C657DBB4

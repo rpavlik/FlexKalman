@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_SigmaPointGenerator_h_GUID_1277DE61_21A1_42BD_0401_78E74169E598
-#define INCLUDED_SigmaPointGenerator_h_GUID_1277DE61_21A1_42BD_0401_78E74169E598
+#pragma once
 
 // Internal Includes
 #include <KalmanFramework/FlexibleKalmanBase.h>
@@ -212,5 +211,3 @@ namespace kalman {
     };
 } // namespace kalman
 } // namespace osvr
-
-#endif // INCLUDED_SigmaPointGenerator_h_GUID_1277DE61_21A1_42BD_0401_78E74169E598

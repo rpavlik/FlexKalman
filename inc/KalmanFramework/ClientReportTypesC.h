@@ -26,8 +26,7 @@
 // limitations under the License.
 */
 
-#ifndef INCLUDED_ClientReportTypesC_h_GUID_E79DAB07_78B7_4795_1EB9_CA6EEB274AEE
-#define INCLUDED_ClientReportTypesC_h_GUID_E79DAB07_78B7_4795_1EB9_CA6EEB274AEE
+#pragma once
 
 /* Internal Includes */
 #include <KalmanFramework/MathTypesC.h>
@@ -384,6 +383,4 @@ typedef struct OSVR_SkeletonReport {
 /** @} */
 #ifdef __cplusplus
 } // extern "C"
-#endif
-
 #endif

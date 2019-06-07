@@ -25,8 +25,7 @@
 // Project home: https://github.com/ericniebler/meta
 //
 
-#ifndef INCLUDED_ApplyList_h_GUID_9B48A805_89F9_48A8_3AC8_1C477B7328C7
-#define INCLUDED_ApplyList_h_GUID_9B48A805_89F9_48A8_3AC8_1C477B7328C7
+#pragma once
 
 // Internal Includes
 #include "Apply.h"
@@ -56,5 +55,3 @@ namespace typepack {
     using apply_list = apply<detail::apply_list_<F, Args>>;
 } // namespace typepack
 } // namespace osvr
-
-#endif // INCLUDED_ApplyList_h_GUID_9B48A805_89F9_48A8_3AC8_1C477B7328C7

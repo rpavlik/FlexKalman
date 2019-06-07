@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_PoseState_h_GUID_57A246BA_940D_4386_ECA4_4C4172D97F5A
-#define INCLUDED_PoseState_h_GUID_57A246BA_940D_4386_ECA4_4C4172D97F5A
+#pragma once
 
 // Internal Includes
 #include "ExternalQuaternion.h"
@@ -274,5 +273,3 @@ namespace kalman {
     } // namespace pose_externalized_rotation
 } // namespace kalman
 } // namespace osvr
-
-#endif // INCLUDED_PoseState_h_GUID_57A246BA_940D_4386_ECA4_4C4172D97F5A

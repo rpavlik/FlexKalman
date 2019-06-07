@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_MediaSampleExchange_h_GUID_6E82A284_0E96_4391_6408_D9602D2658D7
-#define INCLUDED_MediaSampleExchange_h_GUID_6E82A284_0E96_4391_6408_D9602D2658D7
+#pragma once
 
 // Internal Includes
 // - none
@@ -127,5 +126,3 @@ inline Sample::~Sample() {
         sampleExchange_.signalSampleConsumed();
     }
 }
-
-#endif // INCLUDED_MediaSampleExchange_h_GUID_6E82A284_0E96_4391_6408_D9602D2658D7

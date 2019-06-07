@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_PropertyBagHelper_h_GUID_BAA9AA5B_2879_4CA0_04F3_9B90F3BAC871
-#define INCLUDED_PropertyBagHelper_h_GUID_BAA9AA5B_2879_4CA0_04F3_9B90F3BAC871
+#pragma once
 
 // Internal Includes
 #include "comutils/ComPtr.h"
@@ -70,4 +69,3 @@ class PropertyBagHelper {
   private:
     comutils::Ptr<IPropertyBag> m_propBag;
 };
-#endif // INCLUDED_PropertyBagHelper_h_GUID_BAA9AA5B_2879_4CA0_04F3_9B90F3BAC871

@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_OrientationState_h_GUID_B2EA5856_0B18_43B1_CE18_8B7385E607CA
-#define INCLUDED_OrientationState_h_GUID_B2EA5856_0B18_43B1_CE18_8B7385E607CA
+#pragma once
 
 // Internal Includes
 #include "ExternalQuaternion.h"
@@ -185,5 +184,3 @@ namespace kalman {
     } // namespace orient_externalized_rotation
 } // namespace kalman
 } // namespace osvr
-
-#endif // INCLUDED_OrientationState_h_GUID_B2EA5856_0B18_43B1_CE18_8B7385E607CA

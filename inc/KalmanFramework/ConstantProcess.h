@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_ConstantProcess_h_GUID_1F5DA279_772D_42B2_9D5A_FC7890DD4C16
-#define INCLUDED_ConstantProcess_h_GUID_1F5DA279_772D_42B2_9D5A_FC7890DD4C16
+#pragma once
 
 // Internal Includes
 #include "FlexibleKalmanBase.h"
@@ -77,4 +76,3 @@ namespace kalman {
 
 } // namespace kalman
 } // namespace osvr
-#endif // INCLUDED_ConstantProcess_h_GUID_1F5DA279_772D_42B2_9D5A_FC7890DD4C16

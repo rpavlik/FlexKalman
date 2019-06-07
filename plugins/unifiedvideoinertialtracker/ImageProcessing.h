@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_ImageProcessing_h_GUID_3E426FCE_BED1_4DAC_0669_70D55A14A507
-#define INCLUDED_ImageProcessing_h_GUID_3E426FCE_BED1_4DAC_0669_70D55A14A507
+#pragma once
 
 // Internal Includes
 #include "CameraParameters.h"
@@ -48,4 +47,3 @@ namespace vbtracker {
     using ImageOutputDataPtr = std::unique_ptr<ImageProcessingOutput>;
 } // namespace vbtracker
 } // namespace osvr
-#endif // INCLUDED_ImageProcessing_h_GUID_3E426FCE_BED1_4DAC_0669_70D55A14A507

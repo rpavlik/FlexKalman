@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_OptimizationBase_h_GUID_C3489E14_63D4_4290_45C0_225AC84A8BF5
-#define INCLUDED_OptimizationBase_h_GUID_C3489E14_63D4_4290_45C0_225AC84A8BF5
+#pragma once
 
 // Internal Includes
 #include "UtilityFunctions.h"
@@ -217,4 +216,3 @@ namespace vbtracker {
     };
 } // namespace vbtracker
 } // namespace osvr
-#endif // INCLUDED_OptimizationBase_h_GUID_C3489E14_63D4_4290_45C0_225AC84A8BF5

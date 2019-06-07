@@ -16,8 +16,7 @@
 // file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef INCLUDED_PushBack_h_GUID_86DCDCD9_8EF3_4E95_FB45_B2209B97104A
-#define INCLUDED_PushBack_h_GUID_86DCDCD9_8EF3_4E95_FB45_B2209B97104A
+#pragma once
 
 // Internal Includes
 #include "ApplyList.h"
@@ -40,5 +39,3 @@ namespace typepack {
     using push_back = apply_list<detail::push_back_impl<T>, List>;
 } // namespace typepack
 } // namespace osvr
-
-#endif // INCLUDED_PushBack_h_GUID_86DCDCD9_8EF3_4E95_FB45_B2209B97104A

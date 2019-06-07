@@ -24,8 +24,7 @@
 // limitations under the License.
 
 #ifdef _WIN32
-#ifndef INCLUDED_directx_camera_server_h_GUID_9322F126_0DA4_4DB9_11F3_DDBF76A6D9D9
-#define INCLUDED_directx_camera_server_h_GUID_9322F126_0DA4_4DB9_11F3_DDBF76A6D9D9
+#pragma once
 
 // Internal Includes
 #include "MediaSampleExchange.h"
@@ -188,5 +187,4 @@ class directx_camera_server : public base_camera_server {
     osvr::util::time::TimeValue ts_ = {};
 };
 
-#endif // INCLUDED_directx_camera_server_h_GUID_9322F126_0DA4_4DB9_11F3_DDBF76A6D9D9
 #endif // _WIN32

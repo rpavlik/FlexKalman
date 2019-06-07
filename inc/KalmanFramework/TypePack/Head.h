@@ -16,9 +16,6 @@
 // file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef INCLUDED_Head_h_GUID_F1F875F3_EA89_45BA_75E4_73A35A8DE89E
-#define INCLUDED_Head_h_GUID_F1F875F3_EA89_45BA_75E4_73A35A8DE89E
+#pragma once
 
 #include "SplitList.h"
-
-#endif // INCLUDED_Head_h_GUID_F1F875F3_EA89_45BA_75E4_73A35A8DE89E

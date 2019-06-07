@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_TrackerThread_h_GUID_6544B03C_4EB4_4B82_77F1_16EF83578C64
-#define INCLUDED_TrackerThread_h_GUID_6544B03C_4EB4_4B82_77F1_16EF83578C64
+#pragma once
 
 // Internal Includes
 #include "CameraParameters.h"
@@ -232,4 +231,3 @@ namespace vbtracker {
     };
 } // namespace vbtracker
 } // namespace osvr
-#endif // INCLUDED_TrackerThread_h_GUID_6544B03C_4EB4_4B82_77F1_16EF83578C64

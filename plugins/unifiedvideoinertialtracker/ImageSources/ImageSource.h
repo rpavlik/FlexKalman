@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_ImageSource_h_GUID_C1B68116_0322_4DBD_2360_EF4E6A81D5F4
-#define INCLUDED_ImageSource_h_GUID_C1B68116_0322_4DBD_2360_EF4E6A81D5F4
+#pragma once
 
 // Internal Includes
 // - none
@@ -88,4 +87,3 @@ namespace vbtracker {
     using ImageSourcePtr = std::unique_ptr<ImageSource>;
 } // namespace vbtracker
 } // namespace osvr
-#endif // INCLUDED_ImageSource_h_GUID_C1B68116_0322_4DBD_2360_EF4E6A81D5F4

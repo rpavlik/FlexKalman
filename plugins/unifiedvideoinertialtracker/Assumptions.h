@@ -23,8 +23,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_Assumptions_h_GUID_62FEFDEF_D66D_4B98_2DD6_3DC8E5847652
-#define INCLUDED_Assumptions_h_GUID_62FEFDEF_D66D_4B98_2DD6_3DC8E5847652
+#pragma once
 
 // Internal Includes
 // - none
@@ -46,5 +45,3 @@
 #define UVBI_ASSUME_SINGLE_IMU 1
 /// @todo Remove when we no longer assume a single optical target per body.
 #define UVBI_ASSUME_SINGLE_TARGET_PER_BODY 1
-
-#endif // INCLUDED_Assumptions_h_GUID_62FEFDEF_D66D_4B98_2DD6_3DC8E5847652

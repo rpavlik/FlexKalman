@@ -25,8 +25,7 @@
 // Project home: https://github.com/ericniebler/meta
 //
 
-#ifndef INCLUDED_Defer_h_GUID_FB817A3F_C608_43B7_BE11_2E81132DE2E0
-#define INCLUDED_Defer_h_GUID_FB817A3F_C608_43B7_BE11_2E81132DE2E0
+#pragma once
 
 // Internal Includes
 #include "List.h"
@@ -75,4 +74,3 @@ namespace typepack {
 
 } // namespace typepack
 } // namespace osvr
-#endif // INCLUDED_Defer_h_GUID_FB817A3F_C608_43B7_BE11_2E81132DE2E0

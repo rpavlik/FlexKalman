@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_PoseEstimatorTypes_h_GUID_A9E792C9_4128_4B84_2108_DD3BA8B88061
-#define INCLUDED_PoseEstimatorTypes_h_GUID_A9E792C9_4128_4B84_2108_DD3BA8B88061
+#pragma once
 
 // Internal Includes
 #include "CameraParameters.h"
@@ -58,5 +57,3 @@ namespace vbtracker {
     };
 } // namespace vbtracker
 } // namespace osvr
-
-#endif // INCLUDED_PoseEstimatorTypes_h_GUID_A9E792C9_4128_4B84_2108_DD3BA8B88061

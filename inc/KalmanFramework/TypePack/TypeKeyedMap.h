@@ -19,8 +19,7 @@
 // Project home: https://github.com/ericniebler/meta
 //
 
-#ifndef INCLUDED_TypeKeyedMap_h_GUID_29C6B905_4493_43AF_A811_71589CFD6FBC
-#define INCLUDED_TypeKeyedMap_h_GUID_29C6B905_4493_43AF_A811_71589CFD6FBC
+#pragma once
 
 // Internal Includes
 #include "Contains.h"
@@ -77,5 +76,3 @@ namespace typepack {
     } // namespace typekeyed_detail
 } // namespace typepack
 } // namespace osvr
-
-#endif // INCLUDED_TypeKeyedMap_h_GUID_29C6B905_4493_43AF_A811_71589CFD6FBC

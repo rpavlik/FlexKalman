@@ -26,8 +26,7 @@
 // Project home: https://github.com/ericniebler/meta
 //
 
-#ifndef INCLUDED_TypePack_h_GUID_3431E1BF_7DF4_429A_0C80_2D14E1948181
-#define INCLUDED_TypePack_h_GUID_3431E1BF_7DF4_429A_0C80_2D14E1948181
+#pragma once
 
 namespace osvr {
 /// @brief A simple argument-pack-based metaprogramming library, inspired by
@@ -75,5 +74,3 @@ namespace typepack {} // namespace typepack
 #include "TypeKeyedMap.h"
 #include "TypeKeyedTuple.h"
 #include "Void.h"
-
-#endif // INCLUDED_TypePack_h_GUID_3431E1BF_7DF4_429A_0C80_2D14E1948181

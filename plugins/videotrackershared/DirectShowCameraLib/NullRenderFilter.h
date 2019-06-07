@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_NullRenderFilter_h_GUID_A00F865C_E8A7_4894_E370_4D74EB8E3B85
-#define INCLUDED_NullRenderFilter_h_GUID_A00F865C_E8A7_4894_E370_4D74EB8E3B85
+#pragma once
 
 // Internal Includes
 #include "comutils/ComPtr.h"
@@ -35,5 +34,3 @@
 #include <strmif.h>
 
 comutils::Ptr<IBaseFilter> createNullRenderFilter();
-
-#endif // INCLUDED_NullRenderFilter_h_GUID_A00F865C_E8A7_4894_E370_4D74EB8E3B85

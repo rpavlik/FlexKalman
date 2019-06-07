@@ -25,8 +25,7 @@
 // Project home: https://github.com/ericniebler/meta
 //
 
-#ifndef INCLUDED_Compose_h_GUID_D6907ED1_0D1C_4FAE_C5FB_3C1845DA7AA4
-#define INCLUDED_Compose_h_GUID_D6907ED1_0D1C_4FAE_C5FB_3C1845DA7AA4
+#pragma once
 
 // Internal Includes
 #include "Apply.h"
@@ -54,4 +53,3 @@ namespace typepack {
     };
 } // namespace typepack
 } // namespace osvr
-#endif // INCLUDED_Compose_h_GUID_D6907ED1_0D1C_4FAE_C5FB_3C1845DA7AA4

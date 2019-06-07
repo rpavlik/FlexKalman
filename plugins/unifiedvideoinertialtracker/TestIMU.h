@@ -22,13 +22,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_TestIMU_h_GUID_955733BE_EFEE_4C8E_6D9B_F1A8FDBC8F6C
-#define INCLUDED_TestIMU_h_GUID_955733BE_EFEE_4C8E_6D9B_F1A8FDBC8F6C
+#pragma once
 
 /// Widen the console output wrapping so our matrices don't get so mangled in
 /// messages.
 #define CATCH_CONFIG_CONSOLE_WIDTH 120
 
 #include <catch2/catch.hpp>
-
-#endif // INCLUDED_TestIMU_h_GUID_955733BE_EFEE_4C8E_6D9B_F1A8FDBC8F6C

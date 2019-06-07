@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_ExtractYaw_h_GUID_D9365866_476B_429D_7216_17299B9CB5C6
-#define INCLUDED_ExtractYaw_h_GUID_D9365866_476B_429D_7216_17299B9CB5C6
+#pragma once
 
 // Internal Includes
 // - none
@@ -52,4 +51,3 @@ namespace util {
     }
 } // namespace util
 } // namespace osvr
-#endif // INCLUDED_ExtractYaw_h_GUID_D9365866_476B_429D_7216_17299B9CB5C6

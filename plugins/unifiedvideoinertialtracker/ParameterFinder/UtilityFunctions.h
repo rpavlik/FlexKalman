@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_UtilityFunctions_h_GUID_18928B12_FA9D_4285_102C_3106E5EEE14C
-#define INCLUDED_UtilityFunctions_h_GUID_18928B12_FA9D_4285_102C_3106E5EEE14C
+#pragma once
 
 // Internal Includes
 #include <KalmanFramework/TimeValue.h>
@@ -178,4 +177,3 @@ namespace vbtracker {
 
 } // namespace vbtracker
 } // namespace osvr
-#endif // INCLUDED_UtilityFunctions_h_GUID_18928B12_FA9D_4285_102C_3106E5EEE14C

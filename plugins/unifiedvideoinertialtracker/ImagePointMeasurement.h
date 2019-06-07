@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_ImagePointMeasurement_h_GUID_BE292A08_8C31_4987_E179_CD2F0CE63183
-#define INCLUDED_ImagePointMeasurement_h_GUID_BE292A08_8C31_4987_E179_CD2F0CE63183
+#pragma once
 
 // Internal Includes
 #include "ProjectPoint.h"
@@ -299,5 +298,3 @@ namespace vbtracker {
     };
 } // namespace vbtracker
 } // namespace osvr
-
-#endif // INCLUDED_ImagePointMeasurement_h_GUID_BE292A08_8C31_4987_E179_CD2F0CE63183

@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_PoseConstantVelocity_h_GUID_BC2C6525_D7E6_4BB2_0220_9D6065795E12
-#define INCLUDED_PoseConstantVelocity_h_GUID_BC2C6525_D7E6_4BB2_0220_9D6065795E12
+#pragma once
 
 // Internal Includes
 #include "PoseState.h"
@@ -123,4 +122,3 @@ namespace kalman {
 
 } // namespace kalman
 } // namespace osvr
-#endif // INCLUDED_PoseConstantVelocity_h_GUID_BC2C6525_D7E6_4BB2_0220_9D6065795E12

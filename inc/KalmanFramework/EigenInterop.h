@@ -23,8 +23,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_EigenInterop_h_GUID_A07DFDC3_BA71_4894_6593_732B364A2AE7
-#define INCLUDED_EigenInterop_h_GUID_A07DFDC3_BA71_4894_6593_732B364A2AE7
+#pragma once
 
 // Internal Includes
 #include <KalmanFramework/MathTypesC.h>
@@ -358,4 +357,3 @@ namespace util {
 
 } // namespace util
 } // namespace osvr
-#endif // INCLUDED_EigenInterop_h_GUID_A07DFDC3_BA71_4894_6593_732B364A2AE7

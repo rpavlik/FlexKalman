@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_dibsize_h_GUID_0D57E05D_AC88_44B5_8EB6_0FBD416AFFDA
-#define INCLUDED_dibsize_h_GUID_0D57E05D_AC88_44B5_8EB6_0FBD416AFFDA
+#pragma once
 
 // Internal Includes
 // - none
@@ -44,5 +43,3 @@ inline DWORD dibsize(BITMAPINFOHEADER const &bi) {
     auto stride = ((((bi.biWidth * bi.biBitCount) + 31) & ~31) >> 3);
     return stride * std::abs(bi.biHeight);
 }
-
-#endif // INCLUDED_dibsize_h_GUID_0D57E05D_AC88_44B5_8EB6_0FBD416AFFDA

@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_AngularVelocityMeasurement_h_GUID_73F00F72_643C_45BC_C0BC_291214F14CF3
-#define INCLUDED_AngularVelocityMeasurement_h_GUID_73F00F72_643C_45BC_C0BC_291214F14CF3
+#pragma once
 
 // Internal Includes
 #include "ExternalQuaternion.h"
@@ -132,4 +131,3 @@ namespace kalman {
     };
 } // namespace kalman
 } // namespace osvr
-#endif // INCLUDED_AngularVelocityMeasurement_h_GUID_73F00F72_643C_45BC_C0BC_291214F14CF3

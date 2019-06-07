@@ -16,8 +16,7 @@
 // file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef INCLUDED_TypeKeyed_h_GUID_49539B71_1F6F_4A84_B681_4FD65F87A2A8
-#define INCLUDED_TypeKeyed_h_GUID_49539B71_1F6F_4A84_B681_4FD65F87A2A8
+#pragma once
 
 // Internal Includes
 #include "Contains.h"
@@ -260,4 +259,3 @@ namespace typepack {
     }
 } // namespace typepack
 } // namespace osvr
-#endif // INCLUDED_TypeKeyed_h_GUID_49539B71_1F6F_4A84_B681_4FD65F87A2A8

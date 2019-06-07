@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_PoseEstimator_RANSACKalman_h_GUID_D1F93D34_7D5C_4F93_4310_C3786103DCB8
-#define INCLUDED_PoseEstimator_RANSACKalman_h_GUID_D1F93D34_7D5C_4F93_4310_C3786103DCB8
+#pragma once
 
 // Internal Includes
 #include "ConfigParams.h"
@@ -57,5 +56,3 @@ namespace vbtracker {
     };
 } // namespace vbtracker
 } // namespace osvr
-
-#endif // INCLUDED_PoseEstimator_RANSACKalman_h_GUID_D1F93D34_7D5C_4F93_4310_C3786103DCB8

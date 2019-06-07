@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_LoadRows_h_GUID_7FC43F97_8922_448D_7CE8_2D9EAB669BBD
-#define INCLUDED_LoadRows_h_GUID_7FC43F97_8922_448D_7CE8_2D9EAB669BBD
+#pragma once
 
 // Internal Includes
 #include "CSVTools.h"
@@ -211,5 +210,3 @@ namespace vbtracker {
 
 } // namespace vbtracker
 } // namespace osvr
-
-#endif // INCLUDED_LoadRows_h_GUID_7FC43F97_8922_448D_7CE8_2D9EAB669BBD

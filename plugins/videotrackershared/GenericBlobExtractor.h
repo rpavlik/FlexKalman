@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_GenericBlobExtractor_h_GUID_0EE9AD0D_FCD3_498A_EF04_19D24185ED6B
-#define INCLUDED_GenericBlobExtractor_h_GUID_0EE9AD0D_FCD3_498A_EF04_19D24185ED6B
+#pragma once
 
 // Internal Includes
 #include "LedMeasurement.h"
@@ -73,4 +72,3 @@ namespace vbtracker {
 
 } // namespace vbtracker
 } // namespace osvr
-#endif // INCLUDED_GenericBlobExtractor_h_GUID_0EE9AD0D_FCD3_498A_EF04_19D24185ED6B

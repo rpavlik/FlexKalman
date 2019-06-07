@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_CSVTools_h_GUID_82FA298C_196A_46AA_B2D6_059F2A035687
-#define INCLUDED_CSVTools_h_GUID_82FA298C_196A_46AA_B2D6_059F2A035687
+#pragma once
 
 // Internal Includes
 // - none
@@ -315,5 +314,3 @@ inline void stripQuotes(std::vector<std::string> &fields) {
     }
 }
 } // namespace csvtools
-
-#endif // INCLUDED_CSVTools_h_GUID_82FA298C_196A_46AA_B2D6_059F2A035687

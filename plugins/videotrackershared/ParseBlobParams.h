@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_ParseBlobParams_h_GUID_D159000A_2DAE_4C96_3DB1_C22A119C7513
-#define INCLUDED_ParseBlobParams_h_GUID_D159000A_2DAE_4C96_3DB1_C22A119C7513
+#pragma once
 
 // Internal Includes
 #include <BlobParams.h>
@@ -71,5 +70,3 @@ namespace vbtracker {
     }
 } // namespace vbtracker
 } // namespace osvr
-
-#endif // INCLUDED_ParseBlobParams_h_GUID_D159000A_2DAE_4C96_3DB1_C22A119C7513

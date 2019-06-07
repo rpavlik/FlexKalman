@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_QuatToEuler_h_GUID_146FCB5A_7820_4B98_5BED_3223776E8CDF
-#define INCLUDED_QuatToEuler_h_GUID_146FCB5A_7820_4B98_5BED_3223776E8CDF
+#pragma once
 
 // Internal Includes
 #include "CSVCellGroup.h"
@@ -59,5 +58,3 @@ namespace util {
     }
 } // namespace util
 } // namespace osvr
-
-#endif // INCLUDED_QuatToEuler_h_GUID_146FCB5A_7820_4B98_5BED_3223776E8CDF

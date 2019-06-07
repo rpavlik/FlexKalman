@@ -23,8 +23,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_OpenCVVersion_h_GUID_503D3091_E553_4AA0_435D_7CCAF2791E32
-#define INCLUDED_OpenCVVersion_h_GUID_503D3091_E553_4AA0_435D_7CCAF2791E32
+#pragma once
 
 // Internal Includes
 // - none
@@ -117,5 +116,3 @@
      (KALMANFRAMEWORK_OPENCV_VER == X &&                                       \
       KALMANFRAMEWORK_OPENCV_VER_COMPONENT_2 == Y &&                           \
       KALMANFRAMEWORK_OPENCV_VER_COMPONENT_3 >= Z))
-
-#endif // INCLUDED_OpenCVVersion_h_GUID_503D3091_E553_4AA0_435D_7CCAF2791E32

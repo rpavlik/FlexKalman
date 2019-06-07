@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_AdditionalReports_h_GUID_40CC5604_776C_45A1_FAE6_70CABB8A630E
-#define INCLUDED_AdditionalReports_h_GUID_40CC5604_776C_45A1_FAE6_70CABB8A630E
+#pragma once
 
 // Internal Includes
 // - none
@@ -94,5 +93,3 @@ namespace vbtracker {
     } // namespace extra_outputs
 } // namespace vbtracker
 } // namespace osvr
-
-#endif // INCLUDED_AdditionalReports_h_GUID_40CC5604_776C_45A1_FAE6_70CABB8A630E

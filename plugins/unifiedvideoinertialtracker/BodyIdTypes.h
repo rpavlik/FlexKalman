@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_BodyIdTypes_h_GUID_4FD241A3_25E9_42AF_F075_8EE8191C02F0
-#define INCLUDED_BodyIdTypes_h_GUID_4FD241A3_25E9_42AF_F075_8EE8191C02F0
+#pragma once
 
 // Internal Includes
 // - none
@@ -79,5 +78,3 @@ template <> struct hash<osvr::vbtracker::BodyTargetId> {
     }
 };
 } // namespace std
-
-#endif // INCLUDED_BodyIdTypes_h_GUID_4FD241A3_25E9_42AF_F075_8EE8191C02F0

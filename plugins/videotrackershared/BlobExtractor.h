@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_BlobExtractor_h_GUID_E11BAD60_5C84_4581_C859_6E1FEF0838F5
-#define INCLUDED_BlobExtractor_h_GUID_E11BAD60_5C84_4581_C859_6E1FEF0838F5
+#pragma once
 
 // Internal Includes
 #include <BlobParams.h>
@@ -114,5 +113,3 @@ namespace vbtracker {
 
 } // namespace vbtracker
 } // namespace osvr
-
-#endif // INCLUDED_BlobExtractor_h_GUID_E11BAD60_5C84_4581_C859_6E1FEF0838F5

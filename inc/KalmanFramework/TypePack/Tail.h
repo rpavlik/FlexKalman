@@ -16,9 +16,6 @@
 // file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef INCLUDED_Tail_h_GUID_F49F7DE2_ADEF_4E87_E3F5_C2EF0A6C9672
-#define INCLUDED_Tail_h_GUID_F49F7DE2_ADEF_4E87_E3F5_C2EF0A6C9672
+#pragma once
 
 #include "SplitList.h"
-
-#endif // INCLUDED_Tail_h_GUID_F49F7DE2_ADEF_4E87_E3F5_C2EF0A6C9672

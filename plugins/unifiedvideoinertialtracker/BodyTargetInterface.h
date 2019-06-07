@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_BodyTargetInterface_h_GUID_FA3B619A_D69E_45BC_DF03_CDF4AEFF542E
-#define INCLUDED_BodyTargetInterface_h_GUID_FA3B619A_D69E_45BC_DF03_CDF4AEFF542E
+#pragma once
 
 // Internal Includes
 #include "ModelTypes.h"
@@ -45,4 +44,3 @@ namespace vbtracker {
 
 } // namespace vbtracker
 } // namespace osvr
-#endif // INCLUDED_BodyTargetInterface_h_GUID_FA3B619A_D69E_45BC_DF03_CDF4AEFF542E

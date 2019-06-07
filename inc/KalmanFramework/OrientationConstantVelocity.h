@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_OrientationConstantVelocity_h_GUID_72B09543_A2CC_458F_2973_7DFD0593F8CC
-#define INCLUDED_OrientationConstantVelocity_h_GUID_72B09543_A2CC_458F_2973_7DFD0593F8CC
+#pragma once
 
 // Internal Includes
 #include "OrientationState.h"
@@ -120,4 +119,3 @@ namespace kalman {
 
 } // namespace kalman
 } // namespace osvr
-#endif // INCLUDED_OrientationConstantVelocity_h_GUID_72B09543_A2CC_458F_2973_7DFD0593F8CC

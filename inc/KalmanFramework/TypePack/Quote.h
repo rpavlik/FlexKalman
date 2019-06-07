@@ -25,8 +25,7 @@
 // Project home: https://github.com/ericniebler/meta
 //
 
-#ifndef INCLUDED_Quote_h_GUID_0665E3E5_DDFC_489F_AC33_6AF40B7454A6
-#define INCLUDED_Quote_h_GUID_0665E3E5_DDFC_489F_AC33_6AF40B7454A6
+#pragma once
 
 // Internal Includes
 #include "Defer.h"
@@ -51,4 +50,3 @@ namespace typepack {
 
 } // namespace typepack
 } // namespace osvr
-#endif // INCLUDED_Quote_h_GUID_0665E3E5_DDFC_489F_AC33_6AF40B7454A6

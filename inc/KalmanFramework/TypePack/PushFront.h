@@ -16,8 +16,7 @@
 // file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef INCLUDED_PushFront_h_GUID_71A57FB9_64D6_4AA1_E968_0F91E951C7B4
-#define INCLUDED_PushFront_h_GUID_71A57FB9_64D6_4AA1_E968_0F91E951C7B4
+#pragma once
 
 // Internal Includes
 #include "ApplyList.h"
@@ -41,4 +40,3 @@ namespace typepack {
     using push_front = apply_list<detail::push_front_impl<T>, List>;
 } // namespace typepack
 } // namespace osvr
-#endif // INCLUDED_PushFront_h_GUID_71A57FB9_64D6_4AA1_E968_0F91E951C7B4

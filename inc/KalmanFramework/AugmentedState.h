@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_AugmentedState_h_GUID_7A7BD6AE_F672_4096_679B_D5BB21D42445
-#define INCLUDED_AugmentedState_h_GUID_7A7BD6AE_F672_4096_679B_D5BB21D42445
+#pragma once
 
 // Internal Includes
 #include "FlexibleKalmanBase.h"
@@ -138,5 +137,3 @@ namespace kalman {
 
 } // namespace kalman
 } // namespace osvr
-
-#endif // INCLUDED_AugmentedState_h_GUID_7A7BD6AE_F672_4096_679B_D5BB21D42445

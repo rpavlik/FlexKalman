@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_HistoryContainer_h_GUID_7CD22B1E_6EAC_49BF_F9FB_030C4BE3FA54
-#define INCLUDED_HistoryContainer_h_GUID_7CD22B1E_6EAC_49BF_F9FB_030C4BE3FA54
+#pragma once
 
 // Internal Includes
 // - none
@@ -373,4 +372,3 @@ namespace vbtracker {
 
 } // namespace vbtracker
 } // namespace osvr
-#endif // INCLUDED_HistoryContainer_h_GUID_7CD22B1E_6EAC_49BF_F9FB_030C4BE3FA54

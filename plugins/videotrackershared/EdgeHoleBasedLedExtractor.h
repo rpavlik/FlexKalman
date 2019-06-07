@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_EdgeHoleBasedLedExtractor_h_GUID_225A962F_C636_4CA5_2D16_964D63A0571A
-#define INCLUDED_EdgeHoleBasedLedExtractor_h_GUID_225A962F_C636_4CA5_2D16_964D63A0571A
+#pragma once
 
 /// @todo Disabled for now because in one testing/timing run with ETW, measured
 /// to increase average blob extraction time from 2.17ms to 2.53ms...
@@ -171,4 +170,3 @@ namespace vbtracker {
     };
 } // namespace vbtracker
 } // namespace osvr
-#endif // INCLUDED_EdgeHoleBasedLedExtractor_h_GUID_225A962F_C636_4CA5_2D16_964D63A0571A

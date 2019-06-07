@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_HDKLedIdentifierFactory_h_GUID_7CB9381C_A55F_49B4_7322_DB88F3B8AD65
-#define INCLUDED_HDKLedIdentifierFactory_h_GUID_7CB9381C_A55F_49B4_7322_DB88F3B8AD65
+#pragma once
 
 // Internal Includes
 #include "LedIdentifier.h"
@@ -58,5 +57,3 @@ namespace vbtracker {
     LedIdentifierPtr createRandomHDKLedIdentifier();
 } // namespace vbtracker
 } // namespace osvr
-
-#endif // INCLUDED_HDKLedIdentifierFactory_h_GUID_7CB9381C_A55F_49B4_7322_DB88F3B8AD65

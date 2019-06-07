@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_GenerateBlobDebugImage_h_GUID_558B5666_8637_48B9_A215_E7A1B798DDD8
-#define INCLUDED_GenerateBlobDebugImage_h_GUID_558B5666_8637_48B9_A215_E7A1B798DDD8
+#pragma once
 
 // Internal Includes
 #include <EdgeHoleBasedLedExtractor.h>
@@ -126,4 +125,3 @@ namespace vbtracker {
     }
 } // namespace vbtracker
 } // namespace osvr
-#endif // INCLUDED_GenerateBlobDebugImage_h_GUID_558B5666_8637_48B9_A215_E7A1B798DDD8

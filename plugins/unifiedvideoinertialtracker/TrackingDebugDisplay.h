@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_TrackingDebugDisplay_h_GUID_AEB0A21B_C043_4EB3_F532_8BF3D9DDEF5C
-#define INCLUDED_TrackingDebugDisplay_h_GUID_AEB0A21B_C043_4EB3_F532_8BF3D9DDEF5C
+#pragma once
 
 // Internal Includes
 #include "ConfigParams.h"
@@ -84,4 +83,3 @@ namespace vbtracker {
     };
 } // namespace vbtracker
 } // namespace osvr
-#endif // INCLUDED_TrackingDebugDisplay_h_GUID_AEB0A21B_C043_4EB3_F532_8BF3D9DDEF5C

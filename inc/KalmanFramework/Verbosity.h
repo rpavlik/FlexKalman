@@ -25,8 +25,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_Verbosity_h_GUID_92D43527_D3AC_4BB4_FA39_91252412C1EE
-#define INCLUDED_Verbosity_h_GUID_92D43527_D3AC_4BB4_FA39_91252412C1EE
+#pragma once
 
 #define KALMANFRAMEWORK_TRACE(...)                                             \
     do {                                                                       \
@@ -37,5 +36,3 @@
 #define KALMANFRAMEWORK_DEV_VERBOSE(...)                                       \
     do {                                                                       \
     } while (0)
-
-#endif // INCLUDED_Verbosity_h_GUID_92D43527_D3AC_4BB4_FA39_91252412C1EE

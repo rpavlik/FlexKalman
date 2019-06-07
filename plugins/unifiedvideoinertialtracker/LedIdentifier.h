@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_LedIdentifier_h_GUID_674F7CDB_87AD_41AA_2475_134F2B4A3FF9
-#define INCLUDED_LedIdentifier_h_GUID_674F7CDB_87AD_41AA_2475_134F2B4A3FF9
+#pragma once
 
 // Internal Includes
 #include "BeaconIdTypes.h"
@@ -75,5 +74,3 @@ namespace vbtracker {
 
 } // namespace vbtracker
 } // namespace osvr
-
-#endif // INCLUDED_LedIdentifier_h_GUID_674F7CDB_87AD_41AA_2475_134F2B4A3FF9

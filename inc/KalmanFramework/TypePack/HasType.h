@@ -25,8 +25,7 @@
 // Project home: https://github.com/ericniebler/meta
 //
 
-#ifndef INCLUDED_HasType_h_GUID_C99B75F2_4F44_49BD_6152_3CF9B0B80DAB
-#define INCLUDED_HasType_h_GUID_C99B75F2_4F44_49BD_6152_3CF9B0B80DAB
+#pragma once
 
 // Internal Includes
 #include "Void.h"
@@ -57,5 +56,3 @@ namespace typepack {
     template <typename T> using has_type = t_<detail::has_type_<T>>;
 } // namespace typepack
 } // namespace osvr
-
-#endif // INCLUDED_HasType_h_GUID_C99B75F2_4F44_49BD_6152_3CF9B0B80DAB

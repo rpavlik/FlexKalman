@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_ConfigParams_h_GUID_22101CEF_879B_4781_2733_F5F7AE4E3633
-#define INCLUDED_ConfigParams_h_GUID_22101CEF_879B_4781_2733_F5F7AE4E3633
+#pragma once
 
 // Internal Includes
 #include "BlobParams.h"
@@ -285,4 +284,3 @@ namespace vbtracker {
     };
 } // namespace vbtracker
 } // namespace osvr
-#endif // INCLUDED_ConfigParams_h_GUID_22101CEF_879B_4781_2733_F5F7AE4E3633

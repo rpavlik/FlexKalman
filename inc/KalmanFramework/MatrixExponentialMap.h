@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_ExponentialMap_h_GUID_FB61635E_CF8A_4FAE_5343_2258F4BC1E60
-#define INCLUDED_ExponentialMap_h_GUID_FB61635E_CF8A_4FAE_5343_2258F4BC1E60
+#pragma once
 
 // Internal Includes
 // - none
@@ -242,4 +241,3 @@ namespace kalman {
     } // namespace matrix_exponential_map
 } // namespace kalman
 } // namespace osvr
-#endif // INCLUDED_ExponentialMap_h_GUID_FB61635E_CF8A_4FAE_5343_2258F4BC1E60

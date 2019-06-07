@@ -25,8 +25,7 @@
 // Project home: https://github.com/ericniebler/meta
 //
 
-#ifndef INCLUDED_T_h_GUID_7DC620D4_E3EA_4FB4_0C0E_9E9F512138EB
-#define INCLUDED_T_h_GUID_7DC620D4_E3EA_4FB4_0C0E_9E9F512138EB
+#pragma once
 
 // Internal Includes
 // - none
@@ -52,5 +51,3 @@ namespace typepack {
     template <typename T> using t_ = typename T::type;
 } // namespace typepack
 } // namespace osvr
-
-#endif // INCLUDED_T_h_GUID_7DC620D4_E3EA_4FB4_0C0E_9E9F512138EB

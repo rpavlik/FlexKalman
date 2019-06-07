@@ -16,8 +16,7 @@
 // file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef INCLUDED_FindFirst_h_GUID_FA5855C9_2243_4DA5_B9B7_ED766E8348FE
-#define INCLUDED_FindFirst_h_GUID_FA5855C9_2243_4DA5_B9B7_ED766E8348FE
+#pragma once
 
 // Internal Includes
 #include "List.h"
@@ -62,5 +61,3 @@ namespace typepack {
 
 } // namespace typepack
 } // namespace osvr
-
-#endif // INCLUDED_FindFirst_h_GUID_FA5855C9_2243_4DA5_B9B7_ED766E8348FE

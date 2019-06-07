@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_ImageProcessingThread_h_GUID_307E6652_D346_43B4_291A_5BAAEF4BA909
-#define INCLUDED_ImageProcessingThread_h_GUID_307E6652_D346_43B4_291A_5BAAEF4BA909
+#pragma once
 
 // Internal Includes
 #include <CameraParameters.h>
@@ -98,5 +97,3 @@ namespace vbtracker {
 
 } // namespace vbtracker
 } // namespace osvr
-
-#endif // INCLUDED_ImageProcessingThread_h_GUID_307E6652_D346_43B4_291A_5BAAEF4BA909

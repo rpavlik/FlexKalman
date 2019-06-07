@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_CameraParameters_h_GUID_5BBC6151_6C1F_44B1_14FC_34CB6BF601E9
-#define INCLUDED_CameraParameters_h_GUID_5BBC6151_6C1F_44B1_14FC_34CB6BF601E9
+#pragma once
 
 // Internal Includes
 // - none
@@ -241,4 +240,3 @@ namespace vbtracker {
     }
 } // namespace vbtracker
 } // namespace osvr
-#endif // INCLUDED_CameraParameters_h_GUID_5BBC6151_6C1F_44B1_14FC_34CB6BF601E9

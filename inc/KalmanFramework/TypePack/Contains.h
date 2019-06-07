@@ -16,8 +16,7 @@
 // file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef INCLUDED_Contains_h_GUID_39658344_E4B2_4196_15DF_546AE1F0DF0B
-#define INCLUDED_Contains_h_GUID_39658344_E4B2_4196_15DF_546AE1F0DF0B
+#pragma once
 
 // Internal Includes
 #include "ApplyList.h"
@@ -50,4 +49,3 @@ namespace typepack {
 
 } // namespace typepack
 } // namespace osvr
-#endif // INCLUDED_Contains_h_GUID_39658344_E4B2_4196_15DF_546AE1F0DF0B

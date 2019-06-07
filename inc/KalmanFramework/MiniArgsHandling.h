@@ -27,8 +27,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_MiniArgsHandling_h_GUID_51E5C000_C9EC_438C_FF9C_2FE43886985C
-#define INCLUDED_MiniArgsHandling_h_GUID_51E5C000_C9EC_438C_FF9C_2FE43886985C
+#pragma once
 
 // Internal Includes
 // - none
@@ -227,4 +226,3 @@ namespace util {
     }  // namespace args
 } // namespace util
 } // namespace osvr
-#endif // INCLUDED_MiniArgsHandling_h_GUID_51E5C000_C9EC_438C_FF9C_2FE43886985C

@@ -64,8 +64,7 @@
    SOFTWARE.
 */
 
-#ifndef INCLUDED_newuoa_h_GUID_F9E56CF3_7B12_41A0_4A09_E2A02B48FAC1
-#define INCLUDED_newuoa_h_GUID_F9E56CF3_7B12_41A0_4A09_E2A02B48FAC1
+#pragma once
 
 #include <Eigen/Core>
 
@@ -1969,5 +1968,3 @@ inline double ei_newuoa_wrapped(Eigen::MatrixBase<Derived> &x,
     return ei_newuoa_wrapped(detail::computeReasonableNPT(x), x, rho, maxfun,
                              std::forward<Function>(f));
 }
-
-#endif // INCLUDED_newuoa_h_GUID_F9E56CF3_7B12_41A0_4A09_E2A02B48FAC1

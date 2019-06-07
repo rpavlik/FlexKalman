@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_SpaceTransformations_h_GUID_C1F96E04_2D97_428B_047B_0C620A82C10C
-#define INCLUDED_SpaceTransformations_h_GUID_C1F96E04_2D97_428B_047B_0C620A82C10C
+#pragma once
 
 // Internal Includes
 #include "TrackingSystem.h"
@@ -51,5 +50,3 @@ namespace vbtracker {
 
 } // namespace vbtracker
 } // namespace osvr
-
-#endif // INCLUDED_SpaceTransformations_h_GUID_C1F96E04_2D97_428B_047B_0C620A82C10C

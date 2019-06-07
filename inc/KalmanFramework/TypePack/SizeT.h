@@ -25,8 +25,7 @@
 // Project home: https://github.com/ericniebler/meta
 //
 
-#ifndef INCLUDED_SizeT_h_GUID_4202F0A3_8E2A_4888_7041_D6C829172343
-#define INCLUDED_SizeT_h_GUID_4202F0A3_8E2A_4888_7041_D6C829172343
+#pragma once
 
 // Internal Includes
 // - none
@@ -46,4 +45,3 @@ namespace typepack {
     using size_t_ = std::integral_constant<std::size_t, V>;
 } // namespace typepack
 } // namespace osvr
-#endif // INCLUDED_SizeT_h_GUID_4202F0A3_8E2A_4888_7041_D6C829172343

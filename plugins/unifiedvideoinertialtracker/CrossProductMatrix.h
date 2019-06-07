@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_CrossProductMatrix_h_GUID_CFE0AD3E_5291_4282_A691_5FA4F93A4878
-#define INCLUDED_CrossProductMatrix_h_GUID_CFE0AD3E_5291_4282_A691_5FA4F93A4878
+#pragma once
 
 // Internal Includes
 // - none
@@ -52,5 +51,3 @@ namespace vbtracker {
 
 } // namespace vbtracker
 } // namespace osvr
-
-#endif // INCLUDED_CrossProductMatrix_h_GUID_CFE0AD3E_5291_4282_A691_5FA4F93A4878

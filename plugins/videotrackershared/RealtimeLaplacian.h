@@ -67,8 +67,7 @@
 
 // clang-format on
 
-#ifndef INCLUDED_RealtimeLaplacian_h_GUID_1ECD4EFB_BF33_479D_0ED7_890BF096056E
-#define INCLUDED_RealtimeLaplacian_h_GUID_1ECD4EFB_BF33_479D_0ED7_890BF096056E
+#pragma once
 
 // Internal Includes
 // - none
@@ -229,4 +228,3 @@ namespace vbtracker {
 
 } // namespace vbtracker
 } // namespace osvr
-#endif // INCLUDED_RealtimeLaplacian_h_GUID_1ECD4EFB_BF33_479D_0ED7_890BF096056E

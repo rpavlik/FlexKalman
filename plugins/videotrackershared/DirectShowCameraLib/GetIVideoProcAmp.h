@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_GetIVideoProcAmp_h_GUID_F35BD30E_FB93_45BF_9957_8E7F69290E46
-#define INCLUDED_GetIVideoProcAmp_h_GUID_F35BD30E_FB93_45BF_9957_8E7F69290E46
+#pragma once
 
 #ifdef _MSC_VER
 /// Apparently no vidcap header in MinGW64 yet.
@@ -77,5 +76,3 @@ inline comutils::Ptr<IVideoProcAmp> getIVideoProcAmp(IBaseFilter &filter) {
     return ret;
 }
 #endif // UVBI_HAVE_IVIDEOPROCAMP
-
-#endif // INCLUDED_GetIVideoProcAmp_h_GUID_F35BD30E_FB93_45BF_9957_8E7F69290E46

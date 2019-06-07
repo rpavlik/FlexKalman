@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_GetPin_h_GUID_5AABE0CF_8981_4785_0078_147205EEFABF
-#define INCLUDED_GetPin_h_GUID_5AABE0CF_8981_4785_0078_147205EEFABF
+#pragma once
 
 // Internal Includes
 #include "comutils/ComPtr.h"
@@ -67,5 +66,3 @@ GetVideoCapturePinInterface(ICaptureGraphBuilder2 &builder, IBaseFilter &src) {
     return GetPinInterface<IfaceType>(builder, src, &PIN_CATEGORY_CAPTURE,
                                       &MEDIATYPE_Video);
 }
-
-#endif // INCLUDED_GetPin_h_GUID_5AABE0CF_8981_4785_0078_147205EEFABF

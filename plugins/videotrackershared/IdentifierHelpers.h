@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_IdentifierHelpers_h_GUID_B6F81E02_BE7B_4382_12E5_87296135997D
-#define INCLUDED_IdentifierHelpers_h_GUID_B6F81E02_BE7B_4382_12E5_87296135997D
+#pragma once
 
 // Internal Includes
 #include "BasicTypes.h"
@@ -96,5 +95,3 @@ namespace vbtracker {
     }
 } // namespace vbtracker
 } // namespace osvr
-
-#endif // INCLUDED_IdentifierHelpers_h_GUID_B6F81E02_BE7B_4382_12E5_87296135997D

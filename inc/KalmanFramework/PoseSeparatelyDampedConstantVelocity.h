@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_PoseSeparatelyDampedConstantVelocity_h_GUID_4BB00A8D_B12F_47BF_EA91_599233CED644
-#define INCLUDED_PoseSeparatelyDampedConstantVelocity_h_GUID_4BB00A8D_B12F_47BF_EA91_599233CED644
+#pragma once
 
 // Internal Includes
 #include "PoseConstantVelocity.h"
@@ -115,5 +114,3 @@ namespace kalman {
 
 } // namespace kalman
 } // namespace osvr
-
-#endif // INCLUDED_PoseSeparatelyDampedConstantVelocity_h_GUID_4BB00A8D_B12F_47BF_EA91_599233CED644

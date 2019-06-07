@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_TransformFindingRoutine_h_GUID_A09E7693_04E5_4FA2_C929_F23CBEC12306
-#define INCLUDED_TransformFindingRoutine_h_GUID_A09E7693_04E5_4FA2_C929_F23CBEC12306
+#pragma once
 
 // Internal Includes
 #include "OptimizationBase.h"
@@ -192,4 +191,3 @@ namespace vbtracker {
     }
 } // namespace vbtracker
 } // namespace osvr
-#endif // INCLUDED_TransformFindingRoutine_h_GUID_A09E7693_04E5_4FA2_C929_F23CBEC12306

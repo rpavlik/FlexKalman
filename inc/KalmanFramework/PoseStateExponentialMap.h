@@ -26,8 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_PoseStateExponentialMap_h_GUID_3D1B779A_6DBE_4993_0AE7_C28344E55A51
-#define INCLUDED_PoseStateExponentialMap_h_GUID_3D1B779A_6DBE_4993_0AE7_C28344E55A51
+#pragma once
 
 // Internal Includes
 #include "FlexibleKalmanBase.h"
@@ -211,4 +210,3 @@ namespace kalman {
     } // namespace pose_exp_map
 } // namespace kalman
 } // namespace osvr
-#endif // INCLUDED_PoseStateExponentialMap_h_GUID_3D1B779A_6DBE_4993_0AE7_C28344E55A51

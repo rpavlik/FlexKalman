@@ -16,8 +16,7 @@
 // file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef INCLUDED_Fold_h_GUID_63DEE2B1_33B4_47B3_1289_B30F2B5BEA6B
-#define INCLUDED_Fold_h_GUID_63DEE2B1_33B4_47B3_1289_B30F2B5BEA6B
+#pragma once
 
 // Internal Includes
 #include "Apply.h"
@@ -58,5 +57,3 @@ namespace typepack {
 
 } // namespace typepack
 } // namespace osvr
-
-#endif // INCLUDED_Fold_h_GUID_63DEE2B1_33B4_47B3_1289_B30F2B5BEA6B

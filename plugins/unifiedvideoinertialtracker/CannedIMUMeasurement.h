@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_CannedIMUMeasurement_h_GUID_98C6C454_C977_4081_2065_A89E6A62C8FA
-#define INCLUDED_CannedIMUMeasurement_h_GUID_98C6C454_C977_4081_2065_A89E6A62C8FA
+#pragma once
 
 // Internal Includes
 // - none
@@ -101,4 +100,3 @@ namespace vbtracker {
     };
 } // namespace vbtracker
 } // namespace osvr
-#endif // INCLUDED_CannedIMUMeasurement_h_GUID_98C6C454_C977_4081_2065_A89E6A62C8FA

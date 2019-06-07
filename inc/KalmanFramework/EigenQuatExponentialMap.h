@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_EigenQuatExponentialMap_h_GUID_7E15BC44_BCFB_438B_902B_BA0787BEE405
-#define INCLUDED_EigenQuatExponentialMap_h_GUID_7E15BC44_BCFB_438B_902B_BA0787BEE405
+#pragma once
 
 // Internal Includes
 // - none
@@ -140,5 +139,3 @@ namespace util {
     using ei_quat_exp_map::quat_ln;
 } // namespace util
 } // namespace osvr
-
-#endif // INCLUDED_EigenQuatExponentialMap_h_GUID_7E15BC44_BCFB_438B_902B_BA0787BEE405

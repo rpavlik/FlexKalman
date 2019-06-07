@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_ConfigurationParser_h_GUID_933C79EE_3392_4C8D_74D5_D9A72580DA6A
-#define INCLUDED_ConfigurationParser_h_GUID_933C79EE_3392_4C8D_74D5_D9A72580DA6A
+#pragma once
 
 // Internal Includes
 #include "GetOptionalParameter.h"
@@ -248,4 +247,3 @@ namespace vbtracker {
 #undef PARAMNAME
 } // namespace vbtracker
 } // namespace osvr
-#endif // INCLUDED_ConfigurationParser_h_GUID_933C79EE_3392_4C8D_74D5_D9A72580DA6A

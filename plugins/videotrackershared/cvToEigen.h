@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_cvToEigen_h_GUID_3A0994D8_A408_44B1_411A_C86F3E9332AB
-#define INCLUDED_cvToEigen_h_GUID_3A0994D8_A408_44B1_411A_C86F3E9332AB
+#pragma once
 
 // Internal Includes
 // - none
@@ -110,5 +109,3 @@ namespace vbtracker {
     }
 } // namespace vbtracker
 } // namespace osvr
-
-#endif // INCLUDED_cvToEigen_h_GUID_3A0994D8_A408_44B1_411A_C86F3E9332AB

@@ -25,8 +25,7 @@
 // Project home: https://github.com/ericniebler/meta
 //
 
-#ifndef INCLUDED_QuoteTrait_h_GUID_4A7EACDE_5947_458E_CE4A_63A22C016531
-#define INCLUDED_QuoteTrait_h_GUID_4A7EACDE_5947_458E_CE4A_63A22C016531
+#pragma once
 
 // Internal Includes
 #include "Compose.h"
@@ -46,4 +45,3 @@ namespace typepack {
     using quote_trait = compose<quote<t_>, quote<C>>;
 } // namespace typepack
 } // namespace osvr
-#endif // INCLUDED_QuoteTrait_h_GUID_4A7EACDE_5947_458E_CE4A_63A22C016531

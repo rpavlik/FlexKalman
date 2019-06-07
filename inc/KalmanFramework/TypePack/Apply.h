@@ -25,8 +25,7 @@
 // Project home: https://github.com/ericniebler/meta
 //
 
-#ifndef INCLUDED_Apply_h_GUID_BA8D840B_7B79_46A6_2018_3CC5CB4AFCC2
-#define INCLUDED_Apply_h_GUID_BA8D840B_7B79_46A6_2018_3CC5CB4AFCC2
+#pragma once
 
 // Internal Includes
 // - none
@@ -44,5 +43,3 @@ namespace typepack {
     using apply = typename F::template apply<Args...>;
 } // namespace typepack
 } // namespace osvr
-
-#endif // INCLUDED_Apply_h_GUID_BA8D840B_7B79_46A6_2018_3CC5CB4AFCC2

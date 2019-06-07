@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_LedMeasurement_h_GUID_FB847F67_347B_4C8E_AC9B_33179ED6B0E6
-#define INCLUDED_LedMeasurement_h_GUID_FB847F67_347B_4C8E_AC9B_33179ED6B0E6
+#pragma once
 
 // Internal Includes
 #include "BasicTypes.h"
@@ -140,4 +139,3 @@ namespace vbtracker {
 
 } // namespace vbtracker
 } // namespace osvr
-#endif // INCLUDED_LedMeasurement_h_GUID_FB847F67_347B_4C8E_AC9B_33179ED6B0E6

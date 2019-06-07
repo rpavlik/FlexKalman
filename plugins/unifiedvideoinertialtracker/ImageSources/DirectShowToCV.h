@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_DirectShowToCV_h_GUID_C9B19C46_CA43_4481_A5B9_CB76397DD2C3
-#define INCLUDED_DirectShowToCV_h_GUID_C9B19C46_CA43_4481_A5B9_CB76397DD2C3
+#pragma once
 
 // Internal Includes
 // - none
@@ -46,5 +45,3 @@ template <typename CameraType> inline cv::Mat retrieve(CameraType &camera) {
     cv::flip(frame, ret, 0);
     return ret;
 }
-
-#endif // INCLUDED_DirectShowToCV_h_GUID_C9B19C46_CA43_4481_A5B9_CB76397DD2C3

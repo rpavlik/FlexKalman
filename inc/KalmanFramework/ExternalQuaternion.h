@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_ExternalQuaternion_h_GUID_3235DD66_A6E6_47BD_7CC0_51BBF45EF38D
-#define INCLUDED_ExternalQuaternion_h_GUID_3235DD66_A6E6_47BD_7CC0_51BBF45EF38D
+#pragma once
 
 // Internal Includes
 #include "FlexibleKalmanBase.h"
@@ -81,5 +80,3 @@ namespace kalman {
     } // namespace external_quat
 } // namespace kalman
 } // namespace osvr
-
-#endif // INCLUDED_ExternalQuaternion_h_GUID_3235DD66_A6E6_47BD_7CC0_51BBF45EF38D

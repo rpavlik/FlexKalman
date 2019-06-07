@@ -23,8 +23,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_TestIMU_Common_h_GUID_F125CC83_F6D6_4EA5_9281_0DBEC87D309D
-#define INCLUDED_TestIMU_Common_h_GUID_F125CC83_F6D6_4EA5_9281_0DBEC87D309D
+#pragma once
 
 // Internal Includes
 #include "TestIMU.h"
@@ -172,5 +171,3 @@ inline void smallPositiveYChecks(TestData *data, MeasurementType &kalmanMeas) {
         commonSmallPositiveYChecks(data, kalmanMeas, inProgress);
     }
 }
-
-#endif // INCLUDED_TestIMU_Common_h_GUID_F125CC83_F6D6_4EA5_9281_0DBEC87D309D

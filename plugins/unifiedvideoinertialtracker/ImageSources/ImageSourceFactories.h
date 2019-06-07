@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_ImageSourceFactories_h_GUID_9C2DA062_802C_41A0_E014_82E9EB8A7D5F
-#define INCLUDED_ImageSourceFactories_h_GUID_9C2DA062_802C_41A0_E014_82E9EB8A7D5F
+#pragma once
 
 // Internal Includes
 #include "ImageSource.h"
@@ -61,4 +60,3 @@ namespace vbtracker {
     ImageSourcePtr openDK2WrappedCamera(ImageSourcePtr &&cam, bool doHid);
 } // namespace vbtracker
 } // namespace osvr
-#endif // INCLUDED_ImageSourceFactories_h_GUID_9C2DA062_802C_41A0_E014_82E9EB8A7D5F

@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_StateHistory_h_GUID_07D9DAEE_6733_46AA_772C_43A51B2BAC10
-#define INCLUDED_StateHistory_h_GUID_07D9DAEE_6733_46AA_772C_43A51B2BAC10
+#pragma once
 
 // Internal Includes
 // - none
@@ -145,5 +144,3 @@ namespace vbtracker {
     };
 } // namespace vbtracker
 } // namespace osvr
-
-#endif // INCLUDED_StateHistory_h_GUID_07D9DAEE_6733_46AA_772C_43A51B2BAC10

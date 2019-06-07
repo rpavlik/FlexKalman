@@ -25,8 +25,7 @@
 // Project home: https://github.com/ericniebler/meta
 //
 
-#ifndef INCLUDED_Concat_h_GUID_84D1F940_2859_4581_8F5D_16651CB90A21
-#define INCLUDED_Concat_h_GUID_84D1F940_2859_4581_8F5D_16651CB90A21
+#pragma once
 
 // Internal Includes
 #include "List.h"
@@ -76,4 +75,3 @@ namespace typepack {
 
 } // namespace typepack
 } // namespace osvr
-#endif // INCLUDED_Concat_h_GUID_84D1F940_2859_4581_8F5D_16651CB90A21

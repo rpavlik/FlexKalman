@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_BasicTypes_h_GUID_50E022F0_DE76_4DA9_68DD_D503E4165E36
-#define INCLUDED_BasicTypes_h_GUID_50E022F0_DE76_4DA9_68DD_D503E4165E36
+#pragma once
 
 // Internal Includes
 // - none
@@ -53,4 +52,3 @@ namespace vbtracker {
 
 } // namespace vbtracker
 } // namespace osvr
-#endif // INCLUDED_BasicTypes_h_GUID_50E022F0_DE76_4DA9_68DD_D503E4165E36

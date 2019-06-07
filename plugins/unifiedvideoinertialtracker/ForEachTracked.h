@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_ForEachTracked_h_GUID_8DA1845D_2D7F_4C8C_9424_C18D06339380
-#define INCLUDED_ForEachTracked_h_GUID_8DA1845D_2D7F_4C8C_9424_C18D06339380
+#pragma once
 
 // Internal Includes
 #include "TrackedBody.h"
@@ -106,4 +105,3 @@ namespace vbtracker {
     }
 } // namespace vbtracker
 } // namespace osvr
-#endif // INCLUDED_ForEachTracked_h_GUID_8DA1845D_2D7F_4C8C_9424_C18D06339380

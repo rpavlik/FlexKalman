@@ -31,8 +31,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_Finally_h_GUID_B9F9A283_5381_41A5_3D60_CEF0F8BA8606
-#define INCLUDED_Finally_h_GUID_B9F9A283_5381_41A5_3D60_CEF0F8BA8606
+#pragma once
 
 // Internal Includes
 // - none
@@ -98,5 +97,3 @@ namespace util {
 
 } // namespace util
 } // namespace osvr
-
-#endif // INCLUDED_Finally_h_GUID_B9F9A283_5381_41A5_3D60_CEF0F8BA8606

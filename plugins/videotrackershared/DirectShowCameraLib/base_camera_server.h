@@ -24,8 +24,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_base_camera_server_h_GUID_AE8BD56F_793F_4693_9B94_4E4CC953511C
-#define INCLUDED_base_camera_server_h_GUID_AE8BD56F_793F_4693_9B94_4E4CC953511C
+#pragma once
 
 // Internal Includes
 // - none
@@ -284,5 +283,3 @@ class base_camera_server : public image_wrapper {
         }
     };
 };
-
-#endif // INCLUDED_base_camera_server_h_GUID_AE8BD56F_793F_4693_9B94_4E4CC953511C

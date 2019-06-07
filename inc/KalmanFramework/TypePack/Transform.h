@@ -16,8 +16,7 @@
 // file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef INCLUDED_Transform_h_GUID_901ECEAD_C608_4DAE_CA89_CE3C6EF135B6
-#define INCLUDED_Transform_h_GUID_901ECEAD_C608_4DAE_CA89_CE3C6EF135B6
+#pragma once
 
 // Internal Includes
 #include "Apply.h"
@@ -54,4 +53,3 @@ namespace typepack {
     using transform = t_<detail::transform_<List, Fun>>;
 } // namespace typepack
 } // namespace osvr
-#endif // INCLUDED_Transform_h_GUID_901ECEAD_C608_4DAE_CA89_CE3C6EF135B6

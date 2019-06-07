@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_SampleGrabberWrapper_h_GUID_3A2E02D3_5BD5_44B2_E95F_A31FE3B13ED1
-#define INCLUDED_SampleGrabberWrapper_h_GUID_3A2E02D3_5BD5_44B2_E95F_A31FE3B13ED1
+#pragma once
 
 // Internal Includes
 #include "MediaSampleExchange.h"
@@ -62,4 +61,3 @@ class SampleGrabberWrapper {
     comutils::Ptr<IBaseFilter> sampleGrabber_;
     std::unique_ptr<directx_samplegrabber_callback> callback_;
 };
-#endif // INCLUDED_SampleGrabberWrapper_h_GUID_3A2E02D3_5BD5_44B2_E95F_A31FE3B13ED1

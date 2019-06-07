@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_RoomCalibration_h_GUID_D53BD552_47D4_4390_C6AC_C6819180D4AF
-#define INCLUDED_RoomCalibration_h_GUID_D53BD552_47D4_4390_C6AC_C6819180D4AF
+#pragma once
 
 // Internal Includes
 #include "BodyIdTypes.h"
@@ -149,4 +148,3 @@ namespace vbtracker {
     bool isRoomCalibrationComplete(TrackingSystem const &sys);
 } // namespace vbtracker
 } // namespace osvr
-#endif // INCLUDED_RoomCalibration_h_GUID_D53BD552_47D4_4390_C6AC_C6819180D4AF

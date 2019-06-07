@@ -25,8 +25,7 @@
 // Project home: https://github.com/ericniebler/meta
 //
 
-#ifndef INCLUDED_If_h_GUID_F34A2E21_4328_478B_E11B_2E8FBD606BF8
-#define INCLUDED_If_h_GUID_F34A2E21_4328_478B_E11B_2E8FBD606BF8
+#pragma once
 
 // Internal Includes
 #include "Bool.h"
@@ -65,4 +64,3 @@ namespace typepack {
     using if_c = t_<detail::if_impl<bool_<If>, Args...>>;
 } // namespace typepack
 } // namespace osvr
-#endif // INCLUDED_If_h_GUID_F34A2E21_4328_478B_E11B_2E8FBD606BF8

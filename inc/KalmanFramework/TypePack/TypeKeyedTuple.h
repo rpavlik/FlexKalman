@@ -16,8 +16,7 @@
 // file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef INCLUDED_TypeKeyedTuple_h_GUID_04E79266_BD2F_458D_B7AC_DF5F35CC6EC4
-#define INCLUDED_TypeKeyedTuple_h_GUID_04E79266_BD2F_458D_B7AC_DF5F35CC6EC4
+#pragma once
 
 // Internal Includes
 #include "Apply.h"
@@ -78,5 +77,3 @@ namespace typepack {
 
 } // namespace typepack
 } // namespace osvr
-
-#endif // INCLUDED_TypeKeyedTuple_h_GUID_04E79266_BD2F_458D_B7AC_DF5F35CC6EC4

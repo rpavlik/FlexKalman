@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_DirectShowHDKCameraFactory_h_GUID_383B0AE1_8BD2_4B9D_5176_ABEFEF534DBE
-#define INCLUDED_DirectShowHDKCameraFactory_h_GUID_383B0AE1_8BD2_4B9D_5176_ABEFEF534DBE
+#pragma once
 
 // Internal Includes
 #include "directx_camera_server.h"
@@ -99,5 +98,3 @@ getDirectShowHDKCamera(bool highGain = true) {
     }
     return ret;
 }
-
-#endif // INCLUDED_DirectShowHDKCameraFactory_h_GUID_383B0AE1_8BD2_4B9D_5176_ABEFEF534DBE

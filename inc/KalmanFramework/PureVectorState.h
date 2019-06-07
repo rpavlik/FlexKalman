@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_PureVectorState_h_GUID_5347542B_F2F6_46A2_E49B_3EF0B0A9F9ED
-#define INCLUDED_PureVectorState_h_GUID_5347542B_F2F6_46A2_E49B_3EF0B0A9F9ED
+#pragma once
 
 // Internal Includes
 #include "FlexibleKalmanBase.h"
@@ -87,4 +86,3 @@ namespace kalman {
 
 } // namespace kalman
 } // namespace osvr
-#endif // INCLUDED_PureVectorState_h_GUID_5347542B_F2F6_46A2_E49B_3EF0B0A9F9ED

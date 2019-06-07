@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_ProcessIMUMessage_h_GUID_9F00FD7F_C068_4DB1_61C8_42317D1CF786
-#define INCLUDED_ProcessIMUMessage_h_GUID_9F00FD7F_C068_4DB1_61C8_42317D1CF786
+#pragma once
 
 // Internal Includes
 #include "IMUMessage.h"
@@ -93,4 +92,3 @@ namespace vbtracker {
     }
 } // namespace vbtracker
 } // namespace osvr
-#endif // INCLUDED_ProcessIMUMessage_h_GUID_9F00FD7F_C068_4DB1_61C8_42317D1CF786

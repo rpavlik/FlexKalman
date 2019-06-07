@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_IMUMessage_h_GUID_BF9DF56D_F7CB_4E92_C9E6_B44C56C8138D
-#define INCLUDED_IMUMessage_h_GUID_BF9DF56D_F7CB_4E92_C9E6_B44C56C8138D
+#pragma once
 
 // Internal Includes
 // - none
@@ -89,5 +88,3 @@ namespace vbtracker {
 
 } // namespace vbtracker
 } // namespace osvr
-
-#endif // INCLUDED_IMUMessage_h_GUID_BF9DF56D_F7CB_4E92_C9E6_B44C56C8138D

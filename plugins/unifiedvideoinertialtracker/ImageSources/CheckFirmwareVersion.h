@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_CheckFirmwareVersion_h_GUID_C1356250_0CF2_4595_83A5_1522F8AC6795
-#define INCLUDED_CheckFirmwareVersion_h_GUID_C1356250_0CF2_4595_83A5_1522F8AC6795
+#pragma once
 
 // Internal Includes
 // - none
@@ -242,4 +241,3 @@ namespace vbtracker {
 #endif
 } // namespace vbtracker
 } // namespace osvr
-#endif // INCLUDED_CheckFirmwareVersion_h_GUID_C1356250_0CF2_4595_83A5_1522F8AC6795

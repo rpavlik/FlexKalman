@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_BlobParams_h_GUID_ADC18202_C3F1_4CB7_65C4_77BED9F0C981
-#define INCLUDED_BlobParams_h_GUID_ADC18202_C3F1_4CB7_65C4_77BED9F0C981
+#pragma once
 
 // Internal Includes
 // - none
@@ -127,5 +126,3 @@ namespace vbtracker {
 
 } // namespace vbtracker
 } // namespace osvr
-
-#endif // INCLUDED_BlobParams_h_GUID_ADC18202_C3F1_4CB7_65C4_77BED9F0C981

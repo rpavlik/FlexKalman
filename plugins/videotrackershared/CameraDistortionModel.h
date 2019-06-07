@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_CameraDistortionModel_h_GUID_9A7F6C37_8AE6_40AC_DB51_C9B7B21F9871
-#define INCLUDED_CameraDistortionModel_h_GUID_9A7F6C37_8AE6_40AC_DB51_C9B7B21F9871
+#pragma once
 
 // Internal Includes
 // - none
@@ -64,4 +63,3 @@ namespace vbtracker {
     };
 } // namespace vbtracker
 } // namespace osvr
-#endif // INCLUDED_CameraDistortionModel_h_GUID_9A7F6C37_8AE6_40AC_DB51_C9B7B21F9871

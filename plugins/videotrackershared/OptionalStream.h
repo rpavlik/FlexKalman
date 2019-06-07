@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_OptionalStream_h_GUID_2C133DE4_22D9_4195_B36E_0663DF0A6378
-#define INCLUDED_OptionalStream_h_GUID_2C133DE4_22D9_4195_B36E_0663DF0A6378
+#pragma once
 
 // Internal Includes
 // - none
@@ -98,4 +97,3 @@ namespace vbtracker {
     }
 } // namespace vbtracker
 } // namespace osvr
-#endif // INCLUDED_OptionalStream_h_GUID_2C133DE4_22D9_4195_B36E_0663DF0A6378

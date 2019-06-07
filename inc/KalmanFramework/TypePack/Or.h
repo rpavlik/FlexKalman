@@ -25,8 +25,7 @@
 // Project home: https://github.com/ericniebler/meta
 //
 
-#ifndef INCLUDED_Or_h_GUID_2D16A5C5_4937_4695_30A8_842C5DD4B2C7
-#define INCLUDED_Or_h_GUID_2D16A5C5_4937_4695_30A8_842C5DD4B2C7
+#pragma once
 
 // Internal Includes
 #include "Bool.h"
@@ -59,4 +58,3 @@ namespace typepack {
 
 } // namespace typepack
 } // namespace osvr
-#endif // INCLUDED_Or_h_GUID_2D16A5C5_4937_4695_30A8_842C5DD4B2C7

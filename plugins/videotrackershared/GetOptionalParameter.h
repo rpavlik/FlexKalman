@@ -22,8 +22,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INCLUDED_GetOptionalParameter_h_GUID_F4FA55E0_C946_4AAE_6741_57C269C56D24
-#define INCLUDED_GetOptionalParameter_h_GUID_F4FA55E0_C946_4AAE_6741_57C269C56D24
+#pragma once
 
 // Internal Includes
 // - none
@@ -79,4 +78,3 @@ namespace vbtracker {
     }
 } // namespace vbtracker
 } // namespace osvr
-#endif // INCLUDED_GetOptionalParameter_h_GUID_F4FA55E0_C946_4AAE_6741_57C269C56D24
