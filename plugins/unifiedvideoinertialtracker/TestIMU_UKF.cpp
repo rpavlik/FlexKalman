@@ -26,10 +26,9 @@
 // Internal Includes
 #include "TestIMU_Common.h"
 
-#include "FlexibleUnscentedCorrect.h"
-
 // Library/third-party includes
 #include <Eigen/Eigenvalues>
+#include <KalmanFramework/FlexibleUnscentedCorrect.h>
 
 // Standard includes
 // - none

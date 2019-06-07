@@ -26,7 +26,6 @@
 #include "ApplyIMUToState.h"
 #include "AngVelTools.h"
 #include "CrossProductMatrix.h"
-#include "FlexibleUnscentedCorrect.h"
 #include "IMUStateMeasurements.h"
 #include "SpaceTransformations.h"
 
@@ -36,6 +35,7 @@
 #include <KalmanFramework/EigenExtras.h>
 #include <KalmanFramework/EigenQuatExponentialMap.h>
 #include <KalmanFramework/FlexibleKalmanFilter.h>
+#include <KalmanFramework/FlexibleUnscentedCorrect.h>
 #include <util/Stride.h>
 
 // Standard includes
