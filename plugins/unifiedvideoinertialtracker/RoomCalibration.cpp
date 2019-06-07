@@ -52,6 +52,8 @@
 
 namespace osvr {
 namespace vbtracker {
+    using flexkalman::util::Angle;
+    using flexkalman::util::AngleRadiansd;
     using nonstd::nullopt;
     namespace filters = util::filters;
 
@@ -334,9 +336,9 @@ namespace vbtracker {
             auto yaw = util::extractYaw(iRc);
             iRc = Eigen::AngleAxisd(-yaw, Eigen::Vector3d::UnitY()) * iRc;
             /// the IMUs need to know the yaw so they can un-reverse it.
-            m_imuYaw = -yaw * util::radians;
+            m_imuYaw = AngleRadiansd(-yaw);
         } else {
-            m_imuYaw = 0;
+            m_imuYaw = AngleRadiansd(0);
         }
         m_cameraPose = util::makeIsometry(m_suppliedCamPosition, iRc);
         msg() << "camera pose AKA rTc: translation: "
@@ -358,7 +360,7 @@ namespace vbtracker {
         return true;
     }
 
-    optional<util::Angle>
+    optional<Angle>
     RoomCalibration::getCalibrationYaw(BodyId const &body) const {
         UVBI_ASSERT_MSG(calibrationComplete(), "Not valid to call "
                                                "getCalibrationYaw() unless "

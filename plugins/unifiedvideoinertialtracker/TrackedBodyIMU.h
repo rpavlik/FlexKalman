@@ -40,6 +40,7 @@
 
 namespace osvr {
 namespace vbtracker {
+    using flexkalman::util::Angle;
     struct ConfigParams;
     class TrackedBody;
     class TrackedBodyIMU {
@@ -67,7 +68,7 @@ namespace vbtracker {
         Eigen::Quaterniond const &getPoseEstimate() const { return m_quat; }
 
         bool calibrationYawKnown() const { return m_yawKnown; }
-        void setCalibrationYaw(util::Angle yaw) {
+        void setCalibrationYaw(Angle yaw) {
             using namespace Eigen;
             using namespace util;
             m_yaw = yaw;
@@ -114,7 +115,7 @@ namespace vbtracker {
         ConfigParams const &getParams() const;
         TrackedBody &m_body;
         bool m_yawKnown = false;
-        util::Angle m_yaw;
+        Angle m_yaw;
         /// this is rRi
         Eigen::Quaterniond m_yawCorrection;
 

@@ -40,12 +40,13 @@
 namespace osvr {
 namespace vbtracker {
 
+    using flexkalman::util::Angle;
     /// A safe way to store and transport an orientation measurement or an
     /// angular velocity measurement without needing special alignment
     class CannedIMUMeasurement {
       public:
-        void setYawCorrection(util::Angle y) { m_yawCorrection = y; }
-        util::Angle getYawCorrection() const { return m_yawCorrection; }
+        void setYawCorrection(Angle y) { m_yawCorrection = y; }
+        Angle getYawCorrection() const { return m_yawCorrection; }
         void setOrientation(Eigen::Quaterniond const &quat,
                             Eigen::Vector3d const &variance) {
             Eigen::Vector4d::Map(m_quat.data()) = quat.coeffs();
@@ -90,7 +91,7 @@ namespace vbtracker {
         }
 
       private:
-        util::Angle m_yawCorrection = 0;
+        Angle m_yawCorrection;
         bool m_orientationValid = false;
         std::array<double, 4> m_quat;
         std::array<double, 3> m_quatVar;

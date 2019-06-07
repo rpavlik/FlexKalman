@@ -47,6 +47,7 @@
 namespace osvr {
 
 namespace kalman {
+
     namespace {
         struct QLast {
             /// The guts of QLast and QFirst's jacobian are the same - they
@@ -606,10 +607,12 @@ namespace kalman {
 
 } // namespace kalman
 namespace vbtracker {
+
+    using flexkalman::util::Angle;
     inline Eigen::Quaterniond
     getTransformedOrientation(Eigen::Quaterniond const &imuQuat,
                               Eigen::Quaterniond const &roomToCameraRotation,
-                              util::Angle /*yawCorrection*/) {
+                              Angle /*yawCorrection*/) {
         return roomToCameraRotation * imuQuat;
     }
 #ifdef UVBI_USE_OLD_MEASUREMENT_CLASS

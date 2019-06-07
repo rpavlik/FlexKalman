@@ -43,6 +43,7 @@ using std::unique_ptr;
 using namespace osvr;
 using namespace vbtracker;
 using namespace Eigen;
+using flexkalman::util::Angle;
 struct TestData {
     TestData() {
         /// Set up from a default configuration.
@@ -67,7 +68,7 @@ struct TestData {
     Eigen::Quaterniond roomToCameraRotation = Eigen::Quaterniond::Identity();
 
     /// Quantity computed during room calibration output
-    util::Angle yawCorrection = 0;
+    Angle yawCorrection;
 
     /// Transform the IMU-measured quaternion using the calibration output
     /// mocked up in this struct.

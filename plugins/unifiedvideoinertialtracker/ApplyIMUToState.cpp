@@ -43,6 +43,7 @@
 
 namespace osvr {
 namespace vbtracker {
+    using flexkalman::util::Angle;
     inline void applyOriToState(TrackingSystem const &sys, BodyState &state,
                                 BodyProcessModel &processModel,
                                 CannedIMUMeasurement const &meas) {
@@ -50,7 +51,7 @@ namespace vbtracker {
         meas.restoreQuat(quat);
         Eigen::Vector3d var;
         meas.restoreQuatVariance(var);
-        util::Angle yawCorrection = meas.getYawCorrection();
+        Angle yawCorrection = meas.getYawCorrection();
 
         Eigen::Quaterniond quatInCamSpace = getTransformedOrientation(
             quat, Eigen::Quaterniond(sys.getRoomToCamera().rotation()),

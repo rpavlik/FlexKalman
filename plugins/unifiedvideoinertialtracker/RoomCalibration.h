@@ -43,6 +43,7 @@
 
 namespace osvr {
 namespace vbtracker {
+    using flexkalman::util::Angle;
     using nonstd::optional;
     class TrackingSystem;
     /// Takes care of the initial room calibration startup step, when we learn
@@ -79,7 +80,7 @@ namespace vbtracker {
         /// Gets the calibration yaw for the IMU on a body. Returns an empty
         /// optional if the body ID given was not the one with the IMU used to
         /// calibrate.
-        optional<util::Angle> getCalibrationYaw(BodyId const &body) const;
+        optional<Angle> getCalibrationYaw(BodyId const &body) const;
         /// Gets the pose of the camera in the room (the transform from camera
         /// space to room space)
         Eigen::Isometry3d getCameraPose() const;
@@ -137,7 +138,7 @@ namespace vbtracker {
         bool m_calibComplete = false;
         /// @name Output
         /// @{
-        util::Angle m_imuYaw = 0 * util::radians;
+        Angle m_imuYaw;
         Eigen::Isometry3d m_cameraPose = Eigen::Isometry3d::Identity();
         Eigen::Isometry3d m_rTi = Eigen::Isometry3d::Identity();
         /// @}
