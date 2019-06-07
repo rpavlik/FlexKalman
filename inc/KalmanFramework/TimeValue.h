@@ -27,7 +27,6 @@
 
 // Internal Includes
 #include <KalmanFramework/TimeValueC.h>
-#include <KalmanFramework/TimeValue_fwd.h>
 
 // Library/third-party includes
 // - none
@@ -35,6 +34,8 @@
 // Standard includes
 #include <iomanip>
 #include <sstream>
+
+struct OSVR_TimeValue;
 
 namespace osvr {
 namespace util {
