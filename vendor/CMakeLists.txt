@@ -16,11 +16,6 @@ target_include_directories(variant-lite INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/v
 add_library(util-headers INTERFACE)
 target_include_directories(util-headers INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/util-headers")
 
-# Interface target for the run loop manager in util headers
-add_library(util-runloopmanager INTERFACE)
-target_include_directories(util-runloopmanager INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/util-headers")
-target_link_libraries(util-runloopmanager INTERFACE boost_thread)
-
 # Interface target for the header-only functionality in Folly
 add_library(folly-headers INTERFACE)
 target_include_directories(folly-headers INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/folly")
