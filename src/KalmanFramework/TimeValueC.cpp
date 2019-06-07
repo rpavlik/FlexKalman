@@ -43,7 +43,7 @@ typedef long tv_microseconds_type;
 
 #define OSVR_USEC_PER_SEC std::micro::den;
 
-void osvrTimeValueNormalize(KALMANFRAMEWORK_INOUT_PTR OSVR_TimeValue *tv) {
+void osvrTimeValueNormalize(OSVR_TimeValue *tv) {
     if (!tv) {
         return;
     }
@@ -62,8 +62,7 @@ void osvrTimeValueNormalize(KALMANFRAMEWORK_INOUT_PTR OSVR_TimeValue *tv) {
     }
 }
 
-void osvrTimeValueSum(KALMANFRAMEWORK_INOUT_PTR OSVR_TimeValue *tvA,
-                      KALMANFRAMEWORK_IN_PTR const OSVR_TimeValue *tvB) {
+void osvrTimeValueSum(OSVR_TimeValue *tvA, const OSVR_TimeValue *tvB) {
     if (!tvA || !tvB) {
         return;
     }
@@ -72,8 +71,7 @@ void osvrTimeValueSum(KALMANFRAMEWORK_INOUT_PTR OSVR_TimeValue *tvA,
     osvrTimeValueNormalize(tvA);
 }
 
-void osvrTimeValueDifference(KALMANFRAMEWORK_INOUT_PTR OSVR_TimeValue *tvA,
-                             KALMANFRAMEWORK_IN_PTR const OSVR_TimeValue *tvB) {
+void osvrTimeValueDifference(OSVR_TimeValue *tvA, const OSVR_TimeValue *tvB) {
     if (!tvA || !tvB) {
         return;
     }
@@ -86,8 +84,7 @@ template <typename T> inline int numcmp(T a, T b) {
     return (a == b) ? 0 : (a < b ? -1 : 1);
 }
 
-int osvrTimeValueCmp(KALMANFRAMEWORK_IN_PTR const OSVR_TimeValue *tvA,
-                     KALMANFRAMEWORK_IN_PTR const OSVR_TimeValue *tvB) {
+int osvrTimeValueCmp(const OSVR_TimeValue *tvA, const OSVR_TimeValue *tvB) {
     if (!tvA || !tvB) {
         return 0;
     }
@@ -95,17 +92,13 @@ int osvrTimeValueCmp(KALMANFRAMEWORK_IN_PTR const OSVR_TimeValue *tvA,
     return (major != 0) ? major : numcmp(tvA->microseconds, tvB->microseconds);
 }
 
-#ifdef KALMANFRAMEWORK_HAVE_STRUCT_TIMEVAL
-
-void osvrTimeValueGetNow(KALMANFRAMEWORK_INOUT_PTR OSVR_TimeValue *dest) {
+void osvrTimeValueGetNow(OSVR_TimeValue *dest) {
     timeval tv;
     gettimeofday(&tv, nullptr);
     osvrStructTimevalToTimeValue(dest, &tv);
 }
 
-void osvrTimeValueToStructTimeval(
-    KALMANFRAMEWORK_OUT timeval *dest,
-    KALMANFRAMEWORK_IN_PTR const OSVR_TimeValue *src) {
+void osvrTimeValueToStructTimeval(timeval *dest, const OSVR_TimeValue *src) {
     if (!dest || !src) {
         return;
     }
@@ -113,8 +106,7 @@ void osvrTimeValueToStructTimeval(
     dest->tv_usec = tv_microseconds_type(src->microseconds);
 }
 
-void osvrStructTimevalToTimeValue(KALMANFRAMEWORK_OUT OSVR_TimeValue *dest,
-                                  KALMANFRAMEWORK_IN_PTR const timeval *src) {
+void osvrStructTimevalToTimeValue(OSVR_TimeValue *dest, const timeval *src) {
     if (!dest || !src) {
         return;
     }
@@ -122,5 +114,3 @@ void osvrStructTimevalToTimeValue(KALMANFRAMEWORK_OUT OSVR_TimeValue *dest,
     dest->microseconds = src->tv_usec;
     osvrTimeValueNormalize(dest);
 }
-
-#endif

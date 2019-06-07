@@ -13,6 +13,9 @@
 
 /*
 // Copyright 2014 Sensics, Inc.
+// Copyright 2019 Collabora, Ltd.
+//
+// SPDX-License-Identifier: Apache-2.0
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -27,12 +30,10 @@
 // limitations under the License.
 */
 
-#ifndef INCLUDED_TimeValueC_h_GUID_A02C6917_124D_4CB3_E63E_07F2DA7144E9
-#define INCLUDED_TimeValueC_h_GUID_A02C6917_124D_4CB3_E63E_07F2DA7144E9
+#pragma once
 
 /* Internal Includes */
 #include <KalmanFramework/APIBaseC.h>
-#include <KalmanFramework/AnnotationMacrosC.h>
 #include <KalmanFramework/Export.h>
 
 /* Library/third-party includes */
@@ -40,8 +41,6 @@
 
 /* Standard includes */
 #include <stdint.h>
-
-#define KALMANFRAMEWORK_HAVE_STRUCT_TIMEVAL
 
 #if defined(_WIN32) && !defined(__MINGW32__)
 #define KALMANFRAMEWORK_HAVE_STRUCT_TIMEVAL_IN_WINSOCK2_H
@@ -94,11 +93,8 @@ typedef struct OSVR_TimeValue {
     OSVR_TimeValue_Microseconds microseconds;
 } OSVR_TimeValue;
 
-#ifdef KALMANFRAMEWORK_HAVE_STRUCT_TIMEVAL
 /** @brief Gets the current time in the TimeValue. Parallel to gettimeofday. */
-KALMANFRAMEWORK_EXPORT void
-osvrTimeValueGetNow(KALMANFRAMEWORK_OUT OSVR_TimeValue *dest)
-    KALMANFRAMEWORK_FUNC_NONNULL((1));
+KALMANFRAMEWORK_EXPORT void osvrTimeValueGetNow(OSVR_TimeValue *dest);
 
 struct timeval; /* forward declaration */
 
@@ -111,9 +107,7 @@ struct timeval; /* forward declaration */
    anything.
 */
 KALMANFRAMEWORK_EXPORT void
-osvrTimeValueToStructTimeval(KALMANFRAMEWORK_OUT struct timeval *dest,
-                             KALMANFRAMEWORK_IN_PTR const OSVR_TimeValue *src)
-    KALMANFRAMEWORK_FUNC_NONNULL((1, 2));
+osvrTimeValueToStructTimeval(struct timeval *dest, const OSVR_TimeValue *src);
 
 /** @brief Converts from a TimeValue struct to your system's struct timeval.
     @param dest An OSVR_TimeValue destination pointer.
@@ -125,10 +119,7 @@ osvrTimeValueToStructTimeval(KALMANFRAMEWORK_OUT struct timeval *dest,
    anything.
 */
 KALMANFRAMEWORK_EXPORT void
-osvrStructTimevalToTimeValue(KALMANFRAMEWORK_OUT OSVR_TimeValue *dest,
-                             KALMANFRAMEWORK_IN_PTR const struct timeval *src)
-    KALMANFRAMEWORK_FUNC_NONNULL((1, 2));
-#endif
+osvrStructTimevalToTimeValue(OSVR_TimeValue *dest, const struct timeval *src);
 
 /** @brief "Normalizes" a time value so that the absolute number of microseconds
     is less than 1,000,000, and that the sign of both components is the same.
@@ -137,9 +128,7 @@ osvrStructTimevalToTimeValue(KALMANFRAMEWORK_OUT OSVR_TimeValue *dest,
 
     If the given pointer is NULL, this function returns without doing anything.
 */
-KALMANFRAMEWORK_EXPORT void
-osvrTimeValueNormalize(KALMANFRAMEWORK_INOUT_PTR OSVR_TimeValue *tv)
-    KALMANFRAMEWORK_FUNC_NONNULL((1));
+KALMANFRAMEWORK_EXPORT void osvrTimeValueNormalize(OSVR_TimeValue *tv);
 
 /** @brief Sums two time values, replacing the first with the result.
 
@@ -150,10 +139,8 @@ osvrTimeValueNormalize(KALMANFRAMEWORK_INOUT_PTR OSVR_TimeValue *tv)
 
     Both parameters are expected to be in normalized form.
 */
-KALMANFRAMEWORK_EXPORT void
-osvrTimeValueSum(KALMANFRAMEWORK_INOUT_PTR OSVR_TimeValue *tvA,
-                 KALMANFRAMEWORK_IN_PTR const OSVR_TimeValue *tvB)
-    KALMANFRAMEWORK_FUNC_NONNULL((1, 2));
+KALMANFRAMEWORK_EXPORT void osvrTimeValueSum(OSVR_TimeValue *tvA,
+                                             const OSVR_TimeValue *tvB);
 
 /** @brief Computes the difference between two time values, replacing the first
     with the result.
@@ -167,10 +154,8 @@ osvrTimeValueSum(KALMANFRAMEWORK_INOUT_PTR OSVR_TimeValue *tvA,
 
     Both parameters are expected to be in normalized form.
 */
-KALMANFRAMEWORK_EXPORT void
-osvrTimeValueDifference(KALMANFRAMEWORK_INOUT_PTR OSVR_TimeValue *tvA,
-                        KALMANFRAMEWORK_IN_PTR const OSVR_TimeValue *tvB)
-    KALMANFRAMEWORK_FUNC_NONNULL((1, 2));
+KALMANFRAMEWORK_EXPORT void osvrTimeValueDifference(OSVR_TimeValue *tvA,
+                                                    const OSVR_TimeValue *tvB);
 
 /** @brief  Compares two time values (assumed to be normalized), returning
     the same values as strcmp
@@ -178,10 +163,8 @@ osvrTimeValueDifference(KALMANFRAMEWORK_INOUT_PTR OSVR_TimeValue *tvA,
     @return <0 if A is earlier than B, 0 if they are the same, and >0 if A
     is later than B.
 */
-KALMANFRAMEWORK_EXPORT int
-osvrTimeValueCmp(KALMANFRAMEWORK_IN_PTR const OSVR_TimeValue *tvA,
-                 KALMANFRAMEWORK_IN_PTR const OSVR_TimeValue *tvB)
-    KALMANFRAMEWORK_FUNC_NONNULL((1, 2));
+KALMANFRAMEWORK_EXPORT int osvrTimeValueCmp(const OSVR_TimeValue *tvA,
+                                            const OSVR_TimeValue *tvB);
 
 #ifdef __cplusplus
 } // extern "C"
@@ -197,8 +180,8 @@ osvrTimeValueCmp(KALMANFRAMEWORK_IN_PTR const OSVR_TimeValue *tvA,
     @return Duration of timespan in seconds (floating-point)
 */
 KALMANFRAMEWORK_INLINE double
-osvrTimeValueDurationSeconds(KALMANFRAMEWORK_IN_PTR const OSVR_TimeValue *tvA,
-                             KALMANFRAMEWORK_IN_PTR const OSVR_TimeValue *tvB) {
+osvrTimeValueDurationSeconds(const OSVR_TimeValue *tvA,
+                             const OSVR_TimeValue *tvB) {
     OSVR_TimeValue A = *tvA;
     osvrTimeValueDifference(&A, tvB);
     double dt = A.seconds + A.microseconds / 1000000.0;
@@ -206,9 +189,8 @@ osvrTimeValueDurationSeconds(KALMANFRAMEWORK_IN_PTR const OSVR_TimeValue *tvA,
 }
 
 /** @brief True if A is later than B */
-KALMANFRAMEWORK_INLINE bool
-osvrTimeValueGreater(KALMANFRAMEWORK_IN_PTR const OSVR_TimeValue *tvA,
-                     KALMANFRAMEWORK_IN_PTR const OSVR_TimeValue *tvB) {
+KALMANFRAMEWORK_INLINE bool osvrTimeValueGreater(const OSVR_TimeValue *tvA,
+                                                 const OSVR_TimeValue *tvB) {
     if (!tvA || !tvB) {
         return false;
     }
@@ -285,5 +267,3 @@ inline bool operator!=(const OSVR_TimeValue &tvA, const OSVR_TimeValue &tvB) {
 #endif
 
 /** @} */
-
-#endif
