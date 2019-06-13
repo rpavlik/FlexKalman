@@ -63,16 +63,16 @@ namespace vbtracker {
         void showDebugImage(cv::Mat const &image, bool needsCopy = true);
 
         void quitDebug();
+        cv::Mat createStatusImage(TrackingSystem const &tracking,
+                                  CameraParameters const &camParams,
+                                  cv::Mat const &baseImage,
+                                  bool reprojectUnseenBeacons = false);
 
       private:
         std::ostream &msg() const;
         cv::Mat createAnnotatedBlobImage(TrackingSystem const &tracking,
                                          CameraParameters const &camParams,
                                          cv::Mat const &blobImage);
-        cv::Mat createStatusImage(TrackingSystem const &tracking,
-                                  CameraParameters const &camParams,
-                                  cv::Mat const &baseImage,
-                                  bool reprojectUnseenBeacons = false);
 
         bool m_enabled;
         DebugDisplayMode m_mode = DebugDisplayMode::Status;
