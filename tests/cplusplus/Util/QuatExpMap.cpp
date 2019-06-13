@@ -25,7 +25,7 @@
 
 // Internal Includes
 #include "CatchEigen.h"
-#include <KalmanFramework/EigenQuatExponentialMap.h>
+#include "FlexKalman/EigenQuatExponentialMap.h"
 
 // Library/third-party includes
 #ifdef HAVE_QUATLIB
@@ -43,8 +43,8 @@
 #define Q_W 3
 #endif // !HAVE_QUATLIB
 
-using osvr::util::quat_exp;
-using osvr::util::quat_ln;
+using flexkalman::util::quat_exp;
+using flexkalman::util::quat_ln;
 
 static const double SMALL = 0.1;
 static const double SMALLER = 1.0e-5;

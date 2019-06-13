@@ -2,9 +2,9 @@
 foreach(test KalmanConstruction KalmanNoNaNs)
     add_executable(Test${test}
         ${test}.cpp)
-    target_link_libraries(Test${test} KalmanFramework eigen-headers kf-catch2-main)
+    target_link_libraries(Test${test} FlexKalman eigen-headers kf-catch2-main)
     add_test(NAME Test${test} COMMAND Test${test})
 endforeach()
 
 add_executable(Kalman_ManualTest ContentsInvalid.h ManualTest.cpp)
-target_link_libraries(Kalman_ManualTest KalmanFramework eigen-headers)
+target_link_libraries(Kalman_ManualTest FlexKalman eigen-headers)

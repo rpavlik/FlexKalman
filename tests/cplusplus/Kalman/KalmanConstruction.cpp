@@ -24,8 +24,8 @@
 // limitations under the License.
 
 // Internal Includes
-#include <KalmanFramework/FlexibleKalmanFilter.h>
-#include <KalmanFramework/PoseConstantVelocity.h>
+#include "FlexKalman/FlexibleKalmanFilter.h"
+#include "FlexKalman/PoseConstantVelocity.h"
 
 // Library/third-party includes
 #include <catch2/catch.hpp>
@@ -33,9 +33,9 @@
 // Standard includes
 #include <iostream>
 
-using ProcessModel = osvr::kalman::PoseConstantVelocityProcessModel;
+using ProcessModel = flexkalman::PoseConstantVelocityProcessModel;
 using State = ProcessModel::State;
-using Filter = osvr::kalman::FlexibleKalmanFilter<ProcessModel>;
+using Filter = flexkalman::FlexibleKalmanFilter<ProcessModel>;
 
 TEST_CASE("KalmanFilterConstruction") {
     SECTION("default construction") { REQUIRE_NOTHROW(Filter{}); }

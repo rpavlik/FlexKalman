@@ -32,14 +32,14 @@ inline void dumpKalmanDebugOuput(const char name[], const char expr[],
               << value << std::endl;
 }
 
-#define KALMANFRAMEWORK_KALMAN_DEBUG_OUTPUT(Name, Value)                       \
+#define FLEXKALMAN_DEBUG_OUTPUT(Name, Value)                                   \
     dumpKalmanDebugOuput(Name, #Value, Value)
 
 // Internal Includes
 #include "ContentsInvalid.h"
-#include <KalmanFramework/AbsoluteOrientationMeasurement.h>
-#include <KalmanFramework/FlexibleKalmanFilter.h>
-#include <KalmanFramework/PoseConstantVelocity.h>
+#include "FlexKalman/AbsoluteOrientationMeasurement.h"
+#include "FlexKalman/FlexibleKalmanFilter.h"
+#include "FlexKalman/PoseConstantVelocity.h"
 
 // Library/third-party includes
 // - none
@@ -48,11 +48,11 @@ inline void dumpKalmanDebugOuput(const char name[], const char expr[],
 #include <iostream>
 
 int main() {
-    using namespace osvr::kalman;
-    using ProcessModel = osvr::kalman::PoseConstantVelocityProcessModel;
+    using namespace flexkalman;
+    using ProcessModel = flexkalman::PoseConstantVelocityProcessModel;
     using State = ProcessModel::State;
-    using Measurement = osvr::kalman::AbsoluteOrientationMeasurement<State>;
-    using Filter = osvr::kalman::FlexibleKalmanFilter<ProcessModel>;
+    using Measurement = flexkalman::AbsoluteOrientationMeasurement<State>;
+    using Filter = flexkalman::FlexibleKalmanFilter<ProcessModel>;
     auto filter = Filter{ProcessModel{}, State{}};
     std::cout << "Initial state:" << std::endl;
     std::cout << filter.state() << std::endl;

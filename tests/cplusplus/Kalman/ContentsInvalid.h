@@ -25,8 +25,8 @@
 #pragma once
 
 // Internal Includes
-#include <KalmanFramework/FlexibleKalmanBase.h>
-#include <KalmanFramework/PoseState.h>
+#include "FlexKalman/FlexibleKalmanBase.h"
+#include "FlexKalman/PoseState.h"
 
 // Library/third-party includes
 // - none
@@ -60,7 +60,7 @@ inline bool covarianceContentsInvalid(Eigen::MatrixBase<Derived> const &v) {
 /// Applies contentsInvalid() to state aspects of a
 /// pose_externalized_rotation::State
 inline bool stateContentsInvalid(
-    osvr::kalman::pose_externalized_rotation::State const &state) {
+    flexkalman::pose_externalized_rotation::State const &state) {
     return contentsInvalid(state.stateVector()) ||
            contentsInvalid(state.getQuaternion().coeffs());
 }
@@ -68,11 +68,11 @@ inline bool stateContentsInvalid(
 /// Applies contentsInvalid() and covarianceContentsInvalid() to the covariance
 /// of a pose_externalized_rotation::State
 inline bool covarianceContentsInvalid(
-    osvr::kalman::pose_externalized_rotation::State const &state) {
+    flexkalman::pose_externalized_rotation::State const &state) {
     return covarianceContentsInvalid(state.errorCovariance());
 }
 
 inline bool
-contentsInvalid(osvr::kalman::pose_externalized_rotation::State const &state) {
+contentsInvalid(flexkalman::pose_externalized_rotation::State const &state) {
     return stateContentsInvalid(state) || covarianceContentsInvalid(state);
 }

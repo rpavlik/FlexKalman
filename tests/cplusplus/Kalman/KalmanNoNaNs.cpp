@@ -33,16 +33,16 @@ inline void dumpKalmanDebugOuput(const char name[], const char expr[],
               << value << std::endl;
 }
 
-#define KALMANFRAMEWORK_KALMAN_DEBUG_OUTPUT(Name, Value)                       \
+#define FLEXKALMAN_DEBUG_OUTPUT(Name, Value)                                   \
     dumpKalmanDebugOuput(Name, #Value, Value)
 
 // Internal Includes
 #include "ContentsInvalid.h"
-#include <KalmanFramework/AbsoluteOrientationMeasurement.h>
-#include <KalmanFramework/AbsolutePositionMeasurement.h>
-#include <KalmanFramework/FlexibleKalmanFilter.h>
-#include <KalmanFramework/PoseConstantVelocity.h>
-#include <KalmanFramework/PoseDampedConstantVelocity.h>
+#include "FlexKalman/AbsoluteOrientationMeasurement.h"
+#include "FlexKalman/AbsolutePositionMeasurement.h"
+#include "FlexKalman/FlexibleKalmanFilter.h"
+#include "FlexKalman/PoseConstantVelocity.h"
+#include "FlexKalman/PoseDampedConstantVelocity.h"
 
 // Library/third-party includes
 #include <catch2/catch.hpp>
@@ -50,13 +50,13 @@ inline void dumpKalmanDebugOuput(const char name[], const char expr[],
 // Standard includes
 #include <iostream>
 
-using ProcessModel = osvr::kalman::PoseConstantVelocityProcessModel;
+using ProcessModel = flexkalman::PoseConstantVelocityProcessModel;
 using State = ProcessModel::State;
 using AbsoluteOrientationMeasurement =
-    osvr::kalman::AbsoluteOrientationMeasurement<State>;
+    flexkalman::AbsoluteOrientationMeasurement<State>;
 using AbsolutePositionMeasurement =
-    osvr::kalman::AbsolutePositionMeasurement<State>;
-using Filter = osvr::kalman::FlexibleKalmanFilter<ProcessModel>;
+    flexkalman::AbsolutePositionMeasurement<State>;
+using Filter = flexkalman::FlexibleKalmanFilter<ProcessModel>;
 
 class Stability {
   public:
@@ -101,10 +101,10 @@ class Stability {
 };
 
 TEMPLATE_TEST_CASE("ProcessModelStability", "",
-                   osvr::kalman::PoseConstantVelocityProcessModel,
-                   osvr::kalman::PoseDampedConstantVelocityProcessModel) {
+                   flexkalman::PoseConstantVelocityProcessModel,
+                   flexkalman::PoseDampedConstantVelocityProcessModel) {
     Stability fixture;
-    using Filter = osvr::kalman::FlexibleKalmanFilter<TestType>;
+    using Filter = flexkalman::FlexibleKalmanFilter<TestType>;
 
     auto filter = Filter{};
     fixture.dumpState(filter.state(), "Initial state");
