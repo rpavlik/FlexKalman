@@ -83,6 +83,7 @@ set(API
     "${HEADER_LOCATION}/SpaceTransformations.h"
     "${HEADER_LOCATION}/TrackedBody.h"
     "${HEADER_LOCATION}/TrackedBodyTarget.h"
+    "${HEADER_LOCATION}/TrackingDebugDisplay.h"
     "${HEADER_LOCATION}/TrackingSystem.h"
     "${HEADER_LOCATION}/Types.h"
 )
@@ -123,7 +124,6 @@ add_library(uvbi-core STATIC
     TrackedBodyIMU.h
     TrackedBodyTarget.cpp
     TrackingDebugDisplay.cpp
-    TrackingDebugDisplay.h
     TrackingSystem_Impl.cpp
     TrackingSystem_Impl.h
     TrackingSystem.cpp

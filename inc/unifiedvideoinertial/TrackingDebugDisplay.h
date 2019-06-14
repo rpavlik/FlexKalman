@@ -25,9 +25,7 @@
 #pragma once
 
 // Internal Includes
-#include "LED.h"
-#include "TrackingSystem_Impl.h"
-#include "unifiedvideoinertial/ConfigParams.h"
+// - none
 
 // Library/third-party includes
 #include <util/Stride.h>
@@ -48,7 +46,9 @@ namespace uvbi {
         Status,
         StatusWithAllReprojections
     };
+    class ConfigParams;
     class TrackingSystem;
+    class TrackingSystem_Impl;
     class TrackedBodyTarget;
     class TrackingDebugDisplay {
       public:
@@ -58,7 +58,7 @@ namespace uvbi {
         TrackingDebugDisplay &operator=(TrackingDebugDisplay const &) = delete;
 
         void triggerDisplay(TrackingSystem &tracking,
-                            TrackingSystem::Impl const &impl);
+                            TrackingSystem_Impl const &impl);
 
         void showDebugImage(cv::Mat const &image, bool needsCopy = true);
 

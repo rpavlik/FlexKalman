@@ -50,6 +50,7 @@ namespace uvbi {
 
     using LedUpdateCount = std::unordered_map<BodyTargetId, std::size_t>;
 
+    class TrackingSystem_Impl;
     class TrackingSystem {
       public:
         /// @name Setup and Teardown
@@ -167,7 +168,7 @@ namespace uvbi {
         BodyIndices m_updated;
         std::vector<BodyPtr> m_bodies;
 
-        std::unique_ptr<Impl> m_impl;
+        std::unique_ptr<TrackingSystem_Impl> m_impl;
 
         friend class TrackingDebugDisplay;
     };

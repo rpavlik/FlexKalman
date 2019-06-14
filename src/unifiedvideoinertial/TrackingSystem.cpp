@@ -51,7 +51,7 @@ namespace videotracker {
 namespace uvbi {
 
     TrackingSystem::TrackingSystem(ConfigParams const &params)
-        : m_params(params), m_impl(new Impl(params)) {}
+        : m_params(params), m_impl(new TrackingSystem_Impl(params)) {}
 
     TrackingSystem::~TrackingSystem() {}
 

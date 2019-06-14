@@ -45,13 +45,13 @@ namespace uvbi {
     class TrackingDebugDisplay;
 
     /// Private implementation structure for TrackingSystem
-    struct TrackingSystem::Impl {
-        Impl(ConfigParams const &params);
-        ~Impl();
+    struct TrackingSystem_Impl {
+        TrackingSystem_Impl(ConfigParams const &params);
+        ~TrackingSystem_Impl();
 
         // noncopyable
-        Impl(Impl const &) = delete;
-        Impl &operator=(Impl const &) = delete;
+        TrackingSystem_Impl(TrackingSystem_Impl const &) = delete;
+        TrackingSystem_Impl &operator=(TrackingSystem_Impl const &) = delete;
 
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
         void triggerDebugDisplay(TrackingSystem &tracking);

@@ -23,7 +23,9 @@
 // limitations under the License.
 
 // Internal Includes
-#include "TrackingDebugDisplay.h"
+#include "unifiedvideoinertial/TrackingDebugDisplay.h"
+#include "LED.h"
+#include "TrackingSystem_Impl.h"
 #include "unifiedvideoinertial/TrackedBody.h"
 #include "unifiedvideoinertial/TrackedBodyTarget.h"
 #include "unifiedvideoinertial/TrackingSystem.h"
@@ -451,9 +453,8 @@ namespace uvbi {
         return output;
     }
 
-    void
-    TrackingDebugDisplay::triggerDisplay(TrackingSystem &tracking,
-                                         TrackingSystem::Impl const &impl) {
+    void TrackingDebugDisplay::triggerDisplay(TrackingSystem &tracking,
+                                              TrackingSystem_Impl const &impl) {
         if (!m_enabled) {
             /// We're not displaying things.
             return;

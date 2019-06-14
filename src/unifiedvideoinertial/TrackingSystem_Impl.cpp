@@ -24,7 +24,7 @@
 
 // Internal Includes
 #include "TrackingSystem_Impl.h"
-#include "TrackingDebugDisplay.h"
+#include "unifiedvideoinertial/TrackingDebugDisplay.h"
 #include "videotrackershared/EdgeHoleBlobExtractor.h"
 
 // Library/third-party includes
@@ -36,7 +36,7 @@
 namespace videotracker {
 namespace uvbi {
 
-    TrackingSystem::Impl::Impl(ConfigParams const &params)
+    TrackingSystem_Impl::TrackingSystem_Impl(ConfigParams const &params)
         : blobExtractor(
               makeBlobExtractor(params.blobParams, params.extractParams)),
           debugDisplay(new TrackingDebugDisplay(params)),
@@ -44,11 +44,11 @@ namespace uvbi {
           cameraPose(Eigen::Isometry3d::Identity()),
           cameraPoseInv(Eigen::Isometry3d::Identity()) {}
 
-    TrackingSystem::Impl::~Impl() {
+    TrackingSystem_Impl::~TrackingSystem_Impl() {
         // out line to break circular dep with this and the debug display.
     }
 
-    void TrackingSystem::Impl::triggerDebugDisplay(TrackingSystem &tracking) {
+    void TrackingSystem_Impl::triggerDebugDisplay(TrackingSystem &tracking) {
         debugDisplay->triggerDisplay(tracking, *this);
     }
 } // namespace uvbi
