@@ -28,7 +28,7 @@
 // - none
 
 // Library/third-party includes
-#include <util/Stride.h>
+#include "Stride.h"
 
 #include <opencv2/core/core.hpp>
 

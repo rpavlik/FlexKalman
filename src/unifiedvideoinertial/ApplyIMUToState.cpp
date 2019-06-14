@@ -36,7 +36,7 @@
 #include "FlexKalman/FlexibleKalmanFilter.h"
 #include "FlexKalman/FlexibleUnscentedCorrect.h"
 #include "unifiedvideoinertial/EigenExtras.h"
-#include <util/Stride.h>
+#include "unifiedvideoinertial/Stride.h"
 
 // Standard includes
 #include <iostream>

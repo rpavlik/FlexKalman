@@ -61,7 +61,7 @@
 
 #include "videotrackershared/Assert.h"
 
-#include <util/Stride.h>
+#include "unifiedvideoinertial/Stride.h"
 
 // Standard includes
 #include <fstream>

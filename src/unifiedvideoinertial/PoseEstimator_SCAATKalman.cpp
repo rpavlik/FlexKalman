@@ -22,10 +22,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "unifiedvideoinertial/Stride.h"
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 #include <iostream>
-#include <util/Stride.h>
 static ::util::Stride debugStride{401};
 
 #if 0
@@ -55,7 +55,7 @@ inline void dumpKalmanDebugOuput(const char name[], const char expr[],
 #include "FlexKalman/ConstantProcess.h"
 #include "FlexKalman/FlexibleKalmanFilter.h"
 
-#include <util/Stride.h>
+#include "unifiedvideoinertial/Stride.h"
 
 // Standard includes
 #include <algorithm>

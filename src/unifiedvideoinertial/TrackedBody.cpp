@@ -37,7 +37,7 @@
 #include "FlexKalman/FlexibleKalmanFilter.h"
 #include "unifiedvideoinertial/nonstd/optional.hpp"
 
-#include <util/Stride.h>
+#include "unifiedvideoinertial/Stride.h"
 
 // Standard includes
 #include <iostream>

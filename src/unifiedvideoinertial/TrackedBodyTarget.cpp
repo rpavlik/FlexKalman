@@ -38,8 +38,8 @@
 #include "videotrackershared/cvToEigen.h"
 
 // Library/third-party includes
+#include "unifiedvideoinertial/Stride.h"
 #include "videotrackershared/Assert.h"
-#include <util/Stride.h>
 
 // Standard includes
 #include <algorithm>

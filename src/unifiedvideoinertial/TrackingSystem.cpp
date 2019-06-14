@@ -35,7 +35,7 @@
 // Library/third-party includes
 #include "videotrackershared/Assert.h"
 
-#include <util/Stride.h>
+#include "unifiedvideoinertial/Stride.h"
 
 // Standard includes
 #include <algorithm>
