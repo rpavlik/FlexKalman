@@ -234,6 +234,11 @@ class UVBIFileMigration(FileMigrationBase):
             fn = Path(fn)
             relative = fn.relative_to(self.src)
             dest = self.inc / relative
+            # Make dest directory before move, if required.
+            try:
+                dest.parent.mkdir()
+            except FileExistsError:
+                pass
             print("Moving", self.shorten(fn), "to", self.shorten(dest))
             fn.rename(dest)
 
@@ -384,6 +389,7 @@ modules = [
     'FlexKalman',
     'videotrackershared',
     Path('videotrackershared')/'ImageSources',
+    'folly',
     'unifiedvideoinertial'
 ]
 
