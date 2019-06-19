@@ -215,10 +215,13 @@ add_library(uvbi_plugin_parts SHARED
     ImageProcessingThread.h
     IMUMessage.h
     ProcessIMUMessage.h
+
+    # The following 4 files are the only ones that use folly
     ThreadsafeBodyReporting.cpp
     ThreadsafeBodyReporting.h
     TrackerThread.cpp
     TrackerThread.h
+
     ${API})
 
 target_link_libraries(uvbi_plugin_parts
@@ -231,4 +234,7 @@ target_link_libraries(uvbi_plugin_parts
     folly-headers
     videotrackershared_io
     videotrackershared_hdkdata
-    )
+)
+target_compile_features(uvbi_plugin_parts
+    PUBLIC
+    cxx_std_14)
