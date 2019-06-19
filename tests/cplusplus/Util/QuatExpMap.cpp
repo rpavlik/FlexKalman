@@ -156,7 +156,7 @@ static inline ::std::ostream &operator<<(::std::ostream &os,
 static const Vector3d Vec3dZero = Vector3d::Zero();
 
 /* Tests that take a unit quat as input */
-static const auto BasicQuats = {
+static auto BasicQuats = {
     QuatCreator::Identity(),
     QuatCreator::AngleAxis(EIGEN_PI / 2, Vector3d::UnitX()),
     QuatCreator::AngleAxis(EIGEN_PI / 2, Vector3d::UnitY()),
@@ -165,14 +165,14 @@ static const auto BasicQuats = {
     QuatCreator::AngleAxis(-EIGEN_PI / 2, Vector3d::UnitY()),
     QuatCreator::AngleAxis(-EIGEN_PI / 2, Vector3d::UnitZ())};
 
-static const auto SmallQuats = {
+static auto SmallQuats = {
     QuatCreator::AngleAxis(SMALL, Vector3d::UnitX()),
     QuatCreator::AngleAxis(SMALL, Vector3d::UnitY()),
     QuatCreator::AngleAxis(SMALL, Vector3d::UnitZ()),
     QuatCreator::AngleAxis(SMALLER, Vector3d::UnitX()),
     QuatCreator::AngleAxis(SMALLER, Vector3d::UnitY()),
     QuatCreator::AngleAxis(SMALLER, Vector3d::UnitZ())};
-static const auto SmallNegativeQuats = {
+static auto SmallNegativeQuats = {
     QuatCreator::AngleAxis(-SMALL, Vector3d::UnitX()),
     QuatCreator::AngleAxis(-SMALL, Vector3d::UnitY()),
     QuatCreator::AngleAxis(-SMALL, Vector3d::UnitZ()),
@@ -307,7 +307,7 @@ TEST_CASE("SimpleEquivalencies-Exp") {
 }
 
 /* Tests that take a pair of equivalent quaternion and vector as input */
-static const auto HalfPiMultiples = {
+static auto HalfPiMultiples = {
     makePairFromAngleAxis(EIGEN_PI / 2, Vector3d::UnitX()),
     makePairFromAngleAxis(EIGEN_PI / 2, Vector3d::UnitY()),
     makePairFromAngleAxis(EIGEN_PI / 2, Vector3d::UnitZ()),
@@ -315,7 +315,7 @@ static const auto HalfPiMultiples = {
     makePairFromAngleAxis(-EIGEN_PI / 2, Vector3d::UnitY()),
     makePairFromAngleAxis(-EIGEN_PI / 2, Vector3d::UnitZ())};
 
-static const auto SmallEquivalentValues = {
+static auto SmallEquivalentValues = {
     makePairFromAngleAxis(SMALL, Vector3d::UnitX()),
     makePairFromAngleAxis(SMALL, Vector3d::UnitY()),
     makePairFromAngleAxis(SMALL, Vector3d::UnitZ()),
@@ -323,7 +323,7 @@ static const auto SmallEquivalentValues = {
     makePairFromAngleAxis(SMALLER, Vector3d::UnitY()),
     makePairFromAngleAxis(SMALLER, Vector3d::UnitZ())};
 
-static const auto SmallNegativeEquivalentValues = {
+static auto SmallNegativeEquivalentValues = {
     makePairFromAngleAxis(-SMALL, Vector3d::UnitX()),
     makePairFromAngleAxis(-SMALL, Vector3d::UnitY()),
     makePairFromAngleAxis(-SMALL, Vector3d::UnitZ()),
