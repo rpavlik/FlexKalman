@@ -109,3 +109,4 @@ $RECYCLE.BIN/
 Session.vim
 .netrwhist
 *~
+build*
