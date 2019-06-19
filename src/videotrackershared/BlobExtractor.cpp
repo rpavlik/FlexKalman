@@ -122,8 +122,8 @@ BasicThresholdBlobDetector::binarizeAndGetSolidComponents(int thresh) {
     cv::threshold(grayImage_, binarized, thresh, 255, cv::THRESH_BINARY);
     std::vector<ContourType> contours;
     std::vector<cv::Vec4i> hierarchy;
-    cv::findContours(binarized, contours, hierarchy, CV_RETR_CCOMP,
-                     CV_CHAIN_APPROX_NONE);
+    cv::findContours(binarized, contours, hierarchy, cv::RETR_CCOMP,
+                     cv::CHAIN_APPROX_NONE);
     auto n = contours.size();
     std::vector<ContourType> ret;
     for (std::size_t i = 0; i < n; ++i) {
@@ -151,7 +151,7 @@ void BasicThresholdBlobDetector::augmentPoint(cv::Point peakCenter,
     auto m_area =
         cv::floodFill(grayClone, floodFillMask_, peakCenter, 255, &filledBounds,
                       loDiff, upDiff,
-                      CV_FLOODFILL_MASK_ONLY | (/* connectivity 4 or 8 */ 4) |
+                      cv::FLOODFILL_MASK_ONLY | (/* connectivity 4 or 8 */ 4) |
                           (/* value to write in to mask */ 255 << 8));
     // Now floodFillMask_ contains the mask with both our point
     // and all other points so far. We need to split them by ANDing with

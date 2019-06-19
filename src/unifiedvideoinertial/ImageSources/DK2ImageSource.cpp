@@ -82,7 +82,7 @@ namespace uvbi {
         m_camera->retrieveColor(m_scratch, timestamp);
 
         gray = osvr::oculus_dk2::unscramble_image(m_scratch);
-        cv::cvtColor(gray, color, CV_GRAY2RGB);
+        cv::cvtColor(gray, color, cv::GRAY2RGB);
     }
 
     void DK2WrappedImageSource::retrieveColor(

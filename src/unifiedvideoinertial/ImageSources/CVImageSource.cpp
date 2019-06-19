@@ -86,8 +86,8 @@ namespace uvbi {
     cv::Size OpenCVImageSource::resolution() const { return m_res; }
 
     void OpenCVImageSource::storeRes() {
-        int height = static_cast<int>(m_camera->get(CV_CAP_PROP_FRAME_HEIGHT));
-        int width = static_cast<int>(m_camera->get(CV_CAP_PROP_FRAME_WIDTH));
+        int height = static_cast<int>(m_camera->get(cv::CAP_PROP_FRAME_HEIGHT));
+        int width = static_cast<int>(m_camera->get(cv::CAP_PROP_FRAME_WIDTH));
         m_res = cv::Size(width, height);
     }
 } // namespace uvbi

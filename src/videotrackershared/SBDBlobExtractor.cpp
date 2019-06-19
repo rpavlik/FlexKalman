@@ -41,6 +41,20 @@
 
 namespace videotracker {
 
+static inline cv::Ptr<cv::SimpleBlobDetector>
+createSimpleBlobDetector(cv::SimpleBlobDetector::Params const &params) {
+
+#if CV_MAJOR_VERSION == 2
+    cv::Ptr<cv::SimpleBlobDetector> detector =
+        new cv::SimpleBlobDetector(params);
+#elif CV_MAJOR_VERSION >= 3
+    auto detector = cv::SimpleBlobDetector::create(params);
+#else
+#error "Unrecognized OpenCV version!"
+#endif
+    return detector;
+}
+
 #if 0
     /// This class used to be the "keypoint enhancer" - it now is used to
     /// after-the-fact extract additional data per keypoint.
@@ -84,7 +98,7 @@ namespace videotracker {
             auto m_area = cv::floodFill(
                 grayImage, m_floodFillMask, origKeypoint.pt, 255,
                 &m_filledBounds, loDiff, upDiff,
-                CV_FLOODFILL_MASK_ONLY | (/* connectivity 4 or 8 */ 4) |
+                cv::FLOODFILL_MASK_ONLY | (/* connectivity 4 or 8 */ 4) |
                     (/* value to write in to mask */ 255 << 8));
             // Now m_floodFillMask contains the mask with both our point
             // and all other points so far. We need to split them by ANDing with
@@ -145,8 +159,8 @@ namespace videotracker {
 
             cv::Mat input = m_perPointResults(expandedBounds).clone();
             std::vector<ContourType> contours;
-            cv::findContours(input, contours, CV_RETR_EXTERNAL,
-                             CV_CHAIN_APPROX_NONE,
+            cv::findContours(input, contours, cv::RETR_EXTERNAL,
+                             cv::CHAIN_APPROX_NONE,
                              cv::Point(-1, -1) + expandedBounds.tl());
 #if 0
             if (contours.size() != 1) {
@@ -290,19 +304,12 @@ void SBDBlobExtractor::getKeypoints(cv::Mat const &grayImage) {
         m_sbdParams.thresholdStep =
             static_cast<float>(thresholdInfo.thresholdStep);
 
-/// @todo: Make a different set of parameters optimized for the
-/// Oculus Dk2.
-/// @todo: Determine the maximum size of a trackable blob by seeing
-/// when we're so close that we can't view at least four in the
-/// camera.
-#if CV_MAJOR_VERSION == 2
-        cv::Ptr<cv::SimpleBlobDetector> detector =
-            new cv::SimpleBlobDetector(m_sbdParams);
-#elif CV_MAJOR_VERSION == 3
-        auto detector = cv::SimpleBlobDetector::create(m_sbdParams);
-#else
-#error "Unrecognized OpenCV version!"
-#endif
+        /// @todo: Make a different set of parameters optimized for the
+        /// Oculus Dk2.
+        /// @todo: Determine the maximum size of a trackable blob by seeing
+        /// when we're so close that we can't view at least four in the
+        /// camera.
+        auto detector = createSimpleBlobDetector(m_sbdParams);
         detector->detect(grayImage, m_keyPoints);
 
         // @todo: Consider computing the center of mass of a dilated
@@ -331,12 +338,12 @@ cv::Mat SBDBlobExtractor::generateDebugThresholdImage() const {
     cv::Mat ret;
     cv::Mat temp;
     cv::threshold(m_lastGrayImage, ret, m_sbdParams.minThreshold, 255,
-                  CV_THRESH_BINARY);
+                  cv::THRESH_BINARY);
     cv::Mat tempOut;
     for (int i = 1; getCurrentThresh(i) < m_sbdParams.maxThreshold; ++i) {
         auto currentThresh = getCurrentThresh(i);
         cv::threshold(m_lastGrayImage, temp, currentThresh, currentThresh,
-                      CV_THRESH_BINARY);
+                      cv::THRESH_BINARY);
         cv::addWeighted(ret, 0.5, temp, 0.5, 0, tempOut);
         ret = tempOut;
     }
@@ -360,7 +367,7 @@ cv::Mat SBDBlobExtractor::generateDebugBlobImage() const {
 
     } else if (Algo::SimpleBlobDetector == m_algo) {
         cv::Mat tempColor;
-        cv::cvtColor(m_lastGrayImage, tempColor, CV_GRAY2BGR);
+        cv::cvtColor(m_lastGrayImage, tempColor, cv::COLOR_GRAY2BGR);
         // Draw detected blobs as blue circles.
         cv::drawKeypoints(tempColor, m_keyPoints, ret, cv::Scalar(255, 0, 0),
                           cv::DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
@@ -417,12 +424,12 @@ cv::Mat SBDGenericBlobExtractor::generateDebugThresholdImage_() const {
     cv::Mat ret;
     cv::Mat temp;
     cv::threshold(getLatestGrayImage(), ret, m_sbdParams.minThreshold, 255,
-                  CV_THRESH_BINARY);
+                  cv::THRESH_BINARY);
     cv::Mat tempOut;
     for (int i = 1; getCurrentThresh(i) < m_sbdParams.maxThreshold; ++i) {
         auto currentThresh = getCurrentThresh(i);
         cv::threshold(getLatestGrayImage(), temp, currentThresh, currentThresh,
-                      CV_THRESH_BINARY);
+                      cv::THRESH_BINARY);
         cv::addWeighted(ret, 0.5, temp, 0.5, 0, tempOut);
         ret = tempOut;
     }
@@ -433,7 +440,7 @@ cv::Mat SBDGenericBlobExtractor::generateDebugThresholdImage_() const {
 cv::Mat SBDGenericBlobExtractor::generateDebugBlobImage_() const {
     cv::Mat ret;
     cv::Mat tempColor;
-    cv::cvtColor(getLatestGrayImage(), tempColor, CV_GRAY2BGR);
+    cv::cvtColor(getLatestGrayImage(), tempColor, cv::COLOR_GRAY2BGR);
     // Draw detected blobs as blue circles.
     cv::drawKeypoints(tempColor, m_keyPoints, ret, cv::Scalar(255, 0, 0),
                       cv::DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
@@ -473,19 +480,12 @@ void SBDGenericBlobExtractor::getKeypoints(cv::Mat const &grayImage) {
     m_sbdParams.maxThreshold = static_cast<float>(thresholdInfo.maxThreshold);
     m_sbdParams.thresholdStep = static_cast<float>(thresholdInfo.thresholdStep);
 
-/// @todo: Make a different set of parameters optimized for the
-/// Oculus Dk2.
-/// @todo: Determine the maximum size of a trackable blob by seeing
-/// when we're so close that we can't view at least four in the
-/// camera.
-#if CV_MAJOR_VERSION == 2
-    cv::Ptr<cv::SimpleBlobDetector> detector =
-        new cv::SimpleBlobDetector(m_sbdParams);
-#elif CV_MAJOR_VERSION == 3
-    auto detector = cv::SimpleBlobDetector::create(m_sbdParams);
-#else
-#error "Unrecognized OpenCV version!"
-#endif
+    /// @todo: Make a different set of parameters optimized for the
+    /// Oculus Dk2.
+    /// @todo: Determine the maximum size of a trackable blob by seeing
+    /// when we're so close that we can't view at least four in the
+    /// camera.
+    auto detector = createSimpleBlobDetector(m_sbdParams);
     detector->detect(grayImage, m_keyPoints);
 
     // @todo: Consider computing the center of mass of a dilated

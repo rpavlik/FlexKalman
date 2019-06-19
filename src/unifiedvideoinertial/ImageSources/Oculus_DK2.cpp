@@ -177,7 +177,7 @@ cv::Mat osvr::oculus_dk2::unscramble_image(const cv::Mat &image) {
     // NOTE: We'd like not to have to try and invert the bogus
     // transformation to get back to two luminance channels, but
     // rather just tell the camera to change its decoder.  It turns
-    // out that the set(CV_CAP_PROP_FOURCC) is not actually implemented
+    // out that the set(cv::CAP_PROP_FOURCC) is not actually implemented
     // for OpenCV (see cap_unicap.cpp) so we can't do that directly.
     // NOTE: OpenCV uses FFMPEG, which is able to read from cameras,
     // so may use it to capture data from cameras.  If so, that is the

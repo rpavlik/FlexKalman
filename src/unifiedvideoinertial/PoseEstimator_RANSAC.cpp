@@ -120,7 +120,7 @@ namespace uvbi {
             iterations, MAX_REPROJECTION_ERROR,
             static_cast<int>(objectPoints.size() - m_permittedOutliers),
             inlierIndices);
-#elif CV_MAJOR_VERSION == 3
+#elif CV_MAJOR_VERSION >= 3
         // parameter added to the OpenCV 3.0 interface in place of the number of
         // inliers
         /// @todo how to determine this requested confidence from the data we're
