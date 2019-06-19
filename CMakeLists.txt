@@ -16,10 +16,11 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin")
 ###
 find_package(OpenCV)
 find_package(JsonCpp)
-find_package(Boost)
 
 # Only required on Windows - elsewhere, just used for extra tools.
+find_package(Boost)
 
+option(BUILD_TOOLS "Build executable tools" ON)
 
 if(WIN32)
     # On Win32, for best experience, enforce the use of the DirectShow capture library.
@@ -84,7 +85,9 @@ add_subdirectory(vendor)
 # Core library
 add_subdirectory(src)
 
-add_subdirectory(apps)
+if(BUILD_TOOLS)
+    add_subdirectory(apps)
+endif()
 
 if(BUILD_TESTING)
     add_subdirectory(tests)
