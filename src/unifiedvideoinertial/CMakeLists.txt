@@ -137,7 +137,7 @@ target_link_libraries(uvbi-core
     opencv_imgproc
     opencv_videoio
     opencv_calib3d
-    opencv_highgui
+    opencv_highgui # only needed for TrackingDebugDisplay
     FlexKalman
     uvbi-base
     $<BUILD_INTERFACE:eigen-headers>
