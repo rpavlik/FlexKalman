@@ -379,11 +379,12 @@ if(NOT JSONCPP_FOUND)
 				INTERFACE_LINK_LIBRARIES "${JsonCpp_LIBRARY}"
 				INTERFACE_INCLUDE_DIRECTORIES "${JsonCpp_INCLUDE_DIR}")
 		endif()
-		if(__jsoncpp_have_namespaced_targets)
-			if(NOT TARGET JsonCpp::JsonCpp)
-				add_library(JsonCpp::JsonCpp ALIAS jsoncpp_interface)
-			endif()
-		endif()
+		if(__jsoncpp_have_namespaced_targets AND NOT TARGET JsonCpp::JsonCpp)
+			add_library(JsonCpp::JsonCpp INTERFACE IMPORTED)
+			set_target_properties(JsonCpp::JsonCpp PROPERTIES
+				INTERFACE_INCLUDE_DIRECTORIES "${JsonCpp_INCLUDE_DIR}"
+				INTERFACE_LINK_LIBRARIES "${JsonCpp_LIBRARY}")
+        endif()
 	endif()
 endif()
 
