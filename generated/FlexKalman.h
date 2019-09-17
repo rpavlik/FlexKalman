@@ -2316,14 +2316,26 @@ class AngularVelocityBase {
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     static const types::DimensionType DIMENSION = 3;
     using MeasurementVector = types::Vector<DIMENSION>;
-    using MeasurementDiagonalMatrix = types::DiagonalMatrix<DIMENSION>;
+    using MeasurementSquareMatrix = types::SquareMatrix<DIMENSION>;
     AngularVelocityBase(MeasurementVector const &vel,
                         MeasurementVector const &variance)
         : m_measurement(vel), m_covariance(variance.asDiagonal()) {}
 
     template <typename State>
-    MeasurementDiagonalMatrix const &getCovariance(State const &) {
+    MeasurementSquareMatrix const &getCovariance(State const &) {
         return m_covariance;
+    }
+
+    template <typename State>
+    types::Vector<3> predictMeasurement(State const &s) const {
+        return s.angularVelocity();
+    }
+
+    template <typename State>
+    MeasurementVector getResidual(MeasurementVector const &prediction,
+                                  State const & /* s */) const {
+        const MeasurementVector residual = m_measurement - prediction;
+        return residual;
     }
 
     /// Gets the measurement residual, also known as innovation: predicts
@@ -2333,8 +2345,7 @@ class AngularVelocityBase {
     /// State type doesn't matter as long as we can `.angularVelocity()`
     template <typename State>
     MeasurementVector getResidual(State const &s) const {
-        const MeasurementVector residual = m_measurement - s.angularVelocity();
-        return residual;
+        return getResidual(predictMeasurement(s), s);
     }
 
     /// Convenience method to be able to store and re-use measurements.
@@ -2342,7 +2353,7 @@ class AngularVelocityBase {
 
   private:
     MeasurementVector m_measurement;
-    MeasurementDiagonalMatrix m_covariance;
+    MeasurementSquareMatrix m_covariance;
 };
 
 /// This is the subclass of AngularVelocityBase: only explicit
