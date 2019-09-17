@@ -8,7 +8,8 @@
     <http://sensics.com/osvr>
 */
 
-// Copyright 2015 Sensics, Inc.
+// Copyright 2015-2016 Sensics, Inc.
+// Copyright 2019 Collabora, Ltd.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -39,8 +40,6 @@
 #endif
 
 namespace flexkalman {
-/// @brief Header-only framework for building Kalman-style filters, prediction,
-/// and sensor fusion
 
 /// @brief Type aliases, including template type aliases.
 namespace types {
