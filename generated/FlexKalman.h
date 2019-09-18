@@ -248,8 +248,18 @@ beginCorrection(StateType &state, ProcessModelType &processModel,
 }
 
 
+/*!
+ * Advance time in the filter, by applying the process model to the state with
+ * the given dt.
+ *
+ * Usually followed by correct() or beginUnscentedCorrection() and its
+ * continuation. If you aren't correcting immediately, make sure to run
+ * `state.postCorrect()` to clean up. Otherwise, consider calling
+ * getPrediction() instead.
+ */
 template <typename StateType, typename ProcessModelType>
-void predict(StateType &state, ProcessModelType &processModel, double dt) {
+static inline void predict(StateType &state, ProcessModelType &processModel,
+                           double dt) {
     processModel.predictState(state, dt);
     FLEXKALMAN_DEBUG_OUTPUT("Predicted state", state.stateVector().transpose());
 
@@ -272,6 +282,30 @@ predictAndPostCorrectStateOnly(StateType &state, ProcessModelType &processModel,
     state.postCorrect();
     FLEXKALMAN_DEBUG_OUTPUT("Predicted state", state.stateVector().transpose());
 }
+
+/*!
+ * Performs prediction on a copy of the state, as well as
+ * post-correction. By default, also skips prediction of error covariance.
+ *
+ * Requires that your process model provide `processModel.predictStateOnly()`
+ */
+template <typename StateType, typename ProcessModelType>
+static inline StateType
+getPrediction(StateType const &state, ProcessModelType const &processModel,
+              double dt, bool predictCovariance = false) {
+    StateType stateCopy{state};
+    if (predictCovariance) {
+        processModel.predictState(stateCopy, dt);
+    } else {
+        processModel.predictStateOnly(stateCopy, dt);
+    }
+    stateCopy.postCorrect();
+    return stateCopy;
+}
+
+/// Correct a Kalman filter's state using a measurement that provides a
+/// Jacobian, in the manner of an Extended Kalman Filter (EKF).
+///
 /// @param cancelIfNotFinite If the state correction or new error covariance
 /// is detected to contain non-finite values, should we cancel the
 /// correction and not apply it?
@@ -279,8 +313,9 @@ predictAndPostCorrectStateOnly(StateType &state, ProcessModelType &processModel,
 /// @return true if correction completed
 template <typename StateType, typename ProcessModelType,
           typename MeasurementType>
-inline bool correct(StateType &state, ProcessModelType &processModel,
-                    MeasurementType &meas, bool cancelIfNotFinite = true) {
+static inline bool correct(StateType &state, ProcessModelType &processModel,
+                           MeasurementType &meas,
+                           bool cancelIfNotFinite = true) {
 
     auto inProgress = beginCorrection(state, processModel, meas);
     if (cancelIfNotFinite && !inProgress.stateCorrectionFinite) {
