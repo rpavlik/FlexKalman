@@ -48,48 +48,46 @@ inline void dumpKalmanDebugOuput(const char name[], const char expr[],
 #include <iostream>
 
 int main() {
-    using namespace flexkalman;
     using ProcessModel = flexkalman::PoseConstantVelocityProcessModel;
-    using State = ProcessModel::State;
+    using State = flexkalman::pose_externalized_rotation::State;
     using Measurement = flexkalman::AbsoluteOrientationMeasurement<State>;
-    using Filter = flexkalman::FlexibleKalmanFilter<ProcessModel>;
-    auto filter = Filter{ProcessModel{}, State{}};
+    State state;
+    ProcessModel processModel;
     std::cout << "Initial state:" << std::endl;
-    std::cout << filter.state() << std::endl;
+    std::cout << state << std::endl;
     {
         auto meas = Measurement{Eigen::Quaterniond::Identity(),
                                 Eigen::Vector3d(0.00001, 0.00001, 0.00001)};
         std::cout << "Measurement covariance:\n"
-                  << meas.getCovariance(filter.state()) << std::endl;
+                  << meas.getCovariance(state) << std::endl;
 
         for (int i = 0; i < 100; ++i) {
-            filter.predict(0.1);
+            flexkalman::predict(state, processModel, 0.1);
 
             std::cout << "\nAfter prediction (iteration " << i << "):\n"
-                      << filter.state() << std::endl;
-            if (stateContentsInvalid(filter.state())) {
+                      << state << std::endl;
+            if (stateContentsInvalid(state)) {
                 std::cout << "ERROR: Detected invalid state contents after "
                              "prediction step of iteration "
                           << i << std::endl;
                 return -1;
             }
-            if (covarianceContentsInvalid(filter.state())) {
+            if (covarianceContentsInvalid(state)) {
                 std::cout << "ERROR: Detected invalid covariance contents "
                              "after prediction step of iteration "
                           << i << std::endl;
                 return -1;
             }
-
-            filter.correct(meas);
+            flexkalman::correct(state, processModel, meas);
             std::cout << "\nAfter correction (iteration " << i << "):\n"
-                      << filter.state() << std::endl;
-            if (stateContentsInvalid(filter.state())) {
+                      << state << std::endl;
+            if (stateContentsInvalid(state)) {
                 std::cout << "ERROR: Detected invalid state contents after "
                              "correction step of iteration "
                           << i << std::endl;
                 return -1;
             }
-            if (covarianceContentsInvalid(filter.state())) {
+            if (covarianceContentsInvalid(state)) {
                 std::cout << "ERROR: Detected invalid covariance contents "
                              "after correction step of iteration "
                           << i << std::endl;

@@ -50,82 +50,73 @@ inline void dumpKalmanDebugOuput(const char name[], const char expr[],
 // Standard includes
 #include <iostream>
 
-using ProcessModel = flexkalman::PoseConstantVelocityProcessModel;
-using State = ProcessModel::State;
+using State = flexkalman::pose_externalized_rotation::State;
 using AbsoluteOrientationMeasurement =
     flexkalman::AbsoluteOrientationMeasurement<State>;
 using AbsolutePositionMeasurement =
     flexkalman::AbsolutePositionMeasurement<State>;
-using Filter = flexkalman::FlexibleKalmanFilter<ProcessModel>;
 
-class Stability {
-  public:
-    template <typename State>
-    void dumpState(State const &state, const char msg[]) {
-        std::cout << "\n"
-                  << msg << " (iteration " << iteration << "):\n"
-                  << state << std::endl;
-    }
-    template <typename Filter, typename Measurement>
-    void filterAndCheck(Filter &filter, Measurement &meas, double dt = 0.1) {
-        INFO("Iteration " << iteration);
-        INFO("prediction step");
-        filter.predict(dt);
-        dumpState(filter.state(), "After prediction");
-        REQUIRE_FALSE(stateContentsInvalid(filter.state()));
-        REQUIRE_FALSE(covarianceContentsInvalid(filter.state()));
+static void dumpState(State const &state, const char msg[], size_t iteration) {
+    std::cout << "\n"
+              << msg << " (iteration " << iteration << "):\n"
+              << state << std::endl;
+}
 
-        REQUIRE_FALSE(
-            covarianceContentsInvalid(meas.getCovariance(filter.state())));
+template <typename PM, typename M>
+static void runFilterAndCheck(State &state, PM &processModel, M &meas,
+                              double dt, size_t iteration) {
+    INFO("Iteration " << iteration);
+    INFO("prediction step");
+    flexkalman::predict(state, processModel, dt);
+    dumpState(state, "After prediction", iteration);
+    REQUIRE_FALSE(stateContentsInvalid(state));
+    REQUIRE_FALSE(covarianceContentsInvalid(state));
 
-        INFO("correction step");
-        filter.correct(meas);
-        dumpState(filter.state(), "After correction");
-        REQUIRE_FALSE(stateContentsInvalid(filter.state()));
-        REQUIRE_FALSE(covarianceContentsInvalid(filter.state()));
-        iteration++;
-    }
+    REQUIRE_FALSE(covarianceContentsInvalid(meas.getCovariance(state)));
 
-    template <typename Filter, typename Measurement>
-    void filterAndCheckRepeatedly(Filter &filter, Measurement &meas,
-                                  double dt = 0.1,
-                                  std::size_t iterations = 100) {
-        iteration = 0;
-        while (iteration < iterations) {
-            filterAndCheck(filter, meas, dt);
-        }
-    }
-
-  private:
-    std::size_t iteration = 0;
-};
+    INFO("correction step");
+    flexkalman::correct(state, processModel, meas);
+    dumpState(state, "After correction", iteration);
+    REQUIRE_FALSE(stateContentsInvalid(state));
+    REQUIRE_FALSE(covarianceContentsInvalid(state));
+}
 
 TEMPLATE_TEST_CASE("ProcessModelStability", "",
                    flexkalman::PoseConstantVelocityProcessModel,
                    flexkalman::PoseDampedConstantVelocityProcessModel) {
-    Stability fixture;
-    using Filter = flexkalman::FlexibleKalmanFilter<TestType>;
 
-    auto filter = Filter{};
-    fixture.dumpState(filter.state(), "Initial state");
+    using ProcessModel = TestType;
+    State state;
+    ProcessModel processModel;
+    std::size_t iteration = 0;
+
+    dumpState(state, "Initial state", iteration);
 
     SECTION("IdentityAbsoluteOrientationMeasurement") {
         auto meas = AbsoluteOrientationMeasurement{
             Eigen::Quaterniond::Identity(),
             Eigen::Vector3d(0.00001, 0.00001, 0.00001)};
-        fixture.filterAndCheckRepeatedly(filter, meas);
+        for (iteration = 0; iteration < 100; ++iteration) {
+            runFilterAndCheck(state, processModel, meas, 0.1, iteration);
+        }
+        // Can't use isApprox to compare to zero vector
+        CHECK(state.position().isMuchSmallerThan(0.001));
         /// @todo check that it's roughly identity
     }
     SECTION("IdentityAbsolutePositionMeasurement") {
         auto meas = AbsolutePositionMeasurement{
             Eigen::Vector3d::Zero(), Eigen::Vector3d::Constant(0.000007)};
-        fixture.filterAndCheckRepeatedly(filter, meas);
+        for (iteration = 0; iteration < 100; ++iteration) {
+            runFilterAndCheck(state, processModel, meas, 0.1, iteration);
+        }
         /// @todo check that it's roughly identity
     }
     SECTION("AbsolutePositionMeasurementXlate111") {
         auto meas = AbsolutePositionMeasurement{
             Eigen::Vector3d::Constant(1), Eigen::Vector3d::Constant(0.000007)};
-        fixture.filterAndCheckRepeatedly(filter, meas);
+        for (iteration = 0; iteration < 100; ++iteration) {
+            runFilterAndCheck(state, processModel, meas, 0.1, iteration);
+        }
         /// @todo check that it's roughly identity orientation, position of 1,
         /// 1, 1
     }
