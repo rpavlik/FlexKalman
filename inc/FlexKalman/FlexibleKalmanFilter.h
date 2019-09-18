@@ -45,6 +45,21 @@ void predict(StateType &state, ProcessModelType &processModel, double dt) {
                             state.errorCovariance());
 }
 
+/*!
+ * Performs prediction of the state only (not the error covariance), as well as
+ * post-correction. Unsuitable for continued correction for this reason, but
+ * usable to get a look at a predicted value.
+ *
+ * Requires that your process model provide `processModel.predictStateOnly()`
+ */
+template <typename StateType, typename ProcessModelType>
+static inline void
+predictAndPostCorrectStateOnly(StateType &state, ProcessModelType &processModel,
+                               double dt) {
+    processModel.predictStateOnly(state, dt);
+    state.postCorrect();
+    FLEXKALMAN_DEBUG_OUTPUT("Predicted state", state.stateVector().transpose());
+}
 /// @param cancelIfNotFinite If the state correction or new error covariance
 /// is detected to contain non-finite values, should we cancel the
 /// correction and not apply it?

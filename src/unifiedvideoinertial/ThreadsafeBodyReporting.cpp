@@ -29,6 +29,7 @@
 // Library/third-party includes
 #include "EigenInterop.h"
 #include "FlexKalman/EigenQuatExponentialMap.h"
+#include "FlexKalman/FlexibleKalmanFilter.h"
 #include "unifiedvideoinertial/TimeValue.h"
 #include <Eigen/Core>
 #include <Eigen/Geometry>
@@ -121,11 +122,11 @@ namespace uvbi {
             /// and the additional time into the future we'd like to predict.
             dt += additionalPrediction;
 
-            /// Using computeEstimate instead of the normal prediction saves us
-            /// the unneeded prediction of the error covariance.
-            m_state.setStateVector(m_process.computeEstimate(m_state, dt));
+            /// Using predictAndPostCorrectStateOnly instead of the normal
+            /// prediction saves us the unneeded prediction of the error
+            /// covariance.
+            flexkalman::predictAndPostCorrectStateOnly(m_state, m_process, dt);
             /// Be sure to post-correct.
-            m_state.postCorrect();
 
             /// OK, now set a proper timestamp for our prediction.
             report.timestamp = currentTime + std::chrono::duration<double>(

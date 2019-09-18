@@ -45,43 +45,8 @@ namespace pose_externalized_rotation {
         StateVector::ConstFixedSegmentReturnType<3>::Type;
 
     using StateVectorBlock6 = StateVector::FixedSegmentReturnType<6>::Type;
-
-    /// @name Accessors to blocks in the state vector.
-    /// @{
-    inline StateVectorBlock3 position(StateVector &vec) {
-        return vec.head<3>();
-    }
-    inline ConstStateVectorBlock3 position(StateVector const &vec) {
-        return vec.head<3>();
-    }
-
-    inline StateVectorBlock3 incrementalOrientation(StateVector &vec) {
-        return vec.segment<3>(3);
-    }
-    inline ConstStateVectorBlock3
-    incrementalOrientation(StateVector const &vec) {
-        return vec.segment<3>(3);
-    }
-
-    inline StateVectorBlock3 velocity(StateVector &vec) {
-        return vec.segment<3>(6);
-    }
-    inline ConstStateVectorBlock3 velocity(StateVector const &vec) {
-        return vec.segment<3>(6);
-    }
-
-    inline StateVectorBlock3 angularVelocity(StateVector &vec) {
-        return vec.segment<3>(9);
-    }
-    inline ConstStateVectorBlock3 angularVelocity(StateVector const &vec) {
-        return vec.segment<3>(9);
-    }
-
-    /// both translational and angular velocities
-    inline StateVectorBlock6 velocities(StateVector &vec) {
-        return vec.segment<6>(6);
-    }
-    /// @}
+    using ConstStateVectorBlock6 =
+        StateVector::ConstFixedSegmentReturnType<6>::Type;
     using StateSquareMatrix = types::SquareMatrix<Dimension>;
 
     /// This returns A(deltaT), though if you're just predicting xhat-, use
@@ -125,42 +90,11 @@ namespace pose_externalized_rotation {
         return A;
     }
 
-    /// Computes A(deltaT)xhat(t-deltaT)
-    inline StateVector applyVelocity(StateVector const &state, double dt) {
-        // eq. 4.5 in Welch 1996
-
-        /// @todo benchmark - assuming for now that the manual small
-        /// calcuations are faster than the matrix ones.
-
-        StateVector ret = state;
-        position(ret) += velocity(state) * dt;
-        incrementalOrientation(ret) += angularVelocity(state) * dt;
-        return ret;
-    }
-
-    /// Dampen all 6 components of velocity by a single factor.
-    inline void dampenVelocities(StateVector &state, double damping,
-                                 double dt) {
-        auto attenuation = computeAttenuation(damping, dt);
-        velocities(state) *= attenuation;
-    }
-
-    /// Separately dampen the linear and angular velocities
-    inline void separatelyDampenVelocities(StateVector &state,
-                                           double posDamping, double oriDamping,
-                                           double dt) {
-        velocity(state) *= computeAttenuation(posDamping, dt);
-        angularVelocity(state) *= computeAttenuation(oriDamping, dt);
-    }
-
-    inline Eigen::Quaterniond
-    incrementalOrientationToQuat(StateVector const &state) {
-        return external_quat::vecToQuat(incrementalOrientation(state));
-    }
-
-    class State : public HasDimension<12> {
+    class State {
       public:
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
+        static constexpr size_t Dimension = 12;
 
         /// Default constructor
         State()
@@ -172,6 +106,7 @@ namespace pose_externalized_rotation {
         void setStateVector(StateVector const &state) { m_state = state; }
         /// xhat
         StateVector const &stateVector() const { return m_state; }
+
         // set P
         void setErrorCovariance(StateSquareMatrix const &errorCovariance) {
             m_errorCovariance = errorCovariance;
@@ -194,45 +129,43 @@ namespace pose_externalized_rotation {
             incrementalOrientation() = Eigen::Vector3d::Zero();
         }
 
-        StateVectorBlock3 position() {
-            return pose_externalized_rotation::position(m_state);
-        }
+        StateVectorBlock3 position() { return m_state.head<3>(); }
 
-        ConstStateVectorBlock3 position() const {
-            return pose_externalized_rotation::position(m_state);
-        }
+        ConstStateVectorBlock3 position() const { return m_state.head<3>(); }
 
         StateVectorBlock3 incrementalOrientation() {
-            return pose_externalized_rotation::incrementalOrientation(m_state);
+            return m_state.segment<3>(3);
         }
 
         ConstStateVectorBlock3 incrementalOrientation() const {
-            return pose_externalized_rotation::incrementalOrientation(m_state);
+            return m_state.segment<3>(3);
         }
 
-        StateVectorBlock3 velocity() {
-            return pose_externalized_rotation::velocity(m_state);
-        }
+        StateVectorBlock3 velocity() { return m_state.segment<3>(6); }
 
         ConstStateVectorBlock3 velocity() const {
-            return pose_externalized_rotation::velocity(m_state);
+            return m_state.segment<3>(6);
         }
 
-        StateVectorBlock3 angularVelocity() {
-            return pose_externalized_rotation::angularVelocity(m_state);
-        }
+        StateVectorBlock3 angularVelocity() { return m_state.segment<3>(9); }
 
         ConstStateVectorBlock3 angularVelocity() const {
-            return pose_externalized_rotation::angularVelocity(m_state);
+            return m_state.segment<3>(9);
         }
+
+        /// Linear and angular velocities
+        StateVectorBlock6 velocities() { return m_state.tail<6>(); }
+
+        /// Linear and angular velocities
+        ConstStateVectorBlock6 velocities() const { return m_state.tail<6>(); }
 
         Eigen::Quaterniond const &getQuaternion() const {
             return m_orientation;
         }
 
         Eigen::Quaterniond getCombinedQuaternion() const {
-            /// @todo is just quat multiplication OK here? Order right?
-            return incrementalOrientationToQuat(m_state).normalized() *
+            // divide by 2 since we're integrating it essentially.
+            return util::quat_exp(incrementalOrientation() / 2.) *
                    m_orientation;
         }
 
@@ -265,6 +198,30 @@ namespace pose_externalized_rotation {
            << "\n";
         os << "error:\n" << state.errorCovariance() << "\n";
         return os;
+    }
+
+    /// Computes A(deltaT)xhat(t-deltaT)
+    inline void applyVelocity(State &state, double dt) {
+        // eq. 4.5 in Welch 1996
+
+        /// @todo benchmark - assuming for now that the manual small
+        /// calcuations are faster than the matrix ones.
+
+        state.position() += state.velocity() * dt;
+        state.incrementalOrientation() += state.angularVelocity() * dt;
+    }
+
+    /// Dampen all 6 components of velocity by a single factor.
+    inline void dampenVelocities(State &state, double damping, double dt) {
+        auto attenuation = computeAttenuation(damping, dt);
+        state.velocities() *= attenuation;
+    }
+
+    /// Separately dampen the linear and angular velocities
+    inline void separatelyDampenVelocities(State &state, double posDamping,
+                                           double oriDamping, double dt) {
+        state.velocity() *= computeAttenuation(posDamping, dt);
+        state.angularVelocity() *= computeAttenuation(oriDamping, dt);
     }
 } // namespace pose_externalized_rotation
 

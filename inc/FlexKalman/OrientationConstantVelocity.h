@@ -58,6 +58,10 @@ class OrientationConstantVelocityProcessModel {
         return orient_externalized_rotation::stateTransitionMatrix(dt);
     }
 
+    void predictStateOnly(State &s, double dt) {
+        FLEXKALMAN_DEBUG_OUTPUT("Time change", dt);
+        orient_externalized_rotation::applyVelocity(s, dt);
+    }
     void predictState(State &s, double dt) {
         auto xHatMinus = computeEstimate(s, dt);
         auto Pminus = predictErrorCovariance(s, *this, dt);

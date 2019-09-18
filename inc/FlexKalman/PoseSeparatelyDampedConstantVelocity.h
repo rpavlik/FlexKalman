@@ -80,10 +80,15 @@ class PoseSeparatelyDampedConstantVelocityProcessModel {
                                                              m_oriDamp);
     }
 
+    void predictStateOnly(State &s, double dt) {
+        m_constantVelModel.predictStateOnly(s, dt);
+        // Dampen velocities
+        pose_externalized_rotation::separatelyDampenVelocities(s, m_posDamp,
+                                                               m_oriDamp, dt);
+    }
     void predictState(State &s, double dt) {
-        auto xHatMinus = computeEstimate(s, dt);
+        predictStateOnly(s, dt);
         auto Pminus = predictErrorCovariance(s, *this, dt);
-        s.setStateVector(xHatMinus);
         s.setErrorCovariance(Pminus);
     }
 
@@ -93,16 +98,6 @@ class PoseSeparatelyDampedConstantVelocityProcessModel {
     /// might provide useful performance enhancements.
     StateSquareMatrix getSampledProcessNoiseCovariance(double dt) const {
         return m_constantVelModel.getSampledProcessNoiseCovariance(dt);
-    }
-
-    /// Returns a 12-element vector containing a predicted state based on a
-    /// constant velocity process model.
-    StateVector computeEstimate(State &state, double dt) const {
-        StateVector ret = m_constantVelModel.computeEstimate(state, dt);
-        // Dampen velocities
-        pose_externalized_rotation::separatelyDampenVelocities(ret, m_posDamp,
-                                                               m_oriDamp, dt);
-        return ret;
     }
 
   private:

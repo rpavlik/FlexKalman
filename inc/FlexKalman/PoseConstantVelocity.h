@@ -61,10 +61,15 @@ class PoseConstantVelocityProcessModel {
         return pose_externalized_rotation::stateTransitionMatrix(dt);
     }
 
+    /// Does not update error covariance
+    void predictStateOnly(State &s, double dt) {
+        FLEXKALMAN_DEBUG_OUTPUT("Time change", dt);
+        pose_externalized_rotation::applyVelocity(s, dt);
+    }
+    /// Updates state vector and error covariance
     void predictState(State &s, double dt) {
-        auto xHatMinus = computeEstimate(s, dt);
+        predictStateOnly(s, dt);
         auto Pminus = predictErrorCovariance(s, *this, dt);
-        s.setStateVector(xHatMinus);
         s.setErrorCovariance(Pminus);
     }
 
@@ -90,16 +95,6 @@ class PoseConstantVelocityProcessModel {
             cov(xDotIndex, xDotIndex) = mu * dt;
         }
         return cov;
-    }
-
-    /// Returns a 12-element vector containing a predicted state based on a
-    /// constant velocity process model.
-    StateVector computeEstimate(State &state, double dt) const {
-        FLEXKALMAN_DEBUG_OUTPUT("Time change", dt);
-        StateVector ret =
-            pose_externalized_rotation::applyVelocity(state.stateVector(), dt);
-
-        return ret;
     }
 
   private:
