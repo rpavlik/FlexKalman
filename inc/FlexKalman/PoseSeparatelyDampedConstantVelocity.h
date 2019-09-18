@@ -85,13 +85,13 @@ class PoseSeparatelyDampedConstantVelocityProcessModel {
                                                              m_oriDamp);
     }
 
-    void predictStateOnly(State &s, double dt) {
+    void predictStateOnly(State &s, double dt) const {
         m_constantVelModel.predictStateOnly(s, dt);
         // Dampen velocities
         pose_externalized_rotation::separatelyDampenVelocities(s, m_posDamp,
                                                                m_oriDamp, dt);
     }
-    void predictState(State &s, double dt) {
+    void predictState(State &s, double dt) const {
         predictStateOnly(s, dt);
         auto Pminus = predictErrorCovariance(s, *this, dt);
         s.setErrorCovariance(Pminus);

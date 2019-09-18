@@ -67,12 +67,12 @@ class PoseConstantVelocityProcessModel {
     }
 
     /// Does not update error covariance
-    void predictStateOnly(State &s, double dt) {
+    void predictStateOnly(State &s, double dt) const {
         FLEXKALMAN_DEBUG_OUTPUT("Time change", dt);
         pose_externalized_rotation::applyVelocity(s, dt);
     }
     /// Updates state vector and error covariance
-    void predictState(State &s, double dt) {
+    void predictState(State &s, double dt) const {
         predictStateOnly(s, dt);
         auto Pminus = predictErrorCovariance(s, *this, dt);
         s.setErrorCovariance(Pminus);

@@ -778,12 +778,12 @@ class PoseConstantVelocityProcessModel {
     }
 
     /// Does not update error covariance
-    void predictStateOnly(State &s, double dt) {
+    void predictStateOnly(State &s, double dt) const {
         FLEXKALMAN_DEBUG_OUTPUT("Time change", dt);
         pose_externalized_rotation::applyVelocity(s, dt);
     }
     /// Updates state vector and error covariance
-    void predictState(State &s, double dt) {
+    void predictState(State &s, double dt) const {
         predictStateOnly(s, dt);
         auto Pminus = predictErrorCovariance(s, *this, dt);
         s.setErrorCovariance(Pminus);
@@ -875,13 +875,13 @@ class PoseSeparatelyDampedConstantVelocityProcessModel {
                                                              m_oriDamp);
     }
 
-    void predictStateOnly(State &s, double dt) {
+    void predictStateOnly(State &s, double dt) const {
         m_constantVelModel.predictStateOnly(s, dt);
         // Dampen velocities
         pose_externalized_rotation::separatelyDampenVelocities(s, m_posDamp,
                                                                m_oriDamp, dt);
     }
-    void predictState(State &s, double dt) {
+    void predictState(State &s, double dt) const {
         predictStateOnly(s, dt);
         auto Pminus = predictErrorCovariance(s, *this, dt);
         s.setErrorCovariance(Pminus);
@@ -1996,11 +1996,11 @@ class OrientationConstantVelocityProcessModel {
         return orient_externalized_rotation::stateTransitionMatrix(dt);
     }
 
-    void predictStateOnly(State &s, double dt) {
+    void predictStateOnly(State &s, double dt) const {
         FLEXKALMAN_DEBUG_OUTPUT("Time change", dt);
         orient_externalized_rotation::applyVelocity(s, dt);
     }
-    void predictState(State &s, double dt) {
+    void predictState(State &s, double dt) const {
         predictStateOnly(s, dt);
         auto Pminus = predictErrorCovariance(s, *this, dt);
         s.setErrorCovariance(Pminus);
@@ -2087,13 +2087,13 @@ class PoseDampedConstantVelocityProcessModel {
             stateTransitionMatrixWithVelocityDamping(dt, m_damp);
     }
 
-    void predictStateOnly(State &s, double dt) {
+    void predictStateOnly(State &s, double dt) const {
         m_constantVelModel.predictStateOnly(s, dt);
         // Dampen velocities
         pose_externalized_rotation::dampenVelocities(s, m_damp, dt);
     }
 
-    void predictState(State &s, double dt) {
+    void predictState(State &s, double dt) const {
         predictStateOnly(s, dt);
         auto Pminus = predictErrorCovariance(s, *this, dt);
         s.setErrorCovariance(Pminus);
