@@ -54,46 +54,19 @@ namespace flexkalman {
 namespace types {
     /// Common scalar type
     using Scalar = double;
-
-    /// Type for dimensions
-    using DimensionType = std::size_t;
-
-    /// Type constant for dimensions
-    template <DimensionType n>
-    using DimensionConstant = std::integral_constant<DimensionType, n>;
-
-    struct HasDimensionBase {};
 } // namespace types
 
 /// Convenience base class for things (like states and measurements) that
 /// have a dimension.
-template <types::DimensionType DIM>
-struct HasDimension : types::HasDimensionBase {
-    using Dimension = types::DimensionConstant<DIM>;
+template <size_t DIM> struct HasDimension {
+    static constexpr size_t Dimension = DIM;
 };
 
-namespace types {
-    namespace detail {
-        template <typename T, typename = void> struct Dimension_impl {
-            using type = DimensionConstant<T::DIMENSION>;
-        };
-        // explicit specialization
-        template <DimensionType n>
-        struct Dimension_impl<DimensionConstant<n>, void> {
-            using type = DimensionConstant<n>;
-        };
-        // explicit specialization
-        template <typename T>
-        struct Dimension_impl<T, typename std::enable_if<std::is_base_of<
-                                     HasDimensionBase, T>::value>::type> {
-            using type = typename T::Dimension;
-        };
-    } // namespace detail
-    /// Given a state or measurement, get the dimension as a
-    /// std::integral_constant
-    template <typename T>
-    using Dimension = typename detail::Dimension_impl<T>::type;
+template <typename T> static constexpr size_t getDimension() {
+    return T::Dimension;
+}
 
+namespace types {
     /// Given a filter type, get the state type.
     template <typename FilterType> using StateType = typename FilterType::State;
 
@@ -102,33 +75,30 @@ namespace types {
     using ProcessModelType = typename FilterType::ProcessModel;
 
     /// A vector of length n
-    template <DimensionType n> using Vector = Eigen::Matrix<Scalar, n, 1>;
+    template <size_t n> using Vector = Eigen::Matrix<Scalar, n, 1>;
 
     /// A vector of length = dimension of T
-    template <typename T> using DimVector = Vector<Dimension<T>::value>;
+    template <typename T> using DimVector = Vector<T::Dimension>;
 
     /// A square matrix, n x n
-    template <DimensionType n> using SquareMatrix = Eigen::Matrix<Scalar, n, n>;
+    template <size_t n> using SquareMatrix = Eigen::Matrix<Scalar, n, n>;
 
     /// A square matrix, n x n, where n is the dimension of T
-    template <typename T>
-    using DimSquareMatrix = SquareMatrix<Dimension<T>::value>;
+    template <typename T> using DimSquareMatrix = SquareMatrix<T::Dimension>;
 
     /// A square diagonal matrix, n x n
-    template <DimensionType n>
-    using DiagonalMatrix = Eigen::DiagonalMatrix<Scalar, n>;
+    template <size_t n> using DiagonalMatrix = Eigen::DiagonalMatrix<Scalar, n>;
 
     /// A square diagonal matrix, n x n, where n is the dimension of T
     template <typename T>
-    using DimDiagonalMatrix = DiagonalMatrix<Dimension<T>::value>;
+    using DimDiagonalMatrix = DiagonalMatrix<T::Dimension>;
 
     /// A matrix with rows = m,  cols = n
-    template <DimensionType m, DimensionType n>
-    using Matrix = Eigen::Matrix<Scalar, m, n>;
+    template <size_t m, size_t n> using Matrix = Eigen::Matrix<Scalar, m, n>;
 
     /// A matrix with rows = dimension of T, cols = dimension of U
     template <typename T, typename U>
-    using DimMatrix = Matrix<Dimension<T>::value, Dimension<U>::value>;
+    using DimMatrix = Matrix<T::Dimension, U::Dimension>;
 
 } // namespace types
 
@@ -158,10 +128,9 @@ predictErrorCovariance(StateType const &state, ProcessModelType &processModel,
 template <typename StateType, typename MeasurementType>
 struct CorrectionInProgress {
     /// Dimension of measurement
-    static const types::DimensionType m =
-        types::Dimension<MeasurementType>::value;
+    static constexpr size_t m = getDimension<MeasurementType>();
     /// Dimension of state
-    static const types::DimensionType n = types::Dimension<StateType>::value;
+    static constexpr size_t n = getDimension<StateType>();
 
     CorrectionInProgress(StateType &state, MeasurementType &meas,
                          types::SquareMatrix<n> const &P_,
@@ -253,9 +222,9 @@ beginCorrection(StateType &state, ProcessModelType &processModel,
                 MeasurementType &meas) {
 
     /// Dimension of measurement
-    static const auto m = types::Dimension<MeasurementType>::value;
+    static constexpr auto m = getDimension<MeasurementType>();
     /// Dimension of state
-    static const auto n = types::Dimension<StateType>::value;
+    static constexpr auto n = getDimension<StateType>();
 
     /// Measurement Jacobian
     types::Matrix<m, n> H = meas.getJacobian(state);
@@ -506,14 +475,13 @@ namespace external_quat {
 
 
 namespace pose_externalized_rotation {
-    using Dimension = types::DimensionConstant<12>;
-    using StateVector = types::DimVector<Dimension>;
+    constexpr size_t Dimension = 12;
+    using StateVector = types::Vector<Dimension>;
     using StateVectorBlock3 = StateVector::FixedSegmentReturnType<3>::Type;
     using ConstStateVectorBlock3 =
         StateVector::ConstFixedSegmentReturnType<3>::Type;
 
     using StateVectorBlock6 = StateVector::FixedSegmentReturnType<6>::Type;
-    using StateSquareMatrix = types::DimSquareMatrix<Dimension>;
 
     /// @name Accessors to blocks in the state vector.
     /// @{
@@ -551,6 +519,7 @@ namespace pose_externalized_rotation {
         return vec.segment<6>(6);
     }
     /// @}
+    using StateSquareMatrix = types::SquareMatrix<Dimension>;
 
     /// This returns A(deltaT), though if you're just predicting xhat-, use
     /// applyVelocity() instead for performance.
@@ -742,9 +711,9 @@ namespace pose_externalized_rotation {
 class AbsoluteOrientationBase {
   public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    static const types::DimensionType DIMENSION = 3;
-    using MeasurementVector = types::Vector<DIMENSION>;
-    using MeasurementSquareMatrix = types::SquareMatrix<DIMENSION>;
+    static constexpr size_t Dimension = 3;
+    using MeasurementVector = types::Vector<Dimension>;
+    using MeasurementSquareMatrix = types::SquareMatrix<Dimension>;
     AbsoluteOrientationBase(Eigen::Quaterniond const &quat,
                             types::Vector<3> const &emVariance)
         : m_quat(quat), m_covariance(emVariance.asDiagonal()) {}
@@ -779,7 +748,7 @@ class AbsoluteOrientationBase {
 
     /// Get the block of jacobian that is non-zero: your subclass will have
     /// to put it where it belongs for each particular state type.
-    types::Matrix<DIMENSION, 3> getJacobianBlock() const {
+    types::Matrix<Dimension, 3> getJacobianBlock() const {
         return Eigen::Matrix3d::Identity();
     }
 
@@ -799,20 +768,18 @@ class AbsoluteOrientationMeasurement<pose_externalized_rotation::State>
   public:
     using State = pose_externalized_rotation::State;
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    static const types::DimensionType STATE_DIMENSION =
-        types::Dimension<State>::value;
+    static constexpr size_t StateDimension = getDimension<State>();
     using Base = AbsoluteOrientationBase;
 
     AbsoluteOrientationMeasurement(Eigen::Quaterniond const &quat,
                                    types::Vector<3> const &eulerVariance)
         : Base(quat, eulerVariance) {}
 
-    types::Matrix<DIMENSION, STATE_DIMENSION>
-    getJacobian(State const &s) const {
+    types::Matrix<Dimension, StateDimension> getJacobian(State const &s) const {
         using namespace pose_externalized_rotation;
-        using Jacobian = types::Matrix<DIMENSION, STATE_DIMENSION>;
+        using Jacobian = types::Matrix<Dimension, StateDimension>;
         Jacobian ret = Jacobian::Zero();
-        ret.block<DIMENSION, 3>(0, 3) = Base::getJacobianBlock();
+        ret.block<Dimension, 3>(0, 3) = Base::getJacobianBlock();
         return ret;
     }
 };
@@ -858,7 +825,7 @@ class PoseConstantVelocityProcessModel {
     /// so .selfAdjointView<Eigen::Upper>() might provide useful performance
     /// enhancements in some algorithms.
     StateSquareMatrix getSampledProcessNoiseCovariance(double dt) const {
-        auto const dim = types::Dimension<State>::value;
+        constexpr auto dim = getDimension<State>();
         StateSquareMatrix cov = StateSquareMatrix::Zero();
         auto dt3 = (dt * dt * dt) / 3;
         auto dt2 = (dt * dt) / 2;
@@ -890,7 +857,7 @@ class PoseConstantVelocityProcessModel {
     /// sources
     NoiseAutocorrelation m_mu;
     double getMu(std::size_t index) const {
-        assert(index < types::Dimension<State>::value / 2 &&
+        assert(index < (getDimension<State>() / 2) &&
                "Should only be passing "
                "'i' - the main state, not "
                "the derivative");
@@ -1095,15 +1062,14 @@ using SigmaPointGenerator = AugmentedSigmaPointGenerator<Dim, Dim>;
 template <std::size_t XformedDim, typename SigmaPointsGenType>
 class ReconstructedDistributionFromSigmaPoints {
   public:
-    static const std::size_t DIMENSION = XformedDim;
+    static const std::size_t Dimension = XformedDim;
     using SigmaPointsGen = SigmaPointsGenType;
     static const std::size_t NumSigmaPoints = SigmaPointsGen::NumSigmaPoints;
 
-    static const types::DimensionType OriginalDimension =
-        SigmaPointsGen::OriginalDimension;
+    static const size_t OriginalDimension = SigmaPointsGen::OriginalDimension;
     using TransformedSigmaPointsMat = types::Matrix<XformedDim, NumSigmaPoints>;
 
-    using CrossCovMatrix = types::Matrix<OriginalDimension, DIMENSION>;
+    using CrossCovMatrix = types::Matrix<OriginalDimension, Dimension>;
 
     using MeanVec = types::Vector<XformedDim>;
     using CovMat = types::SquareMatrix<XformedDim>;
@@ -1153,13 +1119,13 @@ template <typename State, typename Measurement>
 class SigmaPointCorrectionApplication {
   public:
 #if 0
-        static const types::DimensionType StateDim =
-            types::Dimension<State>::value;
-        static const types::DimensionType MeasurementDim =
-            types::Dimension<Measurement>::value;
+        static constexpr size_t StateDim =
+            getDimension<State>();
+        static constexpr size_t MeasurementDim =
+            getDimension<Measurement>();
 #endif
-    static const types::DimensionType n = types::Dimension<State>::value;
-    static const types::DimensionType m = types::Dimension<Measurement>::value;
+    static constexpr size_t n = getDimension<State>();
+    static constexpr size_t m = getDimension<Measurement>();
 
     using StateVec = types::DimVector<State>;
     using StateSquareMatrix = types::DimSquareMatrix<State>;
@@ -1167,13 +1133,12 @@ class SigmaPointCorrectionApplication {
     using MeasurementSquareMatrix = types::DimSquareMatrix<Measurement>;
 
     /// state augmented with measurement noise mean
-    static const types::DimensionType AugmentedStateDim = n + m;
+    static constexpr size_t AugmentedStateDim = n + m;
     using AugmentedStateVec = types::Vector<AugmentedStateDim>;
     using AugmentedStateCovMatrix = types::SquareMatrix<AugmentedStateDim>;
     using SigmaPointsGen = AugmentedSigmaPointGenerator<AugmentedStateDim, n>;
 
-    static const types::DimensionType NumSigmaPoints =
-        SigmaPointsGen::NumSigmaPoints;
+    static constexpr size_t NumSigmaPoints = SigmaPointsGen::NumSigmaPoints;
 
     using Reconstruction =
         ReconstructedDistributionFromSigmaPoints<m, SigmaPointsGen>;
@@ -1335,16 +1300,16 @@ beginUnscentedCorrection(
 
 /// A very simple (3D by default) vector state with no velocity, ideal for
 /// use as a position, with ConstantProcess for beacon autocalibration
-template <types::DimensionType Dim = 3> class PureVectorState {
+template <size_t Dim = 3> class PureVectorState {
   public:
-    static const types::DimensionType DIMENSION = Dim;
-    using SquareMatrix = types::SquareMatrix<DIMENSION>;
-    using StateVector = types::Vector<DIMENSION>;
+    static const size_t Dimension = Dim;
+    using SquareMatrix = types::SquareMatrix<Dimension>;
+    using StateVector = types::Vector<Dimension>;
 
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     PureVectorState(double x, double y, double z)
         : m_state(x, y, z), m_errorCovariance(SquareMatrix::Zero()) {
-        static_assert(DIMENSION == 3, "This constructor, which takes 3 "
+        static_assert(Dimension == 3, "This constructor, which takes 3 "
                                       "scalars, only works with a 3D "
                                       "vector!");
     }
@@ -1352,7 +1317,7 @@ template <types::DimensionType Dim = 3> class PureVectorState {
     PureVectorState(double x, double y, double z,
                     SquareMatrix const &covariance)
         : m_state(x, y, z), m_errorCovariance(covariance) {
-        static_assert(DIMENSION == 3, "This constructor, which takes 3 "
+        static_assert(Dimension == 3, "This constructor, which takes 3 "
                                       "scalars, only works with a 3D "
                                       "vector!");
     }
@@ -1586,14 +1551,14 @@ namespace matrix_exponential_map {
 
 namespace pose_exp_map {
 
-    using Dimension = types::DimensionConstant<12>;
-    using StateVector = types::DimVector<Dimension>;
+    constexpr size_t Dimension = 12;
+    using StateVector = types::Vector<Dimension>;
     using StateVectorBlock3 = StateVector::FixedSegmentReturnType<3>::Type;
     using ConstStateVectorBlock3 =
         StateVector::ConstFixedSegmentReturnType<3>::Type;
 
     using StateVectorBlock6 = StateVector::FixedSegmentReturnType<6>::Type;
-    using StateSquareMatrix = types::DimSquareMatrix<Dimension>;
+    using StateSquareMatrix = types::SquareMatrix<Dimension>;
 
     /// @name Accessors to blocks in the state vector.
     /// @{
@@ -1756,12 +1721,12 @@ template <typename StateA, typename StateB> class AugmentedState {
     using StateTypeA = StateA;
     using StateTypeB = StateB;
 
-    static const types::DimensionType DIM_A = types::Dimension<StateA>::value;
-    static const types::DimensionType DIM_B = types::Dimension<StateB>::value;
-    static const types::DimensionType DIMENSION = DIM_A + DIM_B;
+    static constexpr size_t DimA = getDimension<StateA>();
+    static constexpr size_t DimB = getDimension<StateB>();
+    static constexpr size_t Dimension = DimA + DimB;
 
-    using SquareMatrix = types::SquareMatrix<DIMENSION>;
-    using StateVector = types::Vector<DIMENSION>;
+    using SquareMatrix = types::SquareMatrix<Dimension>;
+    using StateVector = types::Vector<Dimension>;
 
     /// Constructor
     AugmentedState(StateA &a, StateB &b) : a_(a), b_(b) {}
@@ -1780,9 +1745,9 @@ template <typename StateA, typename StateB> class AugmentedState {
     template <typename Derived>
     void setStateVector(Eigen::MatrixBase<Derived> const &state) {
         /// template used here to avoid a temporary
-        EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(Derived, DIMENSION);
-        a().setStateVector(state.derived().template head<DIM_A>());
-        b().setStateVector(state.derived().template tail<DIM_B>());
+        EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(Derived, Dimension);
+        a().setStateVector(state.derived().template head<DimA>());
+        b().setStateVector(state.derived().template tail<DimB>());
     }
 
     StateVector stateVector() const {
@@ -1793,8 +1758,8 @@ template <typename StateA, typename StateB> class AugmentedState {
 
     SquareMatrix errorCovariance() const {
         SquareMatrix ret = SquareMatrix::Zero();
-        ret.template topLeftCorner<DIM_A, DIM_A>() = a().errorCovariance();
-        ret.template bottomRightCorner<DIM_B, DIM_B>() = b().errorCovariance();
+        ret.template topLeftCorner<DimA, DimA>() = a().errorCovariance();
+        ret.template bottomRightCorner<DimB, DimB>() = b().errorCovariance();
         return ret;
     }
 
@@ -1802,9 +1767,9 @@ template <typename StateA, typename StateB> class AugmentedState {
     void setErrorCovariance(Eigen::MatrixBase<Derived> const &P) {
         /// template used here to avoid evaluating elements we'll never
         /// access to a temporary.
-        EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Derived, DIMENSION, DIMENSION);
-        a().setErrorCovariance(P.template topLeftCorner<DIM_A, DIM_A>());
-        b().setErrorCovariance(P.template bottomRightCorner<DIM_B, DIM_B>());
+        EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Derived, Dimension, Dimension);
+        a().setErrorCovariance(P.template topLeftCorner<DimA, DimA>());
+        b().setErrorCovariance(P.template bottomRightCorner<DimB, DimB>());
     }
 
     void postCorrect() {
@@ -1905,13 +1870,13 @@ makeAugmentedProcessModel(ModelA &a, ModelB &b) {
 
 
 namespace orient_externalized_rotation {
-    using Dimension = types::DimensionConstant<6>;
-    using StateVector = types::DimVector<Dimension>;
+    constexpr size_t Dimension = 6;
+    using StateVector = types::Vector<Dimension>;
     using StateVectorBlock3 = StateVector::FixedSegmentReturnType<3>::Type;
     using ConstStateVectorBlock3 =
         StateVector::ConstFixedSegmentReturnType<3>::Type;
 
-    using StateSquareMatrix = types::DimSquareMatrix<Dimension>;
+    using StateSquareMatrix = types::SquareMatrix<Dimension>;
 
     /// @name Accessors to blocks in the state vector.
     /// @{
@@ -2088,7 +2053,7 @@ class OrientationConstantVelocityProcessModel {
     /// so .selfAdjointView<Eigen::Upper>() might provide useful performance
     /// enhancements in some algorithms.
     StateSquareMatrix getSampledProcessNoiseCovariance(double dt) const {
-        auto const dim = types::Dimension<State>::value;
+        constexpr auto dim = getDimension<State>();
         StateSquareMatrix cov = StateSquareMatrix::Zero();
         auto dt3 = (dt * dt * dt) / 3;
         auto dt2 = (dt * dt) / 2;
@@ -2119,7 +2084,7 @@ class OrientationConstantVelocityProcessModel {
     /// sources
     NoiseAutocorrelation m_mu;
     double getMu(std::size_t index) const {
-        assert(index < types::Dimension<State>::value / 2 &&
+        assert(index < (getDimension<State>() / 2) &&
                "Should only be passing "
                "'i' - the main state, not "
                "the derivative");
@@ -2207,10 +2172,10 @@ class PoseDampedConstantVelocityProcessModel {
 class AbsolutePositionBase {
   public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    static const types::DimensionType DIMENSION = 3; // 3 position
-    using MeasurementVector = types::Vector<DIMENSION>;
-    using MeasurementDiagonalMatrix = types::DiagonalMatrix<DIMENSION>;
-    using MeasurementMatrix = types::SquareMatrix<DIMENSION>;
+    static const size_t Dimension = 3; // 3 position
+    using MeasurementVector = types::Vector<Dimension>;
+    using MeasurementDiagonalMatrix = types::DiagonalMatrix<Dimension>;
+    using MeasurementMatrix = types::SquareMatrix<Dimension>;
     AbsolutePositionBase(MeasurementVector const &pos,
                          MeasurementVector const &variance)
         : m_pos(pos), m_covariance(variance.asDiagonal()) {}
@@ -2251,23 +2216,22 @@ class AbsolutePositionMeasurement<pose_externalized_rotation::State>
   public:
     using State = pose_externalized_rotation::State;
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    static const types::DimensionType STATE_DIMENSION =
-        types::Dimension<State>::value;
+    static constexpr size_t StateDimension = getDimension<State>();
     using Base = AbsolutePositionBase;
-    using Jacobian = types::Matrix<DIMENSION, STATE_DIMENSION>;
+    using Jacobian = types::Matrix<Dimension, StateDimension>;
     AbsolutePositionMeasurement(MeasurementVector const &pos,
                                 MeasurementVector const &variance)
         : Base(pos, variance), m_jacobian(Jacobian::Zero()) {
         m_jacobian.block<3, 3>(0, 0) = types::SquareMatrix<3>::Identity();
     }
 
-    types::Matrix<DIMENSION, STATE_DIMENSION> const &
+    types::Matrix<Dimension, StateDimension> const &
     getJacobian(State const &) const {
         return m_jacobian;
     }
 
   private:
-    types::Matrix<DIMENSION, STATE_DIMENSION> m_jacobian;
+    types::Matrix<Dimension, StateDimension> m_jacobian;
 };
 
 
@@ -2314,10 +2278,9 @@ template <typename StateType> class ConstantProcess {
 class AngularVelocityBase {
   public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    static const types::DimensionType DIMENSION = 3;
-    using MeasurementVector = types::Vector<DIMENSION>;
-    using MeasurementSquareMatrix = types::SquareMatrix<DIMENSION>;
-    AngularVelocityBase(MeasurementVector const &vel,
+    static constexpr size_t Dimension = 3;
+    using MeasurementVector = types::Vector<Dimension>;
+    using MeasurementSquareMatrix = types::SquareMatrix<Dimension>;
                         MeasurementVector const &variance)
         : m_measurement(vel), m_covariance(variance.asDiagonal()) {}
 
@@ -2367,16 +2330,14 @@ class AngularVelocityMeasurement<pose_externalized_rotation::State>
   public:
     using State = pose_externalized_rotation::State;
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    static const types::DimensionType STATE_DIMENSION =
-        types::Dimension<State>::value;
-    using Base = AngularVelocityBase;
+    static constexpr size_t StateDimension = getDimension<State>();
 
     AngularVelocityMeasurement(MeasurementVector const &vel,
                                MeasurementVector const &variance)
         : Base(vel, variance) {}
 
-    types::Matrix<DIMENSION, STATE_DIMENSION> getJacobian(State const &) const {
-        using Jacobian = types::Matrix<DIMENSION, STATE_DIMENSION>;
+    types::Matrix<Dimension, StateDimension> getJacobian(State const &) const {
+        using Jacobian = types::Matrix<Dimension, StateDimension>;
         Jacobian ret = Jacobian::Zero();
         ret.topRightCorner<3, 3>() = types::SquareMatrix<3>::Identity();
         return ret;
@@ -2392,16 +2353,14 @@ class AngularVelocityMeasurement<orient_externalized_rotation::State>
   public:
     using State = orient_externalized_rotation::State;
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    static const types::DimensionType STATE_DIMENSION =
-        types::Dimension<State>::value;
-    using Base = AngularVelocityBase;
+    static constexpr size_t StateDimension = getDimension<State>();
 
     AngularVelocityMeasurement(MeasurementVector const &vel,
                                MeasurementVector const &variance)
         : Base(vel, variance) {}
 
-    types::Matrix<DIMENSION, STATE_DIMENSION> getJacobian(State const &) const {
-        using Jacobian = types::Matrix<DIMENSION, STATE_DIMENSION>;
+    types::Matrix<Dimension, StateDimension> getJacobian(State const &) const {
+        using Jacobian = types::Matrix<Dimension, StateDimension>;
         Jacobian ret = Jacobian::Zero();
         ret.topRightCorner<3, 3>() = types::SquareMatrix<3>::Identity();
         return ret;

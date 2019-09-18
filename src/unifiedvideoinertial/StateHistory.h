@@ -71,12 +71,12 @@ namespace uvbi {
             // Using std::array here so that we can easily stick this in a
             // vector
             // without worrying about alignment.
-            using StateDim = flexkalman::types::Dimension<State>;
+            static constexpr size_t StateDim =
+                flexkalman::getDimension<State>();
             using StateVectorBackup =
-                std::array<flexkalman::types::Scalar, StateDim::value>;
+                std::array<flexkalman::types::Scalar, StateDim>;
             using StateCovarianceBackup =
-                std::array<flexkalman::types::Scalar,
-                           StateDim::value * StateDim::value>;
+                std::array<flexkalman::types::Scalar, StateDim * StateDim>;
 
           public:
             /// Constructor - saves the state vector and error covariance

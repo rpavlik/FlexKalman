@@ -42,12 +42,12 @@ template <typename StateA, typename StateB> class AugmentedState {
     using StateTypeA = StateA;
     using StateTypeB = StateB;
 
-    static const types::DimensionType DIM_A = types::Dimension<StateA>::value;
-    static const types::DimensionType DIM_B = types::Dimension<StateB>::value;
-    static const types::DimensionType DIMENSION = DIM_A + DIM_B;
+    static constexpr size_t DimA = getDimension<StateA>();
+    static constexpr size_t DimB = getDimension<StateB>();
+    static constexpr size_t Dimension = DimA + DimB;
 
-    using SquareMatrix = types::SquareMatrix<DIMENSION>;
-    using StateVector = types::Vector<DIMENSION>;
+    using SquareMatrix = types::SquareMatrix<Dimension>;
+    using StateVector = types::Vector<Dimension>;
 
     /// Constructor
     AugmentedState(StateA &a, StateB &b) : a_(a), b_(b) {}
@@ -66,9 +66,9 @@ template <typename StateA, typename StateB> class AugmentedState {
     template <typename Derived>
     void setStateVector(Eigen::MatrixBase<Derived> const &state) {
         /// template used here to avoid a temporary
-        EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(Derived, DIMENSION);
-        a().setStateVector(state.derived().template head<DIM_A>());
-        b().setStateVector(state.derived().template tail<DIM_B>());
+        EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(Derived, Dimension);
+        a().setStateVector(state.derived().template head<DimA>());
+        b().setStateVector(state.derived().template tail<DimB>());
     }
 
     StateVector stateVector() const {
@@ -79,8 +79,8 @@ template <typename StateA, typename StateB> class AugmentedState {
 
     SquareMatrix errorCovariance() const {
         SquareMatrix ret = SquareMatrix::Zero();
-        ret.template topLeftCorner<DIM_A, DIM_A>() = a().errorCovariance();
-        ret.template bottomRightCorner<DIM_B, DIM_B>() = b().errorCovariance();
+        ret.template topLeftCorner<DimA, DimA>() = a().errorCovariance();
+        ret.template bottomRightCorner<DimB, DimB>() = b().errorCovariance();
         return ret;
     }
 
@@ -88,9 +88,9 @@ template <typename StateA, typename StateB> class AugmentedState {
     void setErrorCovariance(Eigen::MatrixBase<Derived> const &P) {
         /// template used here to avoid evaluating elements we'll never
         /// access to a temporary.
-        EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Derived, DIMENSION, DIMENSION);
-        a().setErrorCovariance(P.template topLeftCorner<DIM_A, DIM_A>());
-        b().setErrorCovariance(P.template bottomRightCorner<DIM_B, DIM_B>());
+        EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Derived, Dimension, Dimension);
+        a().setErrorCovariance(P.template topLeftCorner<DimA, DimA>());
+        b().setErrorCovariance(P.template bottomRightCorner<DimB, DimB>());
     }
 
     void postCorrect() {

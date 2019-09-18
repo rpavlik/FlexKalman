@@ -38,14 +38,13 @@
 namespace flexkalman {
 
 namespace pose_externalized_rotation {
-    using Dimension = types::DimensionConstant<12>;
-    using StateVector = types::DimVector<Dimension>;
+    constexpr size_t Dimension = 12;
+    using StateVector = types::Vector<Dimension>;
     using StateVectorBlock3 = StateVector::FixedSegmentReturnType<3>::Type;
     using ConstStateVectorBlock3 =
         StateVector::ConstFixedSegmentReturnType<3>::Type;
 
     using StateVectorBlock6 = StateVector::FixedSegmentReturnType<6>::Type;
-    using StateSquareMatrix = types::DimSquareMatrix<Dimension>;
 
     /// @name Accessors to blocks in the state vector.
     /// @{
@@ -83,6 +82,7 @@ namespace pose_externalized_rotation {
         return vec.segment<6>(6);
     }
     /// @}
+    using StateSquareMatrix = types::SquareMatrix<Dimension>;
 
     /// This returns A(deltaT), though if you're just predicting xhat-, use
     /// applyVelocity() instead for performance.

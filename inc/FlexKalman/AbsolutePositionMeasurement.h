@@ -43,10 +43,10 @@ namespace flexkalman {
 class AbsolutePositionBase {
   public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    static const types::DimensionType DIMENSION = 3; // 3 position
-    using MeasurementVector = types::Vector<DIMENSION>;
-    using MeasurementDiagonalMatrix = types::DiagonalMatrix<DIMENSION>;
-    using MeasurementMatrix = types::SquareMatrix<DIMENSION>;
+    static const size_t Dimension = 3; // 3 position
+    using MeasurementVector = types::Vector<Dimension>;
+    using MeasurementDiagonalMatrix = types::DiagonalMatrix<Dimension>;
+    using MeasurementMatrix = types::SquareMatrix<Dimension>;
     AbsolutePositionBase(MeasurementVector const &pos,
                          MeasurementVector const &variance)
         : m_pos(pos), m_covariance(variance.asDiagonal()) {}
@@ -87,23 +87,22 @@ class AbsolutePositionMeasurement<pose_externalized_rotation::State>
   public:
     using State = pose_externalized_rotation::State;
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    static const types::DimensionType STATE_DIMENSION =
-        types::Dimension<State>::value;
+    static constexpr size_t StateDimension = getDimension<State>();
     using Base = AbsolutePositionBase;
-    using Jacobian = types::Matrix<DIMENSION, STATE_DIMENSION>;
+    using Jacobian = types::Matrix<Dimension, StateDimension>;
     AbsolutePositionMeasurement(MeasurementVector const &pos,
                                 MeasurementVector const &variance)
         : Base(pos, variance), m_jacobian(Jacobian::Zero()) {
         m_jacobian.block<3, 3>(0, 0) = types::SquareMatrix<3>::Identity();
     }
 
-    types::Matrix<DIMENSION, STATE_DIMENSION> const &
+    types::Matrix<Dimension, StateDimension> const &
     getJacobian(State const &) const {
         return m_jacobian;
     }
 
   private:
-    types::Matrix<DIMENSION, STATE_DIMENSION> m_jacobian;
+    types::Matrix<Dimension, StateDimension> m_jacobian;
 };
 
 } // namespace flexkalman

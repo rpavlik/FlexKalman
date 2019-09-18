@@ -38,10 +38,9 @@ namespace flexkalman {
 template <typename StateType, typename MeasurementType>
 struct CorrectionInProgress {
     /// Dimension of measurement
-    static const types::DimensionType m =
-        types::Dimension<MeasurementType>::value;
+    static constexpr size_t m = getDimension<MeasurementType>();
     /// Dimension of state
-    static const types::DimensionType n = types::Dimension<StateType>::value;
+    static constexpr size_t n = getDimension<StateType>();
 
     CorrectionInProgress(StateType &state, MeasurementType &meas,
                          types::SquareMatrix<n> const &P_,
@@ -133,9 +132,9 @@ beginCorrection(StateType &state, ProcessModelType &processModel,
                 MeasurementType &meas) {
 
     /// Dimension of measurement
-    static const auto m = types::Dimension<MeasurementType>::value;
+    static constexpr auto m = getDimension<MeasurementType>();
     /// Dimension of state
-    static const auto n = types::Dimension<StateType>::value;
+    static constexpr auto n = getDimension<StateType>();
 
     /// Measurement Jacobian
     types::Matrix<m, n> H = meas.getJacobian(state);

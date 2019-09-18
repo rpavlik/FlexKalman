@@ -46,8 +46,8 @@ All the interface stuff below required should be public.
 
 Needs public members:
 
-- `static const types::DimensionType DIMENSION = 12;`
-	-	to indicate dimension, aka *n* - here 12. Used all over. (You can instead publicly derive from `HasDimension<12>` or equivalent, to get a nested `integral_constant` type alias named `Dimension` if you prefer types for your constants.)
+- `static constexpr size_t Dimension = 12;`
+  - to indicate dimension, aka *n* - here 12. Used all over. (You can instead publicly derive from `HasDimension<12>` or equivalent.)
 - `void setStateVector(? state)`
 	- to replace the *n*-dimensional state vector, used by `FlexibleKalmanFilter::correct()`
 - `Vector<n> stateVector() const`
@@ -63,9 +63,9 @@ Needs public members:
 Should *not* contain the filter state - that separate object is kept separately and passed as a parameter as needed. It may contain some state (member variables) of its own if required - typically configuration parameters, etc.
 
 - `using State = YourStateType`
-	- used for convenience and reducing the number of required parameters to `FlexibleKalmanFilter<>`
+  - used for convenience.
 - `void predictState(State & state, double dt)`
-	- Called by `FlexibleKalmanFilter::predict(dt)`, should update the state to the predicted state after an elapsed `dt` seconds. Often uses the convenience free function `predictErrorCovariance`.
+  - Called by `flexkalman::predict(dt)`, should update the state to the predicted state after an elapsed `dt` seconds. Often uses the convenience free function `predictErrorCovariance`. Make this const, if you can.
 - `Matrix<n, n> getStateTransitionMatrix(State const&, double dt) const`
 	- Gets the state transition matrix *A* that represents the process model's effects on the state over the given time interval. You may choose to use this to update the state within `predictState()` (if manual computation is not more efficient). *Optional, but recommended*: **required** if `predictErrorCovariance` is used in `predictState()`
 - `Matrix<n, n> getSampledProcessNoiseCovariance(double dt)`
@@ -77,8 +77,8 @@ Note that there may (and often are) several types of measurements used in a part
 
 Only `FlexibleKalmanFilter::correct()` interacts with Measurement types.
 
-- `static const types::DimensionType DIMENSION = 4;`
-	-	to indicate dimension of your measurement, aka *m* - here 4. (You can instead publicly derive from `HasDimension<12>` or equivalent, to get a nested `integral_constant` type alias named `Dimension` if you prefer types for your constants.)
+- `static constexpr size_t Dimension = 4;`
+  - to indicate dimension of your measurement, aka *m* - here 4. (You can instead publicly derive from `HasDimension<12>` or equivalent.)
 - `Vector<m> getResidual(State const& state) const`
 	- Also known as the "innovation" or delta *z* - this function predicts the measurement expected given the (predicted) state provided, then takes the difference (contextually defined - may be multiplicative) and returns that, typically by value.
 - `Matrix<m,m> getCovariance(State & state) const`

@@ -42,10 +42,9 @@ namespace flexkalman {
 class AngularVelocityBase {
   public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    static const types::DimensionType DIMENSION = 3;
-    using MeasurementVector = types::Vector<DIMENSION>;
-    using MeasurementSquareMatrix = types::SquareMatrix<DIMENSION>;
-    AngularVelocityBase(MeasurementVector const &vel,
+    static constexpr size_t Dimension = 3;
+    using MeasurementVector = types::Vector<Dimension>;
+    using MeasurementSquareMatrix = types::SquareMatrix<Dimension>;
                         MeasurementVector const &variance)
         : m_measurement(vel), m_covariance(variance.asDiagonal()) {}
 
@@ -95,16 +94,14 @@ class AngularVelocityMeasurement<pose_externalized_rotation::State>
   public:
     using State = pose_externalized_rotation::State;
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    static const types::DimensionType STATE_DIMENSION =
-        types::Dimension<State>::value;
-    using Base = AngularVelocityBase;
+    static constexpr size_t StateDimension = getDimension<State>();
 
     AngularVelocityMeasurement(MeasurementVector const &vel,
                                MeasurementVector const &variance)
         : Base(vel, variance) {}
 
-    types::Matrix<DIMENSION, STATE_DIMENSION> getJacobian(State const &) const {
-        using Jacobian = types::Matrix<DIMENSION, STATE_DIMENSION>;
+    types::Matrix<Dimension, StateDimension> getJacobian(State const &) const {
+        using Jacobian = types::Matrix<Dimension, StateDimension>;
         Jacobian ret = Jacobian::Zero();
         ret.topRightCorner<3, 3>() = types::SquareMatrix<3>::Identity();
         return ret;
@@ -120,16 +117,14 @@ class AngularVelocityMeasurement<orient_externalized_rotation::State>
   public:
     using State = orient_externalized_rotation::State;
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    static const types::DimensionType STATE_DIMENSION =
-        types::Dimension<State>::value;
-    using Base = AngularVelocityBase;
+    static constexpr size_t StateDimension = getDimension<State>();
 
     AngularVelocityMeasurement(MeasurementVector const &vel,
                                MeasurementVector const &variance)
         : Base(vel, variance) {}
 
-    types::Matrix<DIMENSION, STATE_DIMENSION> getJacobian(State const &) const {
-        using Jacobian = types::Matrix<DIMENSION, STATE_DIMENSION>;
+    types::Matrix<Dimension, StateDimension> getJacobian(State const &) const {
+        using Jacobian = types::Matrix<Dimension, StateDimension>;
         Jacobian ret = Jacobian::Zero();
         ret.topRightCorner<3, 3>() = types::SquareMatrix<3>::Identity();
         return ret;

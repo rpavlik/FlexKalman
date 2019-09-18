@@ -72,7 +72,7 @@ class OrientationConstantVelocityProcessModel {
     /// so .selfAdjointView<Eigen::Upper>() might provide useful performance
     /// enhancements in some algorithms.
     StateSquareMatrix getSampledProcessNoiseCovariance(double dt) const {
-        auto const dim = types::Dimension<State>::value;
+        constexpr auto dim = getDimension<State>();
         StateSquareMatrix cov = StateSquareMatrix::Zero();
         auto dt3 = (dt * dt * dt) / 3;
         auto dt2 = (dt * dt) / 2;
@@ -103,7 +103,7 @@ class OrientationConstantVelocityProcessModel {
     /// sources
     NoiseAutocorrelation m_mu;
     double getMu(std::size_t index) const {
-        assert(index < types::Dimension<State>::value / 2 &&
+        assert(index < (getDimension<State>() / 2) &&
                "Should only be passing "
                "'i' - the main state, not "
                "the derivative");
