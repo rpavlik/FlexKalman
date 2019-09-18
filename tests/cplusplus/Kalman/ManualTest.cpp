@@ -36,10 +36,11 @@ inline void dumpKalmanDebugOuput(const char name[], const char expr[],
     dumpKalmanDebugOuput(Name, #Value, Value)
 
 // Internal Includes
-#include "ContentsInvalid.h"
 #include "FlexKalman/AbsoluteOrientationMeasurement.h"
 #include "FlexKalman/FlexibleKalmanFilter.h"
 #include "FlexKalman/PoseConstantVelocity.h"
+
+#include "ContentsInvalid.h"
 
 // Library/third-party includes
 // - none

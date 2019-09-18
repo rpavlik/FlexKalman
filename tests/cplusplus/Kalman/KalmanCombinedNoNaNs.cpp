@@ -1,7 +1,11 @@
 /** @file
     @brief Implementation
 
-    @date 2015
+    @date 2015-2019
+
+    @author
+    Ryan Pavlik
+    <ryan.pavlik@collabora.com>
 
     @author
     Sensics, Inc.
@@ -36,11 +40,6 @@ inline void dumpKalmanDebugOuput(const char name[], const char expr[],
 #define FLEXKALMAN_DEBUG_OUTPUT(Name, Value)                                   \
     dumpKalmanDebugOuput(Name, #Value, Value)
 
-// Internal Includes
-#include "FlexKalman/AbsoluteOrientationMeasurement.h"
-#include "FlexKalman/AbsolutePositionMeasurement.h"
-#include "FlexKalman/FlexibleKalmanFilter.h"
-#include "FlexKalman/PoseConstantVelocity.h"
-#include "FlexKalman/PoseDampedConstantVelocity.h"
+#include "../generated/FlexKalman.h"
 
 #include "KalmanNoNaNsInternals.h"
