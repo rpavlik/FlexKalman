@@ -332,7 +332,8 @@ namespace uvbi {
             auto model = flexkalman::makeAugmentedProcessModel(p.processModel,
                                                                beaconProcess);
 
-            auto correction = flexkalman::beginCorrection(state, model, meas);
+            auto correction =
+                flexkalman::beginExtendedCorrection(state, model, meas);
             if (!correction.stateCorrectionFinite) {
                 std::cout << "Non-finite state correction processing beacon "
                           << led.getOneBasedID().value() << std::endl;

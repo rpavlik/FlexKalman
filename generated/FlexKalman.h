@@ -219,8 +219,8 @@ struct CorrectionInProgress {
 template <typename StateType, typename ProcessModelType,
           typename MeasurementType>
 inline CorrectionInProgress<StateType, MeasurementType>
-beginCorrection(StateType &state, ProcessModelType &processModel,
-                MeasurementType &meas) {
+beginExtendedCorrection(StateType &state, ProcessModelType &processModel,
+                        MeasurementType &meas) {
 
     /// Dimension of measurement
     static constexpr auto m = getDimension<MeasurementType>();
@@ -246,6 +246,37 @@ beginCorrection(StateType &state, ProcessModelType &processModel,
     /// More computation is done in initializers/constructor
     return CorrectionInProgress<StateType, MeasurementType>(state, meas, P, PHt,
                                                             S);
+}
+
+/// Correct a Kalman filter's state using a measurement that provides a
+/// Jacobian, in the manner of an Extended Kalman Filter (EKF).
+///
+/// @param cancelIfNotFinite If the state correction or new error covariance
+/// is detected to contain non-finite values, should we cancel the
+/// correction and not apply it?
+///
+/// @return true if correction completed
+template <typename StateType, typename ProcessModelType,
+          typename MeasurementType>
+static inline bool
+correctExtended(StateType &state, ProcessModelType &processModel,
+                MeasurementType &meas, bool cancelIfNotFinite = true) {
+
+    auto inProgress = beginExtendedCorrection(state, processModel, meas);
+    if (cancelIfNotFinite && !inProgress.stateCorrectionFinite) {
+        return false;
+    }
+
+    return inProgress.finishCorrection(cancelIfNotFinite);
+}
+
+/// Delegates to correctExtended, a more explicit name which is preferred.
+template <typename StateType, typename ProcessModelType,
+          typename MeasurementType>
+static inline bool correct(StateType &state, ProcessModelType &processModel,
+                           MeasurementType &meas,
+                           bool cancelIfNotFinite = true) {
+    return correctExtended(state, processModel, meas, cancelIfNotFinite);
 }
 
 
@@ -302,28 +333,6 @@ getPrediction(StateType const &state, ProcessModelType const &processModel,
     }
     stateCopy.postCorrect();
     return stateCopy;
-}
-
-/// Correct a Kalman filter's state using a measurement that provides a
-/// Jacobian, in the manner of an Extended Kalman Filter (EKF).
-///
-/// @param cancelIfNotFinite If the state correction or new error covariance
-/// is detected to contain non-finite values, should we cancel the
-/// correction and not apply it?
-///
-/// @return true if correction completed
-template <typename StateType, typename ProcessModelType,
-          typename MeasurementType>
-static inline bool correct(StateType &state, ProcessModelType &processModel,
-                           MeasurementType &meas,
-                           bool cancelIfNotFinite = true) {
-
-    auto inProgress = beginCorrection(state, processModel, meas);
-    if (cancelIfNotFinite && !inProgress.stateCorrectionFinite) {
-        return false;
-    }
-
-    return inProgress.finishCorrection(cancelIfNotFinite);
 }
 
 namespace util {
@@ -1244,6 +1253,28 @@ beginUnscentedCorrection(
     return SigmaPointCorrectionApplication<State, Measurement>(s, m, params);
 }
 
+/// Correct a Kalman filter's state using a measurement that provides a
+/// two-parameter getResidual function, in the manner of an
+/// Unscented Kalman Filter (UKF).
+///
+/// @param cancelIfNotFinite If the state correction or new error covariance
+/// is detected to contain non-finite values, should we cancel the
+/// correction and not apply it?
+///
+/// @return true if correction completed
+template <typename StateType, typename MeasurementType>
+static inline bool
+correctUnscented(StateType &state, MeasurementType &meas,
+                 bool cancelIfNotFinite = true,
+                 SigmaPointParameters const &params = SigmaPointParameters()) {
+
+    auto inProgress = beginUnscentedCorrection(state, meas, params);
+    if (cancelIfNotFinite && !inProgress.stateCorrectionFinite) {
+        return false;
+    }
+
+    return inProgress.finishCorrection(cancelIfNotFinite);
+}
 
 /// A very simple (3D by default) vector state with no velocity, ideal for
 /// use as a position, with ConstantProcess for beacon autocalibration

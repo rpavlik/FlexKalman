@@ -225,4 +225,26 @@ beginUnscentedCorrection(
     return SigmaPointCorrectionApplication<State, Measurement>(s, m, params);
 }
 
+/// Correct a Kalman filter's state using a measurement that provides a
+/// two-parameter getResidual function, in the manner of an
+/// Unscented Kalman Filter (UKF).
+///
+/// @param cancelIfNotFinite If the state correction or new error covariance
+/// is detected to contain non-finite values, should we cancel the
+/// correction and not apply it?
+///
+/// @return true if correction completed
+template <typename StateType, typename MeasurementType>
+static inline bool
+correctUnscented(StateType &state, MeasurementType &meas,
+                 bool cancelIfNotFinite = true,
+                 SigmaPointParameters const &params = SigmaPointParameters()) {
+
+    auto inProgress = beginUnscentedCorrection(state, meas, params);
+    if (cancelIfNotFinite && !inProgress.stateCorrectionFinite) {
+        return false;
+    }
+
+    return inProgress.finishCorrection(cancelIfNotFinite);
+}
 } // namespace flexkalman

@@ -1,14 +1,19 @@
 /** @file
     @brief Header
 
-    @date 2016
+    @date 2015-2019
+
+    @author
+    Ryan Pavlik
+    <ryan.pavlik@collabora.com>
 
     @author
     Sensics, Inc.
     <http://sensics.com/osvr>
 */
 
-// Copyright 2016 Sensics, Inc.
+// Copyright 2015-2016 Sensics, Inc.
+// Copyright 2019 Collabora, Ltd.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -128,8 +133,8 @@ struct CorrectionInProgress {
 template <typename StateType, typename ProcessModelType,
           typename MeasurementType>
 inline CorrectionInProgress<StateType, MeasurementType>
-beginCorrection(StateType &state, ProcessModelType &processModel,
-                MeasurementType &meas) {
+beginExtendedCorrection(StateType &state, ProcessModelType &processModel,
+                        MeasurementType &meas) {
 
     /// Dimension of measurement
     static constexpr auto m = getDimension<MeasurementType>();
@@ -155,6 +160,37 @@ beginCorrection(StateType &state, ProcessModelType &processModel,
     /// More computation is done in initializers/constructor
     return CorrectionInProgress<StateType, MeasurementType>(state, meas, P, PHt,
                                                             S);
+}
+
+/// Correct a Kalman filter's state using a measurement that provides a
+/// Jacobian, in the manner of an Extended Kalman Filter (EKF).
+///
+/// @param cancelIfNotFinite If the state correction or new error covariance
+/// is detected to contain non-finite values, should we cancel the
+/// correction and not apply it?
+///
+/// @return true if correction completed
+template <typename StateType, typename ProcessModelType,
+          typename MeasurementType>
+static inline bool
+correctExtended(StateType &state, ProcessModelType &processModel,
+                MeasurementType &meas, bool cancelIfNotFinite = true) {
+
+    auto inProgress = beginExtendedCorrection(state, processModel, meas);
+    if (cancelIfNotFinite && !inProgress.stateCorrectionFinite) {
+        return false;
+    }
+
+    return inProgress.finishCorrection(cancelIfNotFinite);
+}
+
+/// Delegates to correctExtended, a more explicit name which is preferred.
+template <typename StateType, typename ProcessModelType,
+          typename MeasurementType>
+static inline bool correct(StateType &state, ProcessModelType &processModel,
+                           MeasurementType &meas,
+                           bool cancelIfNotFinite = true) {
+    return correctExtended(state, processModel, meas, cancelIfNotFinite);
 }
 
 } // namespace flexkalman

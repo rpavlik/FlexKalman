@@ -96,26 +96,4 @@ getPrediction(StateType const &state, ProcessModelType const &processModel,
     return stateCopy;
 }
 
-/// Correct a Kalman filter's state using a measurement that provides a
-/// Jacobian, in the manner of an Extended Kalman Filter (EKF).
-///
-/// @param cancelIfNotFinite If the state correction or new error covariance
-/// is detected to contain non-finite values, should we cancel the
-/// correction and not apply it?
-///
-/// @return true if correction completed
-template <typename StateType, typename ProcessModelType,
-          typename MeasurementType>
-static inline bool correct(StateType &state, ProcessModelType &processModel,
-                           MeasurementType &meas,
-                           bool cancelIfNotFinite = true) {
-
-    auto inProgress = beginCorrection(state, processModel, meas);
-    if (cancelIfNotFinite && !inProgress.stateCorrectionFinite) {
-        return false;
-    }
-
-    return inProgress.finishCorrection(cancelIfNotFinite);
-}
-
 } // namespace flexkalman

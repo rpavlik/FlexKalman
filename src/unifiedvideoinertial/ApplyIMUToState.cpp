@@ -59,7 +59,7 @@ namespace uvbi {
         OrientationMeasurement kalmanMeas{quatInCamSpace, var};
 #if 0
         auto correctionInProgress =
-            flexkalman::beginCorrection(state, processModel, kalmanMeas);
+            flexkalman::beginExtendedCorrection(state, processModel, kalmanMeas);
 #else
         auto correctionInProgress =
             flexkalman::beginUnscentedCorrection(state, kalmanMeas);
