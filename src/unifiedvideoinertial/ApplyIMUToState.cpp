@@ -121,7 +121,7 @@ namespace uvbi {
         // angVel = (getRotationMatrixToCameraSpace(sys) * angVel).eval();
         /// @todo transform variance?
 
-        flexkalman::AngularVelocityMeasurement<BodyState> kalmanMeas{angVel, var};
+        flexkalman::AngularVelocityEKFMeasurement<BodyState> kalmanMeas{angVel, var};
         flexkalman::correct(state, processModel, kalmanMeas);
 #else
         flexkalman::IMUAngVelMeasurement kalmanMeas{angVel, var};
