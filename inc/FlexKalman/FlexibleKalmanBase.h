@@ -1,7 +1,11 @@
 /** @file
     @brief Header
 
-    @date 2015
+    @date 2015-2019
+
+    @author
+    Ryan Pavlik
+    <ryan.pavlik@collabora.com>
 
     @author
     Sensics, Inc.

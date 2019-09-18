@@ -1,7 +1,11 @@
 /** @file
     @brief Header
 
-    @date 2015
+    @date 2015-2019
+
+    @author
+    Ryan Pavlik
+    <ryan.pavlik@collabora.com>
 
     @author
     Sensics, Inc.
@@ -9,6 +13,7 @@
 */
 
 // Copyright 2015 Sensics, Inc.
+// Copyright 2019 Collabora, Ltd.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -63,9 +68,8 @@ class OrientationConstantVelocityProcessModel {
         orient_externalized_rotation::applyVelocity(s, dt);
     }
     void predictState(State &s, double dt) {
-        auto xHatMinus = computeEstimate(s, dt);
+        predictStateOnly(s, dt);
         auto Pminus = predictErrorCovariance(s, *this, dt);
-        s.setStateVector(xHatMinus);
         s.setErrorCovariance(Pminus);
     }
 
@@ -91,15 +95,6 @@ class OrientationConstantVelocityProcessModel {
             cov(xDotIndex, xDotIndex) = mu * dt;
         }
         return cov;
-    }
-
-    /// Returns a 6-element vector containing a predicted state based on a
-    /// constant velocity process model.
-    StateVector computeEstimate(State &state, double dt) const {
-        FLEXKALMAN_DEBUG_OUTPUT("Time change", dt);
-        StateVector ret = orient_externalized_rotation::applyVelocity(
-            state.stateVector(), dt);
-        return ret;
     }
 
   private:

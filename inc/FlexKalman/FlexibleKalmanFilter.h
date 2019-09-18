@@ -1,7 +1,11 @@
 /** @file
     @brief Header
 
-    @date 2015
+    @date 2015-2019
+
+    @author
+    Ryan Pavlik
+    <ryan.pavlik@collabora.com>
 
     @author
     Sensics, Inc.
@@ -9,6 +13,7 @@
 */
 
 // Copyright 2015 Sensics, Inc.
+// Copyright 2019 Collabora, Ltd.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.

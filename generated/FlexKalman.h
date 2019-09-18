@@ -1825,24 +1825,6 @@ namespace orient_externalized_rotation {
 
     using StateSquareMatrix = types::SquareMatrix<Dimension>;
 
-    /// @name Accessors to blocks in the state vector.
-    /// @{
-    inline StateVectorBlock3 incrementalOrientation(StateVector &vec) {
-        return vec.head<3>();
-    }
-    inline ConstStateVectorBlock3
-    incrementalOrientation(StateVector const &vec) {
-        return vec.head<3>();
-    }
-
-    inline StateVectorBlock3 angularVelocity(StateVector &vec) {
-        return vec.tail<3>();
-    }
-    inline ConstStateVectorBlock3 angularVelocity(StateVector const &vec) {
-        return vec.tail<3>();
-    }
-    /// @}
-
     /// This returns A(deltaT), though if you're just predicting xhat-, use
     /// applyVelocity() instead for performance.
     inline StateSquareMatrix stateTransitionMatrix(double dt) {
@@ -1860,29 +1842,6 @@ namespace orient_externalized_rotation {
         A.bottomRightCorner<3, 3>() *= attenuation;
         return A;
     }
-    /// Computes A(deltaT)xhat(t-deltaT)
-    inline StateVector applyVelocity(StateVector const &state, double dt) {
-        // eq. 4.5 in Welch 1996
-
-        /// @todo benchmark - assuming for now that the manual small
-        /// calcuations are faster than the matrix ones.
-
-        StateVector ret = state;
-        incrementalOrientation(ret) += angularVelocity(state) * dt;
-        return ret;
-    }
-
-    inline void dampenVelocities(StateVector &state, double damping,
-                                 double dt) {
-        auto attenuation = std::pow(damping, dt);
-        angularVelocity(state) *= attenuation;
-    }
-
-    inline Eigen::Quaterniond
-    incrementalOrientationToQuat(StateVector const &state) {
-        return external_quat::vecToQuat(incrementalOrientation(state));
-    }
-
     class State : public HasDimension<6> {
       public:
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
@@ -1916,17 +1875,21 @@ namespace orient_externalized_rotation {
 
         void externalizeRotation() {
             m_orientation = getCombinedQuaternion();
-            incrementalOrientation(m_state) = Eigen::Vector3d::Zero();
+            incrementalOrientation() = Eigen::Vector3d::Zero();
         }
 
         void normalizeQuaternion() { m_orientation.normalize(); }
 
-        StateVectorBlock3 angularVelocity() {
-            return orient_externalized_rotation::angularVelocity(m_state);
+        StateVectorBlock3 incrementalOrientation() { return m_state.head<3>(); }
+
+        ConstStateVectorBlock3 incrementalOrientation() const {
+            return m_state.head<3>();
         }
 
+        StateVectorBlock3 angularVelocity() { return m_state.tail<3>(); }
+
         ConstStateVectorBlock3 angularVelocity() const {
-            return orient_externalized_rotation::angularVelocity(m_state);
+            return m_state.tail<3>();
         }
 
         Eigen::Quaterniond const &getQuaternion() const {
@@ -1934,9 +1897,9 @@ namespace orient_externalized_rotation {
         }
 
         Eigen::Quaterniond getCombinedQuaternion() const {
-            /// @todo is just quat multiplication OK here? Order right?
-            return (incrementalOrientationToQuat(m_state) * m_orientation)
-                .normalized();
+            // divide by 2 since we're integrating it essentially.
+            return util::quat_exp(incrementalOrientation() / 2.) *
+                   m_orientation;
         }
 
       private:
@@ -1960,6 +1923,22 @@ namespace orient_externalized_rotation {
         os << "error:\n" << state.errorCovariance() << "\n";
         return os;
     }
+
+    /// Computes A(deltaT)xhat(t-deltaT)
+    inline void applyVelocity(State &state, double dt) {
+        // eq. 4.5 in Welch 1996
+
+        /// @todo benchmark - assuming for now that the manual small
+        /// calcuations are faster than the matrix ones.
+
+        state.incrementalOrientation() += state.angularVelocity() * dt;
+    }
+
+    inline void dampenVelocities(State &state, double damping, double dt) {
+        auto attenuation = std::pow(damping, dt);
+        state.angularVelocity() *= attenuation;
+    }
+
 } // namespace orient_externalized_rotation
 
 
@@ -1991,9 +1970,8 @@ class OrientationConstantVelocityProcessModel {
         orient_externalized_rotation::applyVelocity(s, dt);
     }
     void predictState(State &s, double dt) {
-        auto xHatMinus = computeEstimate(s, dt);
+        predictStateOnly(s, dt);
         auto Pminus = predictErrorCovariance(s, *this, dt);
-        s.setStateVector(xHatMinus);
         s.setErrorCovariance(Pminus);
     }
 
@@ -2019,15 +1997,6 @@ class OrientationConstantVelocityProcessModel {
             cov(xDotIndex, xDotIndex) = mu * dt;
         }
         return cov;
-    }
-
-    /// Returns a 6-element vector containing a predicted state based on a
-    /// constant velocity process model.
-    StateVector computeEstimate(State &state, double dt) const {
-        FLEXKALMAN_DEBUG_OUTPUT("Time change", dt);
-        StateVector ret = orient_externalized_rotation::applyVelocity(
-            state.stateVector(), dt);
-        return ret;
     }
 
   private:
