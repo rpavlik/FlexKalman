@@ -1,5 +1,6 @@
 /** @file
-    @brief Header including all of the FlexKalman flexible Kalman filter framework headers
+    @brief Header including all of the FlexKalman flexible Kalman filter
+   framework headers
 
     @date 2015-2019
 
@@ -45,8 +46,9 @@ namespace flexkalman {
 
 } // namespace flexkalman
 
-// Full-include list simply generated as follows. (The header combiner does the topological sort.)
-// $ ls *.h | grep -v FlexibleKalmanMeta.h | sort | sed -e 's/^/#include "/' -e 's/$/"/'
+// Full-include list simply generated as follows. (The header combiner does the
+// topological sort.) $ ls *.h | grep -v FlexibleKalmanMeta.h | sort | sed -e
+// 's/^/#include "/' -e 's/$/"/'
 
 #include "AbsoluteOrientationMeasurement.h"
 #include "AbsolutePositionMeasurement.h"
@@ -66,7 +68,7 @@ namespace flexkalman {
 #include "PoseConstantVelocity.h"
 #include "PoseDampedConstantVelocity.h"
 #include "PoseSeparatelyDampedConstantVelocity.h"
-#include "PoseStateExponentialMap.h"
 #include "PoseState.h"
+#include "PoseStateExponentialMap.h"
 #include "PureVectorState.h"
 #include "SigmaPointGenerator.h"

@@ -1,5 +1,6 @@
 /** @file
-    @brief Generated single-file header containing all of the FlexKalman flexible Kalman filter framework headers
+    @brief Generated single-file header containing all of the FlexKalman flexible Kalman filter
+   framework headers
 
 
     NOTE: This is a generated single-file version of FlexKalman - do not edit directly!
