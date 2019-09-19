@@ -254,7 +254,7 @@ namespace uvbi {
                 flexkalman::makeAugmentedState(p.state, *(p.beacons[index]));
             meas.updateFromState(state);
 
-            /// Investigate measurement variance here (difference in measurement
+            /// Investigate measurement residual here (difference in measurement
             /// space from expected measurement based on the model) to decide if
             ///
             /// - it's a reasonable measurement
