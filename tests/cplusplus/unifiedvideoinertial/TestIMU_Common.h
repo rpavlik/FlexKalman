@@ -165,7 +165,7 @@ inline void smallPositiveYChecks(TestData *data, MeasurementType &kalmanMeas) {
         AND_THEN("the jacobian should not be zero") {
             REQUIRE_FALSE(jacobian.isZero());
         }
-        auto inProgress = flexkalman::beginCorrection(
+        auto inProgress = flexkalman::beginExtendedCorrection(
             data->state, data->processModel, kalmanMeas);
         commonSmallPositiveYChecks(data, kalmanMeas, inProgress);
     }

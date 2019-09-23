@@ -1,7 +1,11 @@
 /** @file
     @brief Header
 
-    @date 2015
+    @date 2015-2019
+
+    @author
+    Ryan Pavlik
+    <ryan.pavlik@collabora.com>
 
     @author
     Sensics, Inc.
@@ -9,6 +13,7 @@
 */
 
 // Copyright 2015 Sensics, Inc.
+// Copyright 2019 Collabora, Ltd.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -36,8 +41,18 @@
 
 namespace flexkalman {
 
+/*!
+ * Advance time in the filter, by applying the process model to the state with
+ * the given dt.
+ *
+ * Usually followed by correct() or beginUnscentedCorrection() and its
+ * continuation. If you aren't correcting immediately, make sure to run
+ * `state.postCorrect()` to clean up. Otherwise, consider calling
+ * getPrediction() instead.
+ */
 template <typename StateType, typename ProcessModelType>
-void predict(StateType &state, ProcessModelType &processModel, double dt) {
+static inline void predict(StateType &state, ProcessModelType &processModel,
+                           double dt) {
     processModel.predictState(state, dt);
     FLEXKALMAN_DEBUG_OUTPUT("Predicted state", state.stateVector().transpose());
 
@@ -45,73 +60,40 @@ void predict(StateType &state, ProcessModelType &processModel, double dt) {
                             state.errorCovariance());
 }
 
-/// @param cancelIfNotFinite If the state correction or new error covariance
-/// is detected to contain non-finite values, should we cancel the
-/// correction and not apply it?
-///
-/// @return true if correction completed
-template <typename StateType, typename ProcessModelType,
-          typename MeasurementType>
-inline bool correct(StateType &state, ProcessModelType &processModel,
-                    MeasurementType &meas, bool cancelIfNotFinite = true) {
-
-    auto inProgress = beginCorrection(state, processModel, meas);
-    if (cancelIfNotFinite && !inProgress.stateCorrectionFinite) {
-        return false;
-    }
-
-    return inProgress.finishCorrection(cancelIfNotFinite);
+/*!
+ * Performs prediction of the state only (not the error covariance), as well as
+ * post-correction. Unsuitable for continued correction for this reason, but
+ * usable to get a look at a predicted value.
+ *
+ * Requires that your process model provide `processModel.predictStateOnly()`
+ */
+template <typename StateType, typename ProcessModelType>
+static inline void
+predictAndPostCorrectStateOnly(StateType &state, ProcessModelType &processModel,
+                               double dt) {
+    processModel.predictStateOnly(state, dt);
+    state.postCorrect();
+    FLEXKALMAN_DEBUG_OUTPUT("Predicted state", state.stateVector().transpose());
 }
 
-/// The main class implementing the common components of the Kalman family
-/// of filters. Holds an instance of the state as well as an instance of the
-/// process model.
-template <typename ProcessModelType,
-          typename StateType = typename ProcessModelType::State>
-class FlexibleKalmanFilter {
-  public:
-    using State = StateType;
-    using ProcessModel = ProcessModelType;
-    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    /// Default initialization - depends on default-initializable process
-    /// model and state.
-    FlexibleKalmanFilter() : m_processModel(), m_state() {}
-
-    /// Copy initialization from just state - depends on
-    /// default-initializable process model.
-    explicit FlexibleKalmanFilter(State const &state)
-        : m_processModel(), m_state(state) {}
-
-    /// Move initialization from just state - depends on
-    /// default-initializable process model.
-    explicit FlexibleKalmanFilter(State &&state)
-        : m_processModel(), m_state(state) {}
-
-    /// copy initialization
-    FlexibleKalmanFilter(ProcessModel const &processModel, State const &state)
-        : m_processModel(processModel), m_state(state) {}
-
-    /// move initialization.
-    FlexibleKalmanFilter(ProcessModel &&processModel, State &&state)
-        : m_processModel(processModel), m_state(state) {}
-
-    void predict(double dt) {
-        flexkalman::predict(state(), processModel(), dt);
+/*!
+ * Performs prediction on a copy of the state, as well as
+ * post-correction. By default, also skips prediction of error covariance.
+ *
+ * Requires that your process model provide `processModel.predictStateOnly()`
+ */
+template <typename StateType, typename ProcessModelType>
+static inline StateType
+getPrediction(StateType const &state, ProcessModelType const &processModel,
+              double dt, bool predictCovariance = false) {
+    StateType stateCopy{state};
+    if (predictCovariance) {
+        processModel.predictState(stateCopy, dt);
+    } else {
+        processModel.predictStateOnly(stateCopy, dt);
     }
-
-    template <typename MeasurementType> void correct(MeasurementType &meas) {
-        flexkalman::correct(state(), processModel(), meas);
-    }
-
-    ProcessModel &processModel() { return m_processModel; }
-    ProcessModel const &processModel() const { return m_processModel; }
-
-    State &state() { return m_state; }
-    State const &state() const { return m_state; }
-
-  private:
-    ProcessModel m_processModel;
-    State m_state;
-};
+    stateCopy.postCorrect();
+    return stateCopy;
+}
 
 } // namespace flexkalman

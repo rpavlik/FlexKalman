@@ -1,7 +1,11 @@
 /** @file
     @brief Header
 
-    @date 2015
+    @date 2015-2019
+
+    @author
+    Ryan Pavlik
+    <ryan.pavlik@collabora.com>
 
     @author
     Sensics, Inc.
@@ -9,6 +13,7 @@
 */
 
 // Copyright 2015 Sensics, Inc.
+// Copyright 2019 Collabora, Ltd.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -75,10 +80,15 @@ class PoseDampedConstantVelocityProcessModel {
             stateTransitionMatrixWithVelocityDamping(dt, m_damp);
     }
 
-    void predictState(State &s, double dt) {
-        auto xHatMinus = computeEstimate(s, dt);
+    void predictStateOnly(State &s, double dt) const {
+        m_constantVelModel.predictStateOnly(s, dt);
+        // Dampen velocities
+        pose_externalized_rotation::dampenVelocities(s, m_damp, dt);
+    }
+
+    void predictState(State &s, double dt) const {
+        predictStateOnly(s, dt);
         auto Pminus = predictErrorCovariance(s, *this, dt);
-        s.setStateVector(xHatMinus);
         s.setErrorCovariance(Pminus);
     }
 
@@ -88,15 +98,6 @@ class PoseDampedConstantVelocityProcessModel {
     /// might provide useful performance enhancements.
     StateSquareMatrix getSampledProcessNoiseCovariance(double dt) const {
         return m_constantVelModel.getSampledProcessNoiseCovariance(dt);
-    }
-
-    /// Returns a 12-element vector containing a predicted state based on a
-    /// constant velocity process model.
-    StateVector computeEstimate(State &state, double dt) const {
-        StateVector ret = m_constantVelModel.computeEstimate(state, dt);
-        // Dampen velocities
-        pose_externalized_rotation::dampenVelocities(ret, m_damp, dt);
-        return ret;
     }
 
   private:

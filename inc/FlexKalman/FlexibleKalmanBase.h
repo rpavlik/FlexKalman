@@ -1,7 +1,11 @@
 /** @file
     @brief Header
 
-    @date 2015
+    @date 2015-2019
+
+    @author
+    Ryan Pavlik
+    <ryan.pavlik@collabora.com>
 
     @author
     Sensics, Inc.
@@ -45,46 +49,19 @@ namespace flexkalman {
 namespace types {
     /// Common scalar type
     using Scalar = double;
-
-    /// Type for dimensions
-    using DimensionType = std::size_t;
-
-    /// Type constant for dimensions
-    template <DimensionType n>
-    using DimensionConstant = std::integral_constant<DimensionType, n>;
-
-    struct HasDimensionBase {};
 } // namespace types
 
 /// Convenience base class for things (like states and measurements) that
 /// have a dimension.
-template <types::DimensionType DIM>
-struct HasDimension : types::HasDimensionBase {
-    using Dimension = types::DimensionConstant<DIM>;
+template <size_t DIM> struct HasDimension {
+    static constexpr size_t Dimension = DIM;
 };
 
-namespace types {
-    namespace detail {
-        template <typename T, typename = void> struct Dimension_impl {
-            using type = DimensionConstant<T::DIMENSION>;
-        };
-        // explicit specialization
-        template <DimensionType n>
-        struct Dimension_impl<DimensionConstant<n>, void> {
-            using type = DimensionConstant<n>;
-        };
-        // explicit specialization
-        template <typename T>
-        struct Dimension_impl<T, typename std::enable_if<std::is_base_of<
-                                     HasDimensionBase, T>::value>::type> {
-            using type = typename T::Dimension;
-        };
-    } // namespace detail
-    /// Given a state or measurement, get the dimension as a
-    /// std::integral_constant
-    template <typename T>
-    using Dimension = typename detail::Dimension_impl<T>::type;
+template <typename T> static constexpr size_t getDimension() {
+    return T::Dimension;
+}
 
+namespace types {
     /// Given a filter type, get the state type.
     template <typename FilterType> using StateType = typename FilterType::State;
 
@@ -93,33 +70,30 @@ namespace types {
     using ProcessModelType = typename FilterType::ProcessModel;
 
     /// A vector of length n
-    template <DimensionType n> using Vector = Eigen::Matrix<Scalar, n, 1>;
+    template <size_t n> using Vector = Eigen::Matrix<Scalar, n, 1>;
 
     /// A vector of length = dimension of T
-    template <typename T> using DimVector = Vector<Dimension<T>::value>;
+    template <typename T> using DimVector = Vector<T::Dimension>;
 
     /// A square matrix, n x n
-    template <DimensionType n> using SquareMatrix = Eigen::Matrix<Scalar, n, n>;
+    template <size_t n> using SquareMatrix = Eigen::Matrix<Scalar, n, n>;
 
     /// A square matrix, n x n, where n is the dimension of T
-    template <typename T>
-    using DimSquareMatrix = SquareMatrix<Dimension<T>::value>;
+    template <typename T> using DimSquareMatrix = SquareMatrix<T::Dimension>;
 
     /// A square diagonal matrix, n x n
-    template <DimensionType n>
-    using DiagonalMatrix = Eigen::DiagonalMatrix<Scalar, n>;
+    template <size_t n> using DiagonalMatrix = Eigen::DiagonalMatrix<Scalar, n>;
 
     /// A square diagonal matrix, n x n, where n is the dimension of T
     template <typename T>
-    using DimDiagonalMatrix = DiagonalMatrix<Dimension<T>::value>;
+    using DimDiagonalMatrix = DiagonalMatrix<T::Dimension>;
 
     /// A matrix with rows = m,  cols = n
-    template <DimensionType m, DimensionType n>
-    using Matrix = Eigen::Matrix<Scalar, m, n>;
+    template <size_t m, size_t n> using Matrix = Eigen::Matrix<Scalar, m, n>;
 
     /// A matrix with rows = dimension of T, cols = dimension of U
     template <typename T, typename U>
-    using DimMatrix = Matrix<Dimension<T>::value, Dimension<U>::value>;
+    using DimMatrix = Matrix<T::Dimension, U::Dimension>;
 
 } // namespace types
 

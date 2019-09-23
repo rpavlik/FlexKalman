@@ -64,8 +64,9 @@ TEMPLATE_TEST_CASE("identity calibration output", "[.][ekf]",
                     AND_THEN("the jacobian should not be zero") {
                         REQUIRE_FALSE(jacobian.isApproxToConstant(0));
                     }
-                    auto correctionInProgress = flexkalman::beginCorrection(
-                        data->state, data->processModel, kalmanMeas);
+                    auto correctionInProgress =
+                        flexkalman::beginExtendedCorrection(
+                            data->state, data->processModel, kalmanMeas);
                     AND_THEN("computed deltaz should be zero") {
                         CAPTURE(correctionInProgress.deltaz.transpose());
                         REQUIRE(

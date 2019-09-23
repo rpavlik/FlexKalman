@@ -51,12 +51,13 @@ namespace uvbi {
     /// tracker.
     class ImagePointMeasurement {
       public:
-        static const flexkalman::types::DimensionType DIMENSION = 2;
-        using Vector = flexkalman::types::Vector<DIMENSION>;
-        using SquareMatrix = flexkalman::types::SquareMatrix<DIMENSION>;
+        static const size_t Dimension = 2;
+        using Vector = flexkalman::types::Vector<Dimension>;
+        using SquareMatrix = flexkalman::types::SquareMatrix<Dimension>;
         using State = AugmentedStateWithBeacon;
-        using Jacobian = flexkalman::types::Matrix<
-            DIMENSION, flexkalman::types::Dimension<State>::value>;
+        using Jacobian =
+            flexkalman::types::Matrix<Dimension,
+                                      flexkalman::getDimension<State>()>;
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
         explicit ImagePointMeasurement(CameraModel const &cam,
                                        Eigen::Vector3d const &targetFromBody)

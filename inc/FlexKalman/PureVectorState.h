@@ -36,16 +36,16 @@ namespace flexkalman {
 
 /// A very simple (3D by default) vector state with no velocity, ideal for
 /// use as a position, with ConstantProcess for beacon autocalibration
-template <types::DimensionType Dim = 3> class PureVectorState {
+template <size_t Dim = 3> class PureVectorState {
   public:
-    static const types::DimensionType DIMENSION = Dim;
-    using SquareMatrix = types::SquareMatrix<DIMENSION>;
-    using StateVector = types::Vector<DIMENSION>;
+    static const size_t Dimension = Dim;
+    using SquareMatrix = types::SquareMatrix<Dimension>;
+    using StateVector = types::Vector<Dimension>;
 
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     PureVectorState(double x, double y, double z)
         : m_state(x, y, z), m_errorCovariance(SquareMatrix::Zero()) {
-        static_assert(DIMENSION == 3, "This constructor, which takes 3 "
+        static_assert(Dimension == 3, "This constructor, which takes 3 "
                                       "scalars, only works with a 3D "
                                       "vector!");
     }
@@ -53,7 +53,7 @@ template <types::DimensionType Dim = 3> class PureVectorState {
     PureVectorState(double x, double y, double z,
                     SquareMatrix const &covariance)
         : m_state(x, y, z), m_errorCovariance(covariance) {
-        static_assert(DIMENSION == 3, "This constructor, which takes 3 "
+        static_assert(Dimension == 3, "This constructor, which takes 3 "
                                       "scalars, only works with a 3D "
                                       "vector!");
     }

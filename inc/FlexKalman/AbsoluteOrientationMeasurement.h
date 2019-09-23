@@ -44,9 +44,9 @@ namespace flexkalman {
 class AbsoluteOrientationBase {
   public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    static const types::DimensionType DIMENSION = 3;
-    using MeasurementVector = types::Vector<DIMENSION>;
-    using MeasurementSquareMatrix = types::SquareMatrix<DIMENSION>;
+    static constexpr size_t Dimension = 3;
+    using MeasurementVector = types::Vector<Dimension>;
+    using MeasurementSquareMatrix = types::SquareMatrix<Dimension>;
     AbsoluteOrientationBase(Eigen::Quaterniond const &quat,
                             types::Vector<3> const &emVariance)
         : m_quat(quat), m_covariance(emVariance.asDiagonal()) {}
@@ -81,7 +81,7 @@ class AbsoluteOrientationBase {
 
     /// Get the block of jacobian that is non-zero: your subclass will have
     /// to put it where it belongs for each particular state type.
-    types::Matrix<DIMENSION, 3> getJacobianBlock() const {
+    types::Matrix<Dimension, 3> getJacobianBlock() const {
         return Eigen::Matrix3d::Identity();
     }
 
@@ -101,20 +101,18 @@ class AbsoluteOrientationMeasurement<pose_externalized_rotation::State>
   public:
     using State = pose_externalized_rotation::State;
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    static const types::DimensionType STATE_DIMENSION =
-        types::Dimension<State>::value;
+    static constexpr size_t StateDimension = getDimension<State>();
     using Base = AbsoluteOrientationBase;
 
     AbsoluteOrientationMeasurement(Eigen::Quaterniond const &quat,
                                    types::Vector<3> const &eulerVariance)
         : Base(quat, eulerVariance) {}
 
-    types::Matrix<DIMENSION, STATE_DIMENSION>
-    getJacobian(State const &s) const {
+    types::Matrix<Dimension, StateDimension> getJacobian(State const &s) const {
         using namespace pose_externalized_rotation;
-        using Jacobian = types::Matrix<DIMENSION, STATE_DIMENSION>;
+        using Jacobian = types::Matrix<Dimension, StateDimension>;
         Jacobian ret = Jacobian::Zero();
-        ret.block<DIMENSION, 3>(0, 3) = Base::getJacobianBlock();
+        ret.block<Dimension, 3>(0, 3) = Base::getJacobianBlock();
         return ret;
     }
 };

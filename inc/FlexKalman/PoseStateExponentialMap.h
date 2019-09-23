@@ -42,14 +42,14 @@ namespace flexkalman {
 
 namespace pose_exp_map {
 
-    using Dimension = types::DimensionConstant<12>;
-    using StateVector = types::DimVector<Dimension>;
+    constexpr size_t Dimension = 12;
+    using StateVector = types::Vector<Dimension>;
     using StateVectorBlock3 = StateVector::FixedSegmentReturnType<3>::Type;
     using ConstStateVectorBlock3 =
         StateVector::ConstFixedSegmentReturnType<3>::Type;
 
     using StateVectorBlock6 = StateVector::FixedSegmentReturnType<6>::Type;
-    using StateSquareMatrix = types::DimSquareMatrix<Dimension>;
+    using StateSquareMatrix = types::SquareMatrix<Dimension>;
 
     /// @name Accessors to blocks in the state vector.
     /// @{

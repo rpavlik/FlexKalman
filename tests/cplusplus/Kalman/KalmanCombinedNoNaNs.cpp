@@ -1,7 +1,11 @@
 /** @file
     @brief Implementation
 
-    @date 2015
+    @date 2015-2019
+
+    @author
+    Ryan Pavlik
+    <ryan.pavlik@collabora.com>
 
     @author
     Sensics, Inc.
@@ -23,25 +27,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Internal Includes
-#include "FlexKalman/FlexibleKalmanFilter.h"
-#include "FlexKalman/PoseConstantVelocity.h"
-
-// Library/third-party includes
-#include <catch2/catch.hpp>
-
-// Standard includes
+#include <Eigen/Core>
+#include <Eigen/Geometry>
 #include <iostream>
-
-using ProcessModel = flexkalman::PoseConstantVelocityProcessModel;
-using State = ProcessModel::State;
-using Filter = flexkalman::FlexibleKalmanFilter<ProcessModel>;
-
-TEST_CASE("KalmanFilterConstruction") {
-    SECTION("default construction") { REQUIRE_NOTHROW(Filter{}); }
-    SECTION("move state construction") { REQUIRE_NOTHROW(Filter{State{}}); }
-
-    SECTION("move state+process construction") {
-        REQUIRE_NOTHROW(Filter(ProcessModel{}, State{}));
-    }
+template <typename T>
+inline void dumpKalmanDebugOuput(const char name[], const char expr[],
+                                 T const &value) {
+    std::cout << "\n(Kalman Debug Output) " << name << " [" << expr << "]:\n"
+              << value << std::endl;
 }
+
+#define FLEXKALMAN_DEBUG_OUTPUT(Name, Value)                                   \
+    dumpKalmanDebugOuput(Name, #Value, Value)
+
+#include "../generated/FlexKalman.h"
+
+#include "KalmanNoNaNsInternals.h"

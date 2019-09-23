@@ -12,15 +12,15 @@ This is a C++ template-based header library for building Kalman-style filters, u
 
 -----
 
-| Variable | Rows | Cols | Meaning                      |
-|----------|------|------|------------------------------|
-| x        | n    | 1    | **State**                    |
-| P        | n    | n    | State error covariance       |
-| Q(dt)    | n    | n    | Process model noise covariance|
-| z        | m    | 1    | **Measurement**              |
-| H        | m    | n    | Measurement Jacobian         |
-| R        | m    | m    | Measurement error covariance |
-| K        | n    | m    | Kalman gain                  |
+| Variable | Rows | Cols | Meaning                        |
+| -------- | ---- | ---- | ------------------------------ |
+| x        | n    | 1    | **State**                      |
+| P        | n    | n    | State error covariance         |
+| Q(dt)    | n    | n    | Process model noise covariance |
+| z        | m    | 1    | **Measurement**                |
+| H        | m    | n    | Measurement Jacobian           |
+| R        | m    | m    | Measurement error covariance   |
+| K        | n    | m    | Kalman gain                    |
 
 ## Interfaces and Requirements
 
@@ -46,16 +46,16 @@ All the interface stuff below required should be public.
 
 Needs public members:
 
-- `static const types::DimensionType DIMENSION = 12;`
-	-	to indicate dimension, aka *n* - here 12. Used all over. (You can instead publicly derive from `HasDimension<12>` or equivalent, to get a nested `integral_constant` type alias named `Dimension` if you prefer types for your constants.)
+- `static constexpr size_t Dimension = 12;`
+  - to indicate dimension, aka *n* - here 12. Used all over. (You can instead publicly derive from `HasDimension<12>` or equivalent.)
 - `void setStateVector(? state)`
-	- to replace the *n*-dimensional state vector, used by `FlexibleKalmanFilter::correct()`
+  - to replace the *n*-dimensional state vector, used by `FlexibleKalmanFilter::correct()`
 - `Vector<n> stateVector() const`
-	- to retrieve the *n*-dimensional state vector: should be `const` and will probably return a `const &` (but if you have a good reason, by value is OK too). Used by `FlexibleKalmanFilter::correct()` and likely many other places.
+  - to retrieve the *n*-dimensional state vector: should be `const` and will probably return a `const &` (but if you have a good reason, by value is OK too). Used by `FlexibleKalmanFilter::correct()` and likely many other places.
 - `void setErrorCovariance(? errorCovariance)`
-	- to replace the *n x n* state error covariance matrix *P*, used by `FlexibleKalmanFilter::correct()`
+  - to replace the *n x n* state error covariance matrix *P*, used by `FlexibleKalmanFilter::correct()`
 - `Matrix<n,n> errorCovariance() const`
-	- to retrieve the *n x n* state error covariance matrix: should be `const` and will probably return a `const &` (but if you have a good reason, by value is OK too). Used by `FlexibleKalmanFilter::correct()`
+  - to retrieve the *n x n* state error covariance matrix: should be `const` and will probably return a `const &` (but if you have a good reason, by value is OK too). Used by `FlexibleKalmanFilter::correct()`
 - `void postCorrect()` - called at the end of `FlexibleKalmanFilter::correct()` in case your state needs some kind of adjustment at the end. (This is where the "external quaternion" gets updated, for instance.) If you don't need to do anything, just make this do nothing.
 
 ### Process Model
@@ -63,13 +63,13 @@ Needs public members:
 Should *not* contain the filter state - that separate object is kept separately and passed as a parameter as needed. It may contain some state (member variables) of its own if required - typically configuration parameters, etc.
 
 - `using State = YourStateType`
-	- used for convenience and reducing the number of required parameters to `FlexibleKalmanFilter<>`
+  - used for convenience and reducing the number of required parameters to `FlexibleKalmanFilter<>`
 - `void predictState(State & state, double dt)`
-	- Called by `FlexibleKalmanFilter::predict(dt)`, should update the state to the predicted state after an elapsed `dt` seconds. Often uses the convenience free function `predictErrorCovariance`.
+  - Called by `FlexibleKalmanFilter::predict(dt)`, should update the state to the predicted state after an elapsed `dt` seconds. Often uses the convenience free function `predictErrorCovariance`. Make this const, if you can.
 - `Matrix<n, n> getStateTransitionMatrix(State const&, double dt) const`
-	- Gets the state transition matrix *A* that represents the process model's effects on the state over the given time interval. You may choose to use this to update the state within `predictState()` (if manual computation is not more efficient). *Optional, but recommended*: **required** if `predictErrorCovariance` is used in `predictState()`
+  - Gets the state transition matrix *A* that represents the process model's effects on the state over the given time interval. You may choose to use this to update the state within `predictState()` (if manual computation is not more efficient). *Optional, but recommended*: **required** if `predictErrorCovariance` is used in `predictState()`
 - `Matrix<n, n> getSampledProcessNoiseCovariance(double dt)`
-	- Gets the matrix *Q* that represents the local effect of your process on state noise. *Optional, but recommended*: **required** if `predictErrorCovariance` is used in `predictState()`
+  - Gets the matrix *Q* that represents the local effect of your process on state noise. *Optional, but recommended*: **required** if `predictErrorCovariance` is used in `predictState()`
 
 ### Measurement
 
@@ -77,14 +77,21 @@ Note that there may (and often are) several types of measurements used in a part
 
 Only `FlexibleKalmanFilter::correct()` interacts with Measurement types.
 
-- `static const types::DimensionType DIMENSION = 4;`
-	-	to indicate dimension of your measurement, aka *m* - here 4. (You can instead publicly derive from `HasDimension<12>` or equivalent, to get a nested `integral_constant` type alias named `Dimension` if you prefer types for your constants.)
+- `static constexpr size_t Dimension = 4;`
+  - to indicate dimension of your measurement, aka *m* - here 4. (You can instead publicly derive from `HasDimension<12>` or equivalent.)
 - `Vector<m> getResidual(State const& state) const`
-	- Also known as the "innovation" or delta *z* - this function predicts the measurement expected given the (predicted) state provided, then takes the difference (contextually defined - may be multiplicative) and returns that, typically by value.
+  - Also known as the "innovation" or delta *z* - this function predicts the measurement expected given the (predicted) state provided, then takes the difference (contextually defined - may be multiplicative) and returns that, typically by value.
 - `Matrix<m,m> getCovariance(State & state) const`
-	- Gets the measurement error covariance matrix *R* - a square matrix of dimension equal to measurement dimension. Sometimes a function of state, rather than a fixed value for a measurement, so often returning by value. (Sometimes this doesn't need the state or just needs particular state methods that could be implemented by many state classes, so this could be a function template in a base class, as done with the absolute pose and orientation measurements included.)
+  - Gets the measurement error covariance matrix *R* - a square matrix of dimension equal to measurement dimension. Sometimes a function of state, rather than a fixed value for a measurement, so often returning by value. (Sometimes this doesn't need the state or just needs particular state methods that could be implemented by many state classes, so this could be a function template in a base class, as done with the absolute pose and orientation measurements included.)
 - `Matrix<m,n> getJacobian(State & s) const`
-	- Gets the measurement Jacobian *H*: the change in what you'd expect the measurement to be, with respect to changes in the state, given the (predicted) state. Thus, it has rows equal to the measurement dimension, and cols equal to the state dimension. (If you're using a SCAAT-style filter, much of this will be zero.) This usually required closest coupling to the State type out of all the methods, so if you're splitting things up, this could be in the derived class, as done with the absolute pose and orientation measurements included. This is nearly always a function that ends up returning by value.
+  - Gets the measurement Jacobian *H*: the change in what you'd expect the measurement to be, with respect to changes in the state, given the (predicted) state. Thus, it has rows equal to the measurement dimension, and cols equal to the state dimension. (If you're using a SCAAT-style filter, much of this will be zero.) This usually required closest coupling to the State type out of all the methods, so if you're splitting things up, this could be in the derived class, as done with the absolute pose and orientation measurements included. This is nearly always a function that ends up returning by value.
+  - Only required for "normal" EKF-style filtering. If you'd rather not compute a Jacobian (and who wouldn't?), you can use the unscented KF correction instead.
+- `Vector<m> predictMeasurement(State const& state) const`
+  - Returns a predicted measurement given a state.
+  - This is only technically required for the unscented-style correction, but you may implemented in all cases since it helps to implement `getResidual()`.
+- `Vector<m> getResidual(Vector<m> const &prediction, State const& state) const`
+  - Unlike the single-argument `getResidual()`, this version does not use the actual data of the measurement. Instead, it uses a prediction, likely from `predictMeasurement()`.
+  - This is only technically required for the unscented-style correction, but you may implemented in all cases since it helps to implement the single-parameter `getResidual()` - it becomes `return getResidual(predictMeasurement(s), s);`
 
 ## Acknowledgments
 
@@ -104,4 +111,4 @@ Welch gives two citations for the "externalized-quaternion, internal linear incr
 
 Library structure/design was inspired by
 
-- "Eigen-Kalman <https://github.com/rpavlik/eigen-kalman> and/in turn by [TAG](http://www.edwardrosten.com/cvd/tag.html) whose source is now accessible at <https://github.com/edrosten/tag/tree/master/tag>.
+- "Eigen-Kalman" <https://github.com/rpavlik/eigen-kalman> and/in turn by [TAG](http://www.edwardrosten.com/cvd/tag.html) whose source is now accessible at <https://github.com/edrosten/tag/tree/master/tag>.

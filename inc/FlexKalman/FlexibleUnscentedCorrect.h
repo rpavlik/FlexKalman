@@ -47,13 +47,13 @@ template <typename State, typename Measurement>
 class SigmaPointCorrectionApplication {
   public:
 #if 0
-        static const types::DimensionType StateDim =
-            types::Dimension<State>::value;
-        static const types::DimensionType MeasurementDim =
-            types::Dimension<Measurement>::value;
+        static constexpr size_t StateDim =
+            getDimension<State>();
+        static constexpr size_t MeasurementDim =
+            getDimension<Measurement>();
 #endif
-    static const types::DimensionType n = types::Dimension<State>::value;
-    static const types::DimensionType m = types::Dimension<Measurement>::value;
+    static constexpr size_t n = getDimension<State>();
+    static constexpr size_t m = getDimension<Measurement>();
 
     using StateVec = types::DimVector<State>;
     using StateSquareMatrix = types::DimSquareMatrix<State>;
@@ -61,13 +61,12 @@ class SigmaPointCorrectionApplication {
     using MeasurementSquareMatrix = types::DimSquareMatrix<Measurement>;
 
     /// state augmented with measurement noise mean
-    static const types::DimensionType AugmentedStateDim = n + m;
+    static constexpr size_t AugmentedStateDim = n + m;
     using AugmentedStateVec = types::Vector<AugmentedStateDim>;
     using AugmentedStateCovMatrix = types::SquareMatrix<AugmentedStateDim>;
     using SigmaPointsGen = AugmentedSigmaPointGenerator<AugmentedStateDim, n>;
 
-    static const types::DimensionType NumSigmaPoints =
-        SigmaPointsGen::NumSigmaPoints;
+    static constexpr size_t NumSigmaPoints = SigmaPointsGen::NumSigmaPoints;
 
     using Reconstruction =
         ReconstructedDistributionFromSigmaPoints<m, SigmaPointsGen>;
@@ -226,4 +225,26 @@ beginUnscentedCorrection(
     return SigmaPointCorrectionApplication<State, Measurement>(s, m, params);
 }
 
+/// Correct a Kalman filter's state using a measurement that provides a
+/// two-parameter getResidual function, in the manner of an
+/// Unscented Kalman Filter (UKF).
+///
+/// @param cancelIfNotFinite If the state correction or new error covariance
+/// is detected to contain non-finite values, should we cancel the
+/// correction and not apply it?
+///
+/// @return true if correction completed
+template <typename StateType, typename MeasurementType>
+static inline bool
+correctUnscented(StateType &state, MeasurementType &meas,
+                 bool cancelIfNotFinite = true,
+                 SigmaPointParameters const &params = SigmaPointParameters()) {
+
+    auto inProgress = beginUnscentedCorrection(state, meas, params);
+    if (cancelIfNotFinite && !inProgress.stateCorrectionFinite) {
+        return false;
+    }
+
+    return inProgress.finishCorrection(cancelIfNotFinite);
+}
 } // namespace flexkalman

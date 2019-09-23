@@ -165,13 +165,12 @@ static auto BasicQuats = {
     QuatCreator::AngleAxis(-EIGEN_PI / 2, Vector3d::UnitY()),
     QuatCreator::AngleAxis(-EIGEN_PI / 2, Vector3d::UnitZ())};
 
-static auto SmallQuats = {
-    QuatCreator::AngleAxis(SMALL, Vector3d::UnitX()),
-    QuatCreator::AngleAxis(SMALL, Vector3d::UnitY()),
-    QuatCreator::AngleAxis(SMALL, Vector3d::UnitZ()),
-    QuatCreator::AngleAxis(SMALLER, Vector3d::UnitX()),
-    QuatCreator::AngleAxis(SMALLER, Vector3d::UnitY()),
-    QuatCreator::AngleAxis(SMALLER, Vector3d::UnitZ())};
+static auto SmallQuats = {QuatCreator::AngleAxis(SMALL, Vector3d::UnitX()),
+                          QuatCreator::AngleAxis(SMALL, Vector3d::UnitY()),
+                          QuatCreator::AngleAxis(SMALL, Vector3d::UnitZ()),
+                          QuatCreator::AngleAxis(SMALLER, Vector3d::UnitX()),
+                          QuatCreator::AngleAxis(SMALLER, Vector3d::UnitY()),
+                          QuatCreator::AngleAxis(SMALLER, Vector3d::UnitZ())};
 static auto SmallNegativeQuats = {
     QuatCreator::AngleAxis(-SMALL, Vector3d::UnitX()),
     QuatCreator::AngleAxis(-SMALL, Vector3d::UnitY()),

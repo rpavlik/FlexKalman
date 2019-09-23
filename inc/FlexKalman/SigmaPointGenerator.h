@@ -151,15 +151,14 @@ using SigmaPointGenerator = AugmentedSigmaPointGenerator<Dim, Dim>;
 template <std::size_t XformedDim, typename SigmaPointsGenType>
 class ReconstructedDistributionFromSigmaPoints {
   public:
-    static const std::size_t DIMENSION = XformedDim;
+    static const std::size_t Dimension = XformedDim;
     using SigmaPointsGen = SigmaPointsGenType;
     static const std::size_t NumSigmaPoints = SigmaPointsGen::NumSigmaPoints;
 
-    static const types::DimensionType OriginalDimension =
-        SigmaPointsGen::OriginalDimension;
+    static const size_t OriginalDimension = SigmaPointsGen::OriginalDimension;
     using TransformedSigmaPointsMat = types::Matrix<XformedDim, NumSigmaPoints>;
 
-    using CrossCovMatrix = types::Matrix<OriginalDimension, DIMENSION>;
+    using CrossCovMatrix = types::Matrix<OriginalDimension, Dimension>;
 
     using MeanVec = types::Vector<XformedDim>;
     using CovMat = types::SquareMatrix<XformedDim>;

@@ -37,96 +37,10 @@ inline void dumpKalmanDebugOuput(const char name[], const char expr[],
     dumpKalmanDebugOuput(Name, #Value, Value)
 
 // Internal Includes
-#include "ContentsInvalid.h"
 #include "FlexKalman/AbsoluteOrientationMeasurement.h"
 #include "FlexKalman/AbsolutePositionMeasurement.h"
 #include "FlexKalman/FlexibleKalmanFilter.h"
 #include "FlexKalman/PoseConstantVelocity.h"
 #include "FlexKalman/PoseDampedConstantVelocity.h"
 
-// Library/third-party includes
-#include <catch2/catch.hpp>
-
-// Standard includes
-#include <iostream>
-
-using ProcessModel = flexkalman::PoseConstantVelocityProcessModel;
-using State = ProcessModel::State;
-using AbsoluteOrientationMeasurement =
-    flexkalman::AbsoluteOrientationMeasurement<State>;
-using AbsolutePositionMeasurement =
-    flexkalman::AbsolutePositionMeasurement<State>;
-using Filter = flexkalman::FlexibleKalmanFilter<ProcessModel>;
-
-class Stability {
-  public:
-    template <typename State>
-    void dumpState(State const &state, const char msg[]) {
-        std::cout << "\n"
-                  << msg << " (iteration " << iteration << "):\n"
-                  << state << std::endl;
-    }
-    template <typename Filter, typename Measurement>
-    void filterAndCheck(Filter &filter, Measurement &meas, double dt = 0.1) {
-        INFO("Iteration " << iteration);
-        INFO("prediction step");
-        filter.predict(dt);
-        dumpState(filter.state(), "After prediction");
-        REQUIRE_FALSE(stateContentsInvalid(filter.state()));
-        REQUIRE_FALSE(covarianceContentsInvalid(filter.state()));
-
-        REQUIRE_FALSE(
-            covarianceContentsInvalid(meas.getCovariance(filter.state())));
-
-        INFO("correction step");
-        filter.correct(meas);
-        dumpState(filter.state(), "After correction");
-        REQUIRE_FALSE(stateContentsInvalid(filter.state()));
-        REQUIRE_FALSE(covarianceContentsInvalid(filter.state()));
-        iteration++;
-    }
-
-    template <typename Filter, typename Measurement>
-    void filterAndCheckRepeatedly(Filter &filter, Measurement &meas,
-                                  double dt = 0.1,
-                                  std::size_t iterations = 100) {
-        iteration = 0;
-        while (iteration < iterations) {
-            filterAndCheck(filter, meas, dt);
-        }
-    }
-
-  private:
-    std::size_t iteration = 0;
-};
-
-TEMPLATE_TEST_CASE("ProcessModelStability", "",
-                   flexkalman::PoseConstantVelocityProcessModel,
-                   flexkalman::PoseDampedConstantVelocityProcessModel) {
-    Stability fixture;
-    using Filter = flexkalman::FlexibleKalmanFilter<TestType>;
-
-    auto filter = Filter{};
-    fixture.dumpState(filter.state(), "Initial state");
-
-    SECTION("IdentityAbsoluteOrientationMeasurement") {
-        auto meas = AbsoluteOrientationMeasurement{
-            Eigen::Quaterniond::Identity(),
-            Eigen::Vector3d(0.00001, 0.00001, 0.00001)};
-        fixture.filterAndCheckRepeatedly(filter, meas);
-        /// @todo check that it's roughly identity
-    }
-    SECTION("IdentityAbsolutePositionMeasurement") {
-        auto meas = AbsolutePositionMeasurement{
-            Eigen::Vector3d::Zero(), Eigen::Vector3d::Constant(0.000007)};
-        fixture.filterAndCheckRepeatedly(filter, meas);
-        /// @todo check that it's roughly identity
-    }
-    SECTION("AbsolutePositionMeasurementXlate111") {
-        auto meas = AbsolutePositionMeasurement{
-            Eigen::Vector3d::Constant(1), Eigen::Vector3d::Constant(0.000007)};
-        fixture.filterAndCheckRepeatedly(filter, meas);
-        /// @todo check that it's roughly identity orientation, position of 1,
-        /// 1, 1
-    }
-}
+#include "KalmanNoNaNsInternals.h"

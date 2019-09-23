@@ -436,9 +436,9 @@ namespace {
 template <typename PolicyT> class IMUOrientationMeasBase {
   public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    static const types::DimensionType DIMENSION = 3;
-    using MeasurementVector = types::Vector<DIMENSION>;
-    using MeasurementSquareMatrix = types::SquareMatrix<DIMENSION>;
+    static constexpr size_t Dimension = 3;
+    using MeasurementVector = types::Vector<Dimension>;
+    using MeasurementSquareMatrix = types::SquareMatrix<Dimension>;
     /// Quat should already by in camera space!
     IMUOrientationMeasBase(Eigen::Quaterniond const &quat,
                            types::Vector<3> const &emVariance)
@@ -515,7 +515,7 @@ template <typename PolicyT> class IMUOrientationMeasBase {
     /// Get the block of jacobian that is non-zero: your subclass will have
     /// to put it where it belongs for each particular state type.
     template <typename State>
-    types::Matrix<DIMENSION, 3> getJacobianBlock(State const &s) const {
+    types::Matrix<Dimension, 3> getJacobianBlock(State const &s) const {
         return Policy::getJacobian(m_quat, s.getCombinedQuaternion());
     }
 
@@ -538,11 +538,10 @@ class IMUOrientationMeasurement<pose_externalized_rotation::State, PolicyT>
   public:
     using State = pose_externalized_rotation::State;
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    static const types::DimensionType STATE_DIMENSION =
-        types::Dimension<State>::value;
+    static constexpr size_t StateDimension = getDimension<State>();
     using Base = IMUOrientationMeasBase<PolicyT>;
-    using Base::DIMENSION;
-    using JacobianType = types::Matrix<DIMENSION, STATE_DIMENSION>;
+    using Base::Dimension;
+    using JacobianType = types::Matrix<Dimension, StateDimension>;
 
     /// Quat should already be rotated into camera space.
     IMUOrientationMeasurement(Eigen::Quaterniond const &quat,
@@ -551,7 +550,7 @@ class IMUOrientationMeasurement<pose_externalized_rotation::State, PolicyT>
     JacobianType getJacobian(State const &s) const {
         using namespace pose_externalized_rotation;
         JacobianType ret = JacobianType::Zero();
-        ret.template block<DIMENSION, 3>(0, 3) = Base::getJacobianBlock(s);
+        ret.template block<Dimension, 3>(0, 3) = Base::getJacobianBlock(s);
         return ret;
     }
 
@@ -563,9 +562,9 @@ class IMUOrientationMeasurement<pose_externalized_rotation::State, PolicyT>
 class IMUAngVelMeasurement {
   public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    static const types::DimensionType DIMENSION = 3;
-    using MeasurementVector = types::Vector<DIMENSION>;
-    using MeasurementSquareMatrix = types::SquareMatrix<DIMENSION>;
+    static constexpr size_t Dimension = 3;
+    using MeasurementVector = types::Vector<Dimension>;
+    using MeasurementSquareMatrix = types::SquareMatrix<Dimension>;
 
     IMUAngVelMeasurement(types::Vector<3> const &angVelVec,
                          types::Vector<3> const &variance)

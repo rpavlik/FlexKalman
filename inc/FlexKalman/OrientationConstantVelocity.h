@@ -1,7 +1,11 @@
 /** @file
     @brief Header
 
-    @date 2015
+    @date 2015-2019
+
+    @author
+    Ryan Pavlik
+    <ryan.pavlik@collabora.com>
 
     @author
     Sensics, Inc.
@@ -9,6 +13,7 @@
 */
 
 // Copyright 2015 Sensics, Inc.
+// Copyright 2019 Collabora, Ltd.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -58,10 +63,13 @@ class OrientationConstantVelocityProcessModel {
         return orient_externalized_rotation::stateTransitionMatrix(dt);
     }
 
-    void predictState(State &s, double dt) {
-        auto xHatMinus = computeEstimate(s, dt);
+    void predictStateOnly(State &s, double dt) const {
+        FLEXKALMAN_DEBUG_OUTPUT("Time change", dt);
+        orient_externalized_rotation::applyVelocity(s, dt);
+    }
+    void predictState(State &s, double dt) const {
+        predictStateOnly(s, dt);
         auto Pminus = predictErrorCovariance(s, *this, dt);
-        s.setStateVector(xHatMinus);
         s.setErrorCovariance(Pminus);
     }
 
@@ -72,7 +80,7 @@ class OrientationConstantVelocityProcessModel {
     /// so .selfAdjointView<Eigen::Upper>() might provide useful performance
     /// enhancements in some algorithms.
     StateSquareMatrix getSampledProcessNoiseCovariance(double dt) const {
-        auto const dim = types::Dimension<State>::value;
+        constexpr auto dim = getDimension<State>();
         StateSquareMatrix cov = StateSquareMatrix::Zero();
         auto dt3 = (dt * dt * dt) / 3;
         auto dt2 = (dt * dt) / 2;
@@ -89,21 +97,12 @@ class OrientationConstantVelocityProcessModel {
         return cov;
     }
 
-    /// Returns a 6-element vector containing a predicted state based on a
-    /// constant velocity process model.
-    StateVector computeEstimate(State &state, double dt) const {
-        FLEXKALMAN_DEBUG_OUTPUT("Time change", dt);
-        StateVector ret = orient_externalized_rotation::applyVelocity(
-            state.stateVector(), dt);
-        return ret;
-    }
-
   private:
     /// this is mu-arrow, the auto-correlation vector of the noise
     /// sources
     NoiseAutocorrelation m_mu;
     double getMu(std::size_t index) const {
-        assert(index < types::Dimension<State>::value / 2 &&
+        assert(index < (getDimension<State>() / 2) &&
                "Should only be passing "
                "'i' - the main state, not "
                "the derivative");

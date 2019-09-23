@@ -1,5 +1,6 @@
 /** @file
-    @brief Generated single-file header containing all of the FlexKalman flexible Kalman filter framework headers
+    @brief Generated single-file header containing all of the FlexKalman flexible Kalman filter
+   framework headers
 
 
     NOTE: This is a generated single-file version of FlexKalman - do not edit directly!
@@ -54,46 +55,19 @@ namespace flexkalman {
 namespace types {
     /// Common scalar type
     using Scalar = double;
-
-    /// Type for dimensions
-    using DimensionType = std::size_t;
-
-    /// Type constant for dimensions
-    template <DimensionType n>
-    using DimensionConstant = std::integral_constant<DimensionType, n>;
-
-    struct HasDimensionBase {};
 } // namespace types
 
 /// Convenience base class for things (like states and measurements) that
 /// have a dimension.
-template <types::DimensionType DIM>
-struct HasDimension : types::HasDimensionBase {
-    using Dimension = types::DimensionConstant<DIM>;
+template <size_t DIM> struct HasDimension {
+    static constexpr size_t Dimension = DIM;
 };
 
-namespace types {
-    namespace detail {
-        template <typename T, typename = void> struct Dimension_impl {
-            using type = DimensionConstant<T::DIMENSION>;
-        };
-        // explicit specialization
-        template <DimensionType n>
-        struct Dimension_impl<DimensionConstant<n>, void> {
-            using type = DimensionConstant<n>;
-        };
-        // explicit specialization
-        template <typename T>
-        struct Dimension_impl<T, typename std::enable_if<std::is_base_of<
-                                     HasDimensionBase, T>::value>::type> {
-            using type = typename T::Dimension;
-        };
-    } // namespace detail
-    /// Given a state or measurement, get the dimension as a
-    /// std::integral_constant
-    template <typename T>
-    using Dimension = typename detail::Dimension_impl<T>::type;
+template <typename T> static constexpr size_t getDimension() {
+    return T::Dimension;
+}
 
+namespace types {
     /// Given a filter type, get the state type.
     template <typename FilterType> using StateType = typename FilterType::State;
 
@@ -102,33 +76,30 @@ namespace types {
     using ProcessModelType = typename FilterType::ProcessModel;
 
     /// A vector of length n
-    template <DimensionType n> using Vector = Eigen::Matrix<Scalar, n, 1>;
+    template <size_t n> using Vector = Eigen::Matrix<Scalar, n, 1>;
 
     /// A vector of length = dimension of T
-    template <typename T> using DimVector = Vector<Dimension<T>::value>;
+    template <typename T> using DimVector = Vector<T::Dimension>;
 
     /// A square matrix, n x n
-    template <DimensionType n> using SquareMatrix = Eigen::Matrix<Scalar, n, n>;
+    template <size_t n> using SquareMatrix = Eigen::Matrix<Scalar, n, n>;
 
     /// A square matrix, n x n, where n is the dimension of T
-    template <typename T>
-    using DimSquareMatrix = SquareMatrix<Dimension<T>::value>;
+    template <typename T> using DimSquareMatrix = SquareMatrix<T::Dimension>;
 
     /// A square diagonal matrix, n x n
-    template <DimensionType n>
-    using DiagonalMatrix = Eigen::DiagonalMatrix<Scalar, n>;
+    template <size_t n> using DiagonalMatrix = Eigen::DiagonalMatrix<Scalar, n>;
 
     /// A square diagonal matrix, n x n, where n is the dimension of T
     template <typename T>
-    using DimDiagonalMatrix = DiagonalMatrix<Dimension<T>::value>;
+    using DimDiagonalMatrix = DiagonalMatrix<T::Dimension>;
 
     /// A matrix with rows = m,  cols = n
-    template <DimensionType m, DimensionType n>
-    using Matrix = Eigen::Matrix<Scalar, m, n>;
+    template <size_t m, size_t n> using Matrix = Eigen::Matrix<Scalar, m, n>;
 
     /// A matrix with rows = dimension of T, cols = dimension of U
     template <typename T, typename U>
-    using DimMatrix = Matrix<Dimension<T>::value, Dimension<U>::value>;
+    using DimMatrix = Matrix<T::Dimension, U::Dimension>;
 
 } // namespace types
 
@@ -158,10 +129,9 @@ predictErrorCovariance(StateType const &state, ProcessModelType &processModel,
 template <typename StateType, typename MeasurementType>
 struct CorrectionInProgress {
     /// Dimension of measurement
-    static const types::DimensionType m =
-        types::Dimension<MeasurementType>::value;
+    static constexpr size_t m = getDimension<MeasurementType>();
     /// Dimension of state
-    static const types::DimensionType n = types::Dimension<StateType>::value;
+    static constexpr size_t n = getDimension<StateType>();
 
     CorrectionInProgress(StateType &state, MeasurementType &meas,
                          types::SquareMatrix<n> const &P_,
@@ -249,13 +219,13 @@ struct CorrectionInProgress {
 template <typename StateType, typename ProcessModelType,
           typename MeasurementType>
 inline CorrectionInProgress<StateType, MeasurementType>
-beginCorrection(StateType &state, ProcessModelType &processModel,
-                MeasurementType &meas) {
+beginExtendedCorrection(StateType &state, ProcessModelType &processModel,
+                        MeasurementType &meas) {
 
     /// Dimension of measurement
-    static const auto m = types::Dimension<MeasurementType>::value;
+    static constexpr auto m = getDimension<MeasurementType>();
     /// Dimension of state
-    static const auto n = types::Dimension<StateType>::value;
+    static constexpr auto n = getDimension<StateType>();
 
     /// Measurement Jacobian
     types::Matrix<m, n> H = meas.getJacobian(state);
@@ -278,16 +248,9 @@ beginCorrection(StateType &state, ProcessModelType &processModel,
                                                             S);
 }
 
-
-template <typename StateType, typename ProcessModelType>
-void predict(StateType &state, ProcessModelType &processModel, double dt) {
-    processModel.predictState(state, dt);
-    FLEXKALMAN_DEBUG_OUTPUT("Predicted state", state.stateVector().transpose());
-
-    FLEXKALMAN_DEBUG_OUTPUT("Predicted error covariance",
-                            state.errorCovariance());
-}
-
+/// Correct a Kalman filter's state using a measurement that provides a
+/// Jacobian, in the manner of an Extended Kalman Filter (EKF).
+///
 /// @param cancelIfNotFinite If the state correction or new error covariance
 /// is detected to contain non-finite values, should we cancel the
 /// correction and not apply it?
@@ -295,10 +258,11 @@ void predict(StateType &state, ProcessModelType &processModel, double dt) {
 /// @return true if correction completed
 template <typename StateType, typename ProcessModelType,
           typename MeasurementType>
-inline bool correct(StateType &state, ProcessModelType &processModel,
-                    MeasurementType &meas, bool cancelIfNotFinite = true) {
+static inline bool
+correctExtended(StateType &state, ProcessModelType &processModel,
+                MeasurementType &meas, bool cancelIfNotFinite = true) {
 
-    auto inProgress = beginCorrection(state, processModel, meas);
+    auto inProgress = beginExtendedCorrection(state, processModel, meas);
     if (cancelIfNotFinite && !inProgress.stateCorrectionFinite) {
         return false;
     }
@@ -306,56 +270,70 @@ inline bool correct(StateType &state, ProcessModelType &processModel,
     return inProgress.finishCorrection(cancelIfNotFinite);
 }
 
-/// The main class implementing the common components of the Kalman family
-/// of filters. Holds an instance of the state as well as an instance of the
-/// process model.
-template <typename ProcessModelType,
-          typename StateType = typename ProcessModelType::State>
-class FlexibleKalmanFilter {
-  public:
-    using State = StateType;
-    using ProcessModel = ProcessModelType;
-    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    /// Default initialization - depends on default-initializable process
-    /// model and state.
-    FlexibleKalmanFilter() : m_processModel(), m_state() {}
+/// Delegates to correctExtended, a more explicit name which is preferred.
+template <typename StateType, typename ProcessModelType,
+          typename MeasurementType>
+static inline bool correct(StateType &state, ProcessModelType &processModel,
+                           MeasurementType &meas,
+                           bool cancelIfNotFinite = true) {
+    return correctExtended(state, processModel, meas, cancelIfNotFinite);
+}
 
-    /// Copy initialization from just state - depends on
-    /// default-initializable process model.
-    explicit FlexibleKalmanFilter(State const &state)
-        : m_processModel(), m_state(state) {}
 
-    /// Move initialization from just state - depends on
-    /// default-initializable process model.
-    explicit FlexibleKalmanFilter(State &&state)
-        : m_processModel(), m_state(state) {}
+/*!
+ * Advance time in the filter, by applying the process model to the state with
+ * the given dt.
+ *
+ * Usually followed by correct() or beginUnscentedCorrection() and its
+ * continuation. If you aren't correcting immediately, make sure to run
+ * `state.postCorrect()` to clean up. Otherwise, consider calling
+ * getPrediction() instead.
+ */
+template <typename StateType, typename ProcessModelType>
+static inline void predict(StateType &state, ProcessModelType &processModel,
+                           double dt) {
+    processModel.predictState(state, dt);
+    FLEXKALMAN_DEBUG_OUTPUT("Predicted state", state.stateVector().transpose());
 
-    /// copy initialization
-    FlexibleKalmanFilter(ProcessModel const &processModel, State const &state)
-        : m_processModel(processModel), m_state(state) {}
+    FLEXKALMAN_DEBUG_OUTPUT("Predicted error covariance",
+                            state.errorCovariance());
+}
 
-    /// move initialization.
-    FlexibleKalmanFilter(ProcessModel &&processModel, State &&state)
-        : m_processModel(processModel), m_state(state) {}
+/*!
+ * Performs prediction of the state only (not the error covariance), as well as
+ * post-correction. Unsuitable for continued correction for this reason, but
+ * usable to get a look at a predicted value.
+ *
+ * Requires that your process model provide `processModel.predictStateOnly()`
+ */
+template <typename StateType, typename ProcessModelType>
+static inline void
+predictAndPostCorrectStateOnly(StateType &state, ProcessModelType &processModel,
+                               double dt) {
+    processModel.predictStateOnly(state, dt);
+    state.postCorrect();
+    FLEXKALMAN_DEBUG_OUTPUT("Predicted state", state.stateVector().transpose());
+}
 
-    void predict(double dt) {
-        flexkalman::predict(state(), processModel(), dt);
+/*!
+ * Performs prediction on a copy of the state, as well as
+ * post-correction. By default, also skips prediction of error covariance.
+ *
+ * Requires that your process model provide `processModel.predictStateOnly()`
+ */
+template <typename StateType, typename ProcessModelType>
+static inline StateType
+getPrediction(StateType const &state, ProcessModelType const &processModel,
+              double dt, bool predictCovariance = false) {
+    StateType stateCopy{state};
+    if (predictCovariance) {
+        processModel.predictState(stateCopy, dt);
+    } else {
+        processModel.predictStateOnly(stateCopy, dt);
     }
-
-    template <typename MeasurementType> void correct(MeasurementType &meas) {
-        flexkalman::correct(state(), processModel(), meas);
-    }
-
-    ProcessModel &processModel() { return m_processModel; }
-    ProcessModel const &processModel() const { return m_processModel; }
-
-    State &state() { return m_state; }
-    State const &state() const { return m_state; }
-
-  private:
-    ProcessModel m_processModel;
-    State m_state;
-};
+    stateCopy.postCorrect();
+    return stateCopy;
+}
 
 namespace util {
     namespace ei_quat_exp_map {
@@ -506,51 +484,16 @@ namespace external_quat {
 
 
 namespace pose_externalized_rotation {
-    using Dimension = types::DimensionConstant<12>;
-    using StateVector = types::DimVector<Dimension>;
+    constexpr size_t Dimension = 12;
+    using StateVector = types::Vector<Dimension>;
     using StateVectorBlock3 = StateVector::FixedSegmentReturnType<3>::Type;
     using ConstStateVectorBlock3 =
         StateVector::ConstFixedSegmentReturnType<3>::Type;
 
     using StateVectorBlock6 = StateVector::FixedSegmentReturnType<6>::Type;
-    using StateSquareMatrix = types::DimSquareMatrix<Dimension>;
-
-    /// @name Accessors to blocks in the state vector.
-    /// @{
-    inline StateVectorBlock3 position(StateVector &vec) {
-        return vec.head<3>();
-    }
-    inline ConstStateVectorBlock3 position(StateVector const &vec) {
-        return vec.head<3>();
-    }
-
-    inline StateVectorBlock3 incrementalOrientation(StateVector &vec) {
-        return vec.segment<3>(3);
-    }
-    inline ConstStateVectorBlock3
-    incrementalOrientation(StateVector const &vec) {
-        return vec.segment<3>(3);
-    }
-
-    inline StateVectorBlock3 velocity(StateVector &vec) {
-        return vec.segment<3>(6);
-    }
-    inline ConstStateVectorBlock3 velocity(StateVector const &vec) {
-        return vec.segment<3>(6);
-    }
-
-    inline StateVectorBlock3 angularVelocity(StateVector &vec) {
-        return vec.segment<3>(9);
-    }
-    inline ConstStateVectorBlock3 angularVelocity(StateVector const &vec) {
-        return vec.segment<3>(9);
-    }
-
-    /// both translational and angular velocities
-    inline StateVectorBlock6 velocities(StateVector &vec) {
-        return vec.segment<6>(6);
-    }
-    /// @}
+    using ConstStateVectorBlock6 =
+        StateVector::ConstFixedSegmentReturnType<6>::Type;
+    using StateSquareMatrix = types::SquareMatrix<Dimension>;
 
     /// This returns A(deltaT), though if you're just predicting xhat-, use
     /// applyVelocity() instead for performance.
@@ -593,42 +536,11 @@ namespace pose_externalized_rotation {
         return A;
     }
 
-    /// Computes A(deltaT)xhat(t-deltaT)
-    inline StateVector applyVelocity(StateVector const &state, double dt) {
-        // eq. 4.5 in Welch 1996
-
-        /// @todo benchmark - assuming for now that the manual small
-        /// calcuations are faster than the matrix ones.
-
-        StateVector ret = state;
-        position(ret) += velocity(state) * dt;
-        incrementalOrientation(ret) += angularVelocity(state) * dt;
-        return ret;
-    }
-
-    /// Dampen all 6 components of velocity by a single factor.
-    inline void dampenVelocities(StateVector &state, double damping,
-                                 double dt) {
-        auto attenuation = computeAttenuation(damping, dt);
-        velocities(state) *= attenuation;
-    }
-
-    /// Separately dampen the linear and angular velocities
-    inline void separatelyDampenVelocities(StateVector &state,
-                                           double posDamping, double oriDamping,
-                                           double dt) {
-        velocity(state) *= computeAttenuation(posDamping, dt);
-        angularVelocity(state) *= computeAttenuation(oriDamping, dt);
-    }
-
-    inline Eigen::Quaterniond
-    incrementalOrientationToQuat(StateVector const &state) {
-        return external_quat::vecToQuat(incrementalOrientation(state));
-    }
-
-    class State : public HasDimension<12> {
+    class State {
       public:
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
+        static constexpr size_t Dimension = 12;
 
         /// Default constructor
         State()
@@ -640,6 +552,7 @@ namespace pose_externalized_rotation {
         void setStateVector(StateVector const &state) { m_state = state; }
         /// xhat
         StateVector const &stateVector() const { return m_state; }
+
         // set P
         void setErrorCovariance(StateSquareMatrix const &errorCovariance) {
             m_errorCovariance = errorCovariance;
@@ -662,45 +575,43 @@ namespace pose_externalized_rotation {
             incrementalOrientation() = Eigen::Vector3d::Zero();
         }
 
-        StateVectorBlock3 position() {
-            return pose_externalized_rotation::position(m_state);
-        }
+        StateVectorBlock3 position() { return m_state.head<3>(); }
 
-        ConstStateVectorBlock3 position() const {
-            return pose_externalized_rotation::position(m_state);
-        }
+        ConstStateVectorBlock3 position() const { return m_state.head<3>(); }
 
         StateVectorBlock3 incrementalOrientation() {
-            return pose_externalized_rotation::incrementalOrientation(m_state);
+            return m_state.segment<3>(3);
         }
 
         ConstStateVectorBlock3 incrementalOrientation() const {
-            return pose_externalized_rotation::incrementalOrientation(m_state);
+            return m_state.segment<3>(3);
         }
 
-        StateVectorBlock3 velocity() {
-            return pose_externalized_rotation::velocity(m_state);
-        }
+        StateVectorBlock3 velocity() { return m_state.segment<3>(6); }
 
         ConstStateVectorBlock3 velocity() const {
-            return pose_externalized_rotation::velocity(m_state);
+            return m_state.segment<3>(6);
         }
 
-        StateVectorBlock3 angularVelocity() {
-            return pose_externalized_rotation::angularVelocity(m_state);
-        }
+        StateVectorBlock3 angularVelocity() { return m_state.segment<3>(9); }
 
         ConstStateVectorBlock3 angularVelocity() const {
-            return pose_externalized_rotation::angularVelocity(m_state);
+            return m_state.segment<3>(9);
         }
+
+        /// Linear and angular velocities
+        StateVectorBlock6 velocities() { return m_state.tail<6>(); }
+
+        /// Linear and angular velocities
+        ConstStateVectorBlock6 velocities() const { return m_state.tail<6>(); }
 
         Eigen::Quaterniond const &getQuaternion() const {
             return m_orientation;
         }
 
         Eigen::Quaterniond getCombinedQuaternion() const {
-            /// @todo is just quat multiplication OK here? Order right?
-            return incrementalOrientationToQuat(m_state).normalized() *
+            // divide by 2 since we're integrating it essentially.
+            return util::quat_exp(incrementalOrientation() / 2.) *
                    m_orientation;
         }
 
@@ -734,6 +645,30 @@ namespace pose_externalized_rotation {
         os << "error:\n" << state.errorCovariance() << "\n";
         return os;
     }
+
+    /// Computes A(deltaT)xhat(t-deltaT)
+    inline void applyVelocity(State &state, double dt) {
+        // eq. 4.5 in Welch 1996
+
+        /// @todo benchmark - assuming for now that the manual small
+        /// calcuations are faster than the matrix ones.
+
+        state.position() += state.velocity() * dt;
+        state.incrementalOrientation() += state.angularVelocity() * dt;
+    }
+
+    /// Dampen all 6 components of velocity by a single factor.
+    inline void dampenVelocities(State &state, double damping, double dt) {
+        auto attenuation = computeAttenuation(damping, dt);
+        state.velocities() *= attenuation;
+    }
+
+    /// Separately dampen the linear and angular velocities
+    inline void separatelyDampenVelocities(State &state, double posDamping,
+                                           double oriDamping, double dt) {
+        state.velocity() *= computeAttenuation(posDamping, dt);
+        state.angularVelocity() *= computeAttenuation(oriDamping, dt);
+    }
 } // namespace pose_externalized_rotation
 
 /// The measurement here has been split into a base and derived type, so
@@ -742,9 +677,9 @@ namespace pose_externalized_rotation {
 class AbsoluteOrientationBase {
   public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    static const types::DimensionType DIMENSION = 3;
-    using MeasurementVector = types::Vector<DIMENSION>;
-    using MeasurementSquareMatrix = types::SquareMatrix<DIMENSION>;
+    static constexpr size_t Dimension = 3;
+    using MeasurementVector = types::Vector<Dimension>;
+    using MeasurementSquareMatrix = types::SquareMatrix<Dimension>;
     AbsoluteOrientationBase(Eigen::Quaterniond const &quat,
                             types::Vector<3> const &emVariance)
         : m_quat(quat), m_covariance(emVariance.asDiagonal()) {}
@@ -779,7 +714,7 @@ class AbsoluteOrientationBase {
 
     /// Get the block of jacobian that is non-zero: your subclass will have
     /// to put it where it belongs for each particular state type.
-    types::Matrix<DIMENSION, 3> getJacobianBlock() const {
+    types::Matrix<Dimension, 3> getJacobianBlock() const {
         return Eigen::Matrix3d::Identity();
     }
 
@@ -799,20 +734,18 @@ class AbsoluteOrientationMeasurement<pose_externalized_rotation::State>
   public:
     using State = pose_externalized_rotation::State;
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    static const types::DimensionType STATE_DIMENSION =
-        types::Dimension<State>::value;
+    static constexpr size_t StateDimension = getDimension<State>();
     using Base = AbsoluteOrientationBase;
 
     AbsoluteOrientationMeasurement(Eigen::Quaterniond const &quat,
                                    types::Vector<3> const &eulerVariance)
         : Base(quat, eulerVariance) {}
 
-    types::Matrix<DIMENSION, STATE_DIMENSION>
-    getJacobian(State const &s) const {
+    types::Matrix<Dimension, StateDimension> getJacobian(State const &s) const {
         using namespace pose_externalized_rotation;
-        using Jacobian = types::Matrix<DIMENSION, STATE_DIMENSION>;
+        using Jacobian = types::Matrix<Dimension, StateDimension>;
         Jacobian ret = Jacobian::Zero();
-        ret.block<DIMENSION, 3>(0, 3) = Base::getJacobianBlock();
+        ret.block<Dimension, 3>(0, 3) = Base::getJacobianBlock();
         return ret;
     }
 };
@@ -844,10 +777,15 @@ class PoseConstantVelocityProcessModel {
         return pose_externalized_rotation::stateTransitionMatrix(dt);
     }
 
-    void predictState(State &s, double dt) {
-        auto xHatMinus = computeEstimate(s, dt);
+    /// Does not update error covariance
+    void predictStateOnly(State &s, double dt) const {
+        FLEXKALMAN_DEBUG_OUTPUT("Time change", dt);
+        pose_externalized_rotation::applyVelocity(s, dt);
+    }
+    /// Updates state vector and error covariance
+    void predictState(State &s, double dt) const {
+        predictStateOnly(s, dt);
         auto Pminus = predictErrorCovariance(s, *this, dt);
-        s.setStateVector(xHatMinus);
         s.setErrorCovariance(Pminus);
     }
 
@@ -858,7 +796,7 @@ class PoseConstantVelocityProcessModel {
     /// so .selfAdjointView<Eigen::Upper>() might provide useful performance
     /// enhancements in some algorithms.
     StateSquareMatrix getSampledProcessNoiseCovariance(double dt) const {
-        auto const dim = types::Dimension<State>::value;
+        constexpr auto dim = getDimension<State>();
         StateSquareMatrix cov = StateSquareMatrix::Zero();
         auto dt3 = (dt * dt * dt) / 3;
         auto dt2 = (dt * dt) / 2;
@@ -875,22 +813,12 @@ class PoseConstantVelocityProcessModel {
         return cov;
     }
 
-    /// Returns a 12-element vector containing a predicted state based on a
-    /// constant velocity process model.
-    StateVector computeEstimate(State &state, double dt) const {
-        FLEXKALMAN_DEBUG_OUTPUT("Time change", dt);
-        StateVector ret =
-            pose_externalized_rotation::applyVelocity(state.stateVector(), dt);
-
-        return ret;
-    }
-
   private:
     /// this is mu-arrow, the auto-correlation vector of the noise
     /// sources
     NoiseAutocorrelation m_mu;
     double getMu(std::size_t index) const {
-        assert(index < types::Dimension<State>::value / 2 &&
+        assert(index < (getDimension<State>() / 2) &&
                "Should only be passing "
                "'i' - the main state, not "
                "the derivative");
@@ -947,10 +875,15 @@ class PoseSeparatelyDampedConstantVelocityProcessModel {
                                                              m_oriDamp);
     }
 
-    void predictState(State &s, double dt) {
-        auto xHatMinus = computeEstimate(s, dt);
+    void predictStateOnly(State &s, double dt) const {
+        m_constantVelModel.predictStateOnly(s, dt);
+        // Dampen velocities
+        pose_externalized_rotation::separatelyDampenVelocities(s, m_posDamp,
+                                                               m_oriDamp, dt);
+    }
+    void predictState(State &s, double dt) const {
+        predictStateOnly(s, dt);
         auto Pminus = predictErrorCovariance(s, *this, dt);
-        s.setStateVector(xHatMinus);
         s.setErrorCovariance(Pminus);
     }
 
@@ -960,16 +893,6 @@ class PoseSeparatelyDampedConstantVelocityProcessModel {
     /// might provide useful performance enhancements.
     StateSquareMatrix getSampledProcessNoiseCovariance(double dt) const {
         return m_constantVelModel.getSampledProcessNoiseCovariance(dt);
-    }
-
-    /// Returns a 12-element vector containing a predicted state based on a
-    /// constant velocity process model.
-    StateVector computeEstimate(State &state, double dt) const {
-        StateVector ret = m_constantVelModel.computeEstimate(state, dt);
-        // Dampen velocities
-        pose_externalized_rotation::separatelyDampenVelocities(ret, m_posDamp,
-                                                               m_oriDamp, dt);
-        return ret;
     }
 
   private:
@@ -1095,15 +1018,14 @@ using SigmaPointGenerator = AugmentedSigmaPointGenerator<Dim, Dim>;
 template <std::size_t XformedDim, typename SigmaPointsGenType>
 class ReconstructedDistributionFromSigmaPoints {
   public:
-    static const std::size_t DIMENSION = XformedDim;
+    static const std::size_t Dimension = XformedDim;
     using SigmaPointsGen = SigmaPointsGenType;
     static const std::size_t NumSigmaPoints = SigmaPointsGen::NumSigmaPoints;
 
-    static const types::DimensionType OriginalDimension =
-        SigmaPointsGen::OriginalDimension;
+    static const size_t OriginalDimension = SigmaPointsGen::OriginalDimension;
     using TransformedSigmaPointsMat = types::Matrix<XformedDim, NumSigmaPoints>;
 
-    using CrossCovMatrix = types::Matrix<OriginalDimension, DIMENSION>;
+    using CrossCovMatrix = types::Matrix<OriginalDimension, Dimension>;
 
     using MeanVec = types::Vector<XformedDim>;
     using CovMat = types::SquareMatrix<XformedDim>;
@@ -1153,13 +1075,13 @@ template <typename State, typename Measurement>
 class SigmaPointCorrectionApplication {
   public:
 #if 0
-        static const types::DimensionType StateDim =
-            types::Dimension<State>::value;
-        static const types::DimensionType MeasurementDim =
-            types::Dimension<Measurement>::value;
+        static constexpr size_t StateDim =
+            getDimension<State>();
+        static constexpr size_t MeasurementDim =
+            getDimension<Measurement>();
 #endif
-    static const types::DimensionType n = types::Dimension<State>::value;
-    static const types::DimensionType m = types::Dimension<Measurement>::value;
+    static constexpr size_t n = getDimension<State>();
+    static constexpr size_t m = getDimension<Measurement>();
 
     using StateVec = types::DimVector<State>;
     using StateSquareMatrix = types::DimSquareMatrix<State>;
@@ -1167,13 +1089,12 @@ class SigmaPointCorrectionApplication {
     using MeasurementSquareMatrix = types::DimSquareMatrix<Measurement>;
 
     /// state augmented with measurement noise mean
-    static const types::DimensionType AugmentedStateDim = n + m;
+    static constexpr size_t AugmentedStateDim = n + m;
     using AugmentedStateVec = types::Vector<AugmentedStateDim>;
     using AugmentedStateCovMatrix = types::SquareMatrix<AugmentedStateDim>;
     using SigmaPointsGen = AugmentedSigmaPointGenerator<AugmentedStateDim, n>;
 
-    static const types::DimensionType NumSigmaPoints =
-        SigmaPointsGen::NumSigmaPoints;
+    static constexpr size_t NumSigmaPoints = SigmaPointsGen::NumSigmaPoints;
 
     using Reconstruction =
         ReconstructedDistributionFromSigmaPoints<m, SigmaPointsGen>;
@@ -1332,19 +1253,41 @@ beginUnscentedCorrection(
     return SigmaPointCorrectionApplication<State, Measurement>(s, m, params);
 }
 
+/// Correct a Kalman filter's state using a measurement that provides a
+/// two-parameter getResidual function, in the manner of an
+/// Unscented Kalman Filter (UKF).
+///
+/// @param cancelIfNotFinite If the state correction or new error covariance
+/// is detected to contain non-finite values, should we cancel the
+/// correction and not apply it?
+///
+/// @return true if correction completed
+template <typename StateType, typename MeasurementType>
+static inline bool
+correctUnscented(StateType &state, MeasurementType &meas,
+                 bool cancelIfNotFinite = true,
+                 SigmaPointParameters const &params = SigmaPointParameters()) {
+
+    auto inProgress = beginUnscentedCorrection(state, meas, params);
+    if (cancelIfNotFinite && !inProgress.stateCorrectionFinite) {
+        return false;
+    }
+
+    return inProgress.finishCorrection(cancelIfNotFinite);
+}
 
 /// A very simple (3D by default) vector state with no velocity, ideal for
 /// use as a position, with ConstantProcess for beacon autocalibration
-template <types::DimensionType Dim = 3> class PureVectorState {
+template <size_t Dim = 3> class PureVectorState {
   public:
-    static const types::DimensionType DIMENSION = Dim;
-    using SquareMatrix = types::SquareMatrix<DIMENSION>;
-    using StateVector = types::Vector<DIMENSION>;
+    static const size_t Dimension = Dim;
+    using SquareMatrix = types::SquareMatrix<Dimension>;
+    using StateVector = types::Vector<Dimension>;
 
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     PureVectorState(double x, double y, double z)
         : m_state(x, y, z), m_errorCovariance(SquareMatrix::Zero()) {
-        static_assert(DIMENSION == 3, "This constructor, which takes 3 "
+        static_assert(Dimension == 3, "This constructor, which takes 3 "
                                       "scalars, only works with a 3D "
                                       "vector!");
     }
@@ -1352,7 +1295,7 @@ template <types::DimensionType Dim = 3> class PureVectorState {
     PureVectorState(double x, double y, double z,
                     SquareMatrix const &covariance)
         : m_state(x, y, z), m_errorCovariance(covariance) {
-        static_assert(DIMENSION == 3, "This constructor, which takes 3 "
+        static_assert(Dimension == 3, "This constructor, which takes 3 "
                                       "scalars, only works with a 3D "
                                       "vector!");
     }
@@ -1586,14 +1529,14 @@ namespace matrix_exponential_map {
 
 namespace pose_exp_map {
 
-    using Dimension = types::DimensionConstant<12>;
-    using StateVector = types::DimVector<Dimension>;
+    constexpr size_t Dimension = 12;
+    using StateVector = types::Vector<Dimension>;
     using StateVectorBlock3 = StateVector::FixedSegmentReturnType<3>::Type;
     using ConstStateVectorBlock3 =
         StateVector::ConstFixedSegmentReturnType<3>::Type;
 
     using StateVectorBlock6 = StateVector::FixedSegmentReturnType<6>::Type;
-    using StateSquareMatrix = types::DimSquareMatrix<Dimension>;
+    using StateSquareMatrix = types::SquareMatrix<Dimension>;
 
     /// @name Accessors to blocks in the state vector.
     /// @{
@@ -1756,12 +1699,12 @@ template <typename StateA, typename StateB> class AugmentedState {
     using StateTypeA = StateA;
     using StateTypeB = StateB;
 
-    static const types::DimensionType DIM_A = types::Dimension<StateA>::value;
-    static const types::DimensionType DIM_B = types::Dimension<StateB>::value;
-    static const types::DimensionType DIMENSION = DIM_A + DIM_B;
+    static constexpr size_t DimA = getDimension<StateA>();
+    static constexpr size_t DimB = getDimension<StateB>();
+    static constexpr size_t Dimension = DimA + DimB;
 
-    using SquareMatrix = types::SquareMatrix<DIMENSION>;
-    using StateVector = types::Vector<DIMENSION>;
+    using SquareMatrix = types::SquareMatrix<Dimension>;
+    using StateVector = types::Vector<Dimension>;
 
     /// Constructor
     AugmentedState(StateA &a, StateB &b) : a_(a), b_(b) {}
@@ -1780,9 +1723,9 @@ template <typename StateA, typename StateB> class AugmentedState {
     template <typename Derived>
     void setStateVector(Eigen::MatrixBase<Derived> const &state) {
         /// template used here to avoid a temporary
-        EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(Derived, DIMENSION);
-        a().setStateVector(state.derived().template head<DIM_A>());
-        b().setStateVector(state.derived().template tail<DIM_B>());
+        EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(Derived, Dimension);
+        a().setStateVector(state.derived().template head<DimA>());
+        b().setStateVector(state.derived().template tail<DimB>());
     }
 
     StateVector stateVector() const {
@@ -1793,8 +1736,8 @@ template <typename StateA, typename StateB> class AugmentedState {
 
     SquareMatrix errorCovariance() const {
         SquareMatrix ret = SquareMatrix::Zero();
-        ret.template topLeftCorner<DIM_A, DIM_A>() = a().errorCovariance();
-        ret.template bottomRightCorner<DIM_B, DIM_B>() = b().errorCovariance();
+        ret.template topLeftCorner<DimA, DimA>() = a().errorCovariance();
+        ret.template bottomRightCorner<DimB, DimB>() = b().errorCovariance();
         return ret;
     }
 
@@ -1802,9 +1745,9 @@ template <typename StateA, typename StateB> class AugmentedState {
     void setErrorCovariance(Eigen::MatrixBase<Derived> const &P) {
         /// template used here to avoid evaluating elements we'll never
         /// access to a temporary.
-        EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Derived, DIMENSION, DIMENSION);
-        a().setErrorCovariance(P.template topLeftCorner<DIM_A, DIM_A>());
-        b().setErrorCovariance(P.template bottomRightCorner<DIM_B, DIM_B>());
+        EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Derived, Dimension, Dimension);
+        a().setErrorCovariance(P.template topLeftCorner<DimA, DimA>());
+        b().setErrorCovariance(P.template bottomRightCorner<DimB, DimB>());
     }
 
     void postCorrect() {
@@ -1905,31 +1848,13 @@ makeAugmentedProcessModel(ModelA &a, ModelB &b) {
 
 
 namespace orient_externalized_rotation {
-    using Dimension = types::DimensionConstant<6>;
-    using StateVector = types::DimVector<Dimension>;
+    constexpr size_t Dimension = 6;
+    using StateVector = types::Vector<Dimension>;
     using StateVectorBlock3 = StateVector::FixedSegmentReturnType<3>::Type;
     using ConstStateVectorBlock3 =
         StateVector::ConstFixedSegmentReturnType<3>::Type;
 
-    using StateSquareMatrix = types::DimSquareMatrix<Dimension>;
-
-    /// @name Accessors to blocks in the state vector.
-    /// @{
-    inline StateVectorBlock3 incrementalOrientation(StateVector &vec) {
-        return vec.head<3>();
-    }
-    inline ConstStateVectorBlock3
-    incrementalOrientation(StateVector const &vec) {
-        return vec.head<3>();
-    }
-
-    inline StateVectorBlock3 angularVelocity(StateVector &vec) {
-        return vec.tail<3>();
-    }
-    inline ConstStateVectorBlock3 angularVelocity(StateVector const &vec) {
-        return vec.tail<3>();
-    }
-    /// @}
+    using StateSquareMatrix = types::SquareMatrix<Dimension>;
 
     /// This returns A(deltaT), though if you're just predicting xhat-, use
     /// applyVelocity() instead for performance.
@@ -1948,29 +1873,6 @@ namespace orient_externalized_rotation {
         A.bottomRightCorner<3, 3>() *= attenuation;
         return A;
     }
-    /// Computes A(deltaT)xhat(t-deltaT)
-    inline StateVector applyVelocity(StateVector const &state, double dt) {
-        // eq. 4.5 in Welch 1996
-
-        /// @todo benchmark - assuming for now that the manual small
-        /// calcuations are faster than the matrix ones.
-
-        StateVector ret = state;
-        incrementalOrientation(ret) += angularVelocity(state) * dt;
-        return ret;
-    }
-
-    inline void dampenVelocities(StateVector &state, double damping,
-                                 double dt) {
-        auto attenuation = std::pow(damping, dt);
-        angularVelocity(state) *= attenuation;
-    }
-
-    inline Eigen::Quaterniond
-    incrementalOrientationToQuat(StateVector const &state) {
-        return external_quat::vecToQuat(incrementalOrientation(state));
-    }
-
     class State : public HasDimension<6> {
       public:
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
@@ -2004,17 +1906,21 @@ namespace orient_externalized_rotation {
 
         void externalizeRotation() {
             m_orientation = getCombinedQuaternion();
-            incrementalOrientation(m_state) = Eigen::Vector3d::Zero();
+            incrementalOrientation() = Eigen::Vector3d::Zero();
         }
 
         void normalizeQuaternion() { m_orientation.normalize(); }
 
-        StateVectorBlock3 angularVelocity() {
-            return orient_externalized_rotation::angularVelocity(m_state);
+        StateVectorBlock3 incrementalOrientation() { return m_state.head<3>(); }
+
+        ConstStateVectorBlock3 incrementalOrientation() const {
+            return m_state.head<3>();
         }
 
+        StateVectorBlock3 angularVelocity() { return m_state.tail<3>(); }
+
         ConstStateVectorBlock3 angularVelocity() const {
-            return orient_externalized_rotation::angularVelocity(m_state);
+            return m_state.tail<3>();
         }
 
         Eigen::Quaterniond const &getQuaternion() const {
@@ -2022,9 +1928,9 @@ namespace orient_externalized_rotation {
         }
 
         Eigen::Quaterniond getCombinedQuaternion() const {
-            /// @todo is just quat multiplication OK here? Order right?
-            return (incrementalOrientationToQuat(m_state) * m_orientation)
-                .normalized();
+            // divide by 2 since we're integrating it essentially.
+            return util::quat_exp(incrementalOrientation() / 2.) *
+                   m_orientation;
         }
 
       private:
@@ -2048,6 +1954,22 @@ namespace orient_externalized_rotation {
         os << "error:\n" << state.errorCovariance() << "\n";
         return os;
     }
+
+    /// Computes A(deltaT)xhat(t-deltaT)
+    inline void applyVelocity(State &state, double dt) {
+        // eq. 4.5 in Welch 1996
+
+        /// @todo benchmark - assuming for now that the manual small
+        /// calcuations are faster than the matrix ones.
+
+        state.incrementalOrientation() += state.angularVelocity() * dt;
+    }
+
+    inline void dampenVelocities(State &state, double damping, double dt) {
+        auto attenuation = std::pow(damping, dt);
+        state.angularVelocity() *= attenuation;
+    }
+
 } // namespace orient_externalized_rotation
 
 
@@ -2074,10 +1996,13 @@ class OrientationConstantVelocityProcessModel {
         return orient_externalized_rotation::stateTransitionMatrix(dt);
     }
 
-    void predictState(State &s, double dt) {
-        auto xHatMinus = computeEstimate(s, dt);
+    void predictStateOnly(State &s, double dt) const {
+        FLEXKALMAN_DEBUG_OUTPUT("Time change", dt);
+        orient_externalized_rotation::applyVelocity(s, dt);
+    }
+    void predictState(State &s, double dt) const {
+        predictStateOnly(s, dt);
         auto Pminus = predictErrorCovariance(s, *this, dt);
-        s.setStateVector(xHatMinus);
         s.setErrorCovariance(Pminus);
     }
 
@@ -2088,7 +2013,7 @@ class OrientationConstantVelocityProcessModel {
     /// so .selfAdjointView<Eigen::Upper>() might provide useful performance
     /// enhancements in some algorithms.
     StateSquareMatrix getSampledProcessNoiseCovariance(double dt) const {
-        auto const dim = types::Dimension<State>::value;
+        constexpr auto dim = getDimension<State>();
         StateSquareMatrix cov = StateSquareMatrix::Zero();
         auto dt3 = (dt * dt * dt) / 3;
         auto dt2 = (dt * dt) / 2;
@@ -2105,21 +2030,12 @@ class OrientationConstantVelocityProcessModel {
         return cov;
     }
 
-    /// Returns a 6-element vector containing a predicted state based on a
-    /// constant velocity process model.
-    StateVector computeEstimate(State &state, double dt) const {
-        FLEXKALMAN_DEBUG_OUTPUT("Time change", dt);
-        StateVector ret = orient_externalized_rotation::applyVelocity(
-            state.stateVector(), dt);
-        return ret;
-    }
-
   private:
     /// this is mu-arrow, the auto-correlation vector of the noise
     /// sources
     NoiseAutocorrelation m_mu;
     double getMu(std::size_t index) const {
-        assert(index < types::Dimension<State>::value / 2 &&
+        assert(index < (getDimension<State>() / 2) &&
                "Should only be passing "
                "'i' - the main state, not "
                "the derivative");
@@ -2171,10 +2087,15 @@ class PoseDampedConstantVelocityProcessModel {
             stateTransitionMatrixWithVelocityDamping(dt, m_damp);
     }
 
-    void predictState(State &s, double dt) {
-        auto xHatMinus = computeEstimate(s, dt);
+    void predictStateOnly(State &s, double dt) const {
+        m_constantVelModel.predictStateOnly(s, dt);
+        // Dampen velocities
+        pose_externalized_rotation::dampenVelocities(s, m_damp, dt);
+    }
+
+    void predictState(State &s, double dt) const {
+        predictStateOnly(s, dt);
         auto Pminus = predictErrorCovariance(s, *this, dt);
-        s.setStateVector(xHatMinus);
         s.setErrorCovariance(Pminus);
     }
 
@@ -2184,15 +2105,6 @@ class PoseDampedConstantVelocityProcessModel {
     /// might provide useful performance enhancements.
     StateSquareMatrix getSampledProcessNoiseCovariance(double dt) const {
         return m_constantVelModel.getSampledProcessNoiseCovariance(dt);
-    }
-
-    /// Returns a 12-element vector containing a predicted state based on a
-    /// constant velocity process model.
-    StateVector computeEstimate(State &state, double dt) const {
-        StateVector ret = m_constantVelModel.computeEstimate(state, dt);
-        // Dampen velocities
-        pose_externalized_rotation::dampenVelocities(ret, m_damp, dt);
-        return ret;
     }
 
   private:
@@ -2207,10 +2119,10 @@ class PoseDampedConstantVelocityProcessModel {
 class AbsolutePositionBase {
   public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    static const types::DimensionType DIMENSION = 3; // 3 position
-    using MeasurementVector = types::Vector<DIMENSION>;
-    using MeasurementDiagonalMatrix = types::DiagonalMatrix<DIMENSION>;
-    using MeasurementMatrix = types::SquareMatrix<DIMENSION>;
+    static const size_t Dimension = 3; // 3 position
+    using MeasurementVector = types::Vector<Dimension>;
+    using MeasurementDiagonalMatrix = types::DiagonalMatrix<Dimension>;
+    using MeasurementMatrix = types::SquareMatrix<Dimension>;
     AbsolutePositionBase(MeasurementVector const &pos,
                          MeasurementVector const &variance)
         : m_pos(pos), m_covariance(variance.asDiagonal()) {}
@@ -2251,23 +2163,22 @@ class AbsolutePositionMeasurement<pose_externalized_rotation::State>
   public:
     using State = pose_externalized_rotation::State;
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    static const types::DimensionType STATE_DIMENSION =
-        types::Dimension<State>::value;
+    static constexpr size_t StateDimension = getDimension<State>();
     using Base = AbsolutePositionBase;
-    using Jacobian = types::Matrix<DIMENSION, STATE_DIMENSION>;
+    using Jacobian = types::Matrix<Dimension, StateDimension>;
     AbsolutePositionMeasurement(MeasurementVector const &pos,
                                 MeasurementVector const &variance)
         : Base(pos, variance), m_jacobian(Jacobian::Zero()) {
         m_jacobian.block<3, 3>(0, 0) = types::SquareMatrix<3>::Identity();
     }
 
-    types::Matrix<DIMENSION, STATE_DIMENSION> const &
+    types::Matrix<Dimension, StateDimension> const &
     getJacobian(State const &) const {
         return m_jacobian;
     }
 
   private:
-    types::Matrix<DIMENSION, STATE_DIMENSION> m_jacobian;
+    types::Matrix<Dimension, StateDimension> m_jacobian;
 };
 
 
@@ -2311,14 +2222,23 @@ template <typename StateType> class ConstantProcess {
 };
 
 
-class AngularVelocityBase {
+/*!
+ * This class is a 3D angular velocity measurement.
+ *
+ * It can be used with any state class that exposes a `angularVelocity()`
+ * method. On its own, it is only suitable for unscented filter correction,
+ * since the jacobian depends on the arrangement of the state vector. See
+ * AngularVelocityEKFMeasurement's explicit specializations for use in EKF
+ * correction mode.
+ */
+class AngularVelocityMeasurement {
   public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    static const types::DimensionType DIMENSION = 3;
-    using MeasurementVector = types::Vector<DIMENSION>;
-    using MeasurementSquareMatrix = types::SquareMatrix<DIMENSION>;
-    AngularVelocityBase(MeasurementVector const &vel,
-                        MeasurementVector const &variance)
+    static constexpr size_t Dimension = 3;
+    using MeasurementVector = types::Vector<Dimension>;
+    using MeasurementSquareMatrix = types::SquareMatrix<Dimension>;
+    AngularVelocityMeasurement(MeasurementVector const &vel,
+                               MeasurementVector const &variance)
         : m_measurement(vel), m_covariance(variance.asDiagonal()) {}
 
     template <typename State>
@@ -2356,52 +2276,50 @@ class AngularVelocityBase {
     MeasurementSquareMatrix m_covariance;
 };
 
-/// This is the subclass of AngularVelocityBase: only explicit
+/// This is the subclass of AngularVelocityMeasurement: only explicit
 /// specializations, and on state types.
-template <typename StateType> class AngularVelocityMeasurement;
+template <typename StateType> class AngularVelocityEKFMeasurement;
 
-/// AngularVelocityMeasurement with a pose_externalized_rotation::State
+/// AngularVelocityEKFMeasurement with a pose_externalized_rotation::State
 template <>
-class AngularVelocityMeasurement<pose_externalized_rotation::State>
-    : public AngularVelocityBase {
+class AngularVelocityEKFMeasurement<pose_externalized_rotation::State>
+    : public AngularVelocityMeasurement {
   public:
     using State = pose_externalized_rotation::State;
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    static const types::DimensionType STATE_DIMENSION =
-        types::Dimension<State>::value;
-    using Base = AngularVelocityBase;
+    static constexpr size_t StateDimension = getDimension<State>();
+    using Base = AngularVelocityMeasurement;
 
-    AngularVelocityMeasurement(MeasurementVector const &vel,
-                               MeasurementVector const &variance)
+    AngularVelocityEKFMeasurement(MeasurementVector const &vel,
+                                  MeasurementVector const &variance)
         : Base(vel, variance) {}
 
-    types::Matrix<DIMENSION, STATE_DIMENSION> getJacobian(State const &) const {
-        using Jacobian = types::Matrix<DIMENSION, STATE_DIMENSION>;
+    types::Matrix<Dimension, StateDimension> getJacobian(State const &) const {
+        using Jacobian = types::Matrix<Dimension, StateDimension>;
         Jacobian ret = Jacobian::Zero();
         ret.topRightCorner<3, 3>() = types::SquareMatrix<3>::Identity();
         return ret;
     }
 };
 
-/// AngularVelocityMeasurement with a orient_externalized_rotation::State
+/// AngularVelocityEKFMeasurement with a orient_externalized_rotation::State
 /// The code is in fact identical except for the state types, due to a
 /// coincidence of how the state vectors are arranged.
 template <>
-class AngularVelocityMeasurement<orient_externalized_rotation::State>
-    : public AngularVelocityBase {
+class AngularVelocityEKFMeasurement<orient_externalized_rotation::State>
+    : public AngularVelocityMeasurement {
   public:
     using State = orient_externalized_rotation::State;
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    static const types::DimensionType STATE_DIMENSION =
-        types::Dimension<State>::value;
-    using Base = AngularVelocityBase;
+    static constexpr size_t StateDimension = getDimension<State>();
+    using Base = AngularVelocityMeasurement;
 
-    AngularVelocityMeasurement(MeasurementVector const &vel,
-                               MeasurementVector const &variance)
+    AngularVelocityEKFMeasurement(MeasurementVector const &vel,
+                                  MeasurementVector const &variance)
         : Base(vel, variance) {}
 
-    types::Matrix<DIMENSION, STATE_DIMENSION> getJacobian(State const &) const {
-        using Jacobian = types::Matrix<DIMENSION, STATE_DIMENSION>;
+    types::Matrix<Dimension, StateDimension> getJacobian(State const &) const {
+        using Jacobian = types::Matrix<Dimension, StateDimension>;
         Jacobian ret = Jacobian::Zero();
         ret.topRightCorner<3, 3>() = types::SquareMatrix<3>::Identity();
         return ret;

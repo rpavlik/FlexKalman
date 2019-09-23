@@ -24,16 +24,6 @@
 
 #pragma once
 
-// Internal Includes
-#include "FlexKalman/FlexibleKalmanBase.h"
-#include "FlexKalman/PoseState.h"
-
-// Library/third-party includes
-// - none
-
-// Standard includes
-// - none
-
 /// Are the contents of a value invalid? (Invalid is defined to be any "weird"
 /// floating point value - nan, inf, denormalized, etc. - anything that
 /// std::isnormal() returns false on that isn't just zero)

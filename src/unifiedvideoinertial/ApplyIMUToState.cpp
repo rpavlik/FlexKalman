@@ -59,7 +59,7 @@ namespace uvbi {
         OrientationMeasurement kalmanMeas{quatInCamSpace, var};
 #if 0
         auto correctionInProgress =
-            flexkalman::beginCorrection(state, processModel, kalmanMeas);
+            flexkalman::beginExtendedCorrection(state, processModel, kalmanMeas);
 #else
         auto correctionInProgress =
             flexkalman::beginUnscentedCorrection(state, kalmanMeas);
@@ -121,7 +121,7 @@ namespace uvbi {
         // angVel = (getRotationMatrixToCameraSpace(sys) * angVel).eval();
         /// @todo transform variance?
 
-        flexkalman::AngularVelocityMeasurement<BodyState> kalmanMeas{angVel, var};
+        flexkalman::AngularVelocityEKFMeasurement<BodyState> kalmanMeas{angVel, var};
         flexkalman::correct(state, processModel, kalmanMeas);
 #else
         flexkalman::IMUAngVelMeasurement kalmanMeas{angVel, var};

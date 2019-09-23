@@ -39,14 +39,23 @@
 
 namespace flexkalman {
 
-class AngularVelocityBase {
+/*!
+ * This class is a 3D angular velocity measurement.
+ *
+ * It can be used with any state class that exposes a `angularVelocity()`
+ * method. On its own, it is only suitable for unscented filter correction,
+ * since the jacobian depends on the arrangement of the state vector. See
+ * AngularVelocityEKFMeasurement's explicit specializations for use in EKF
+ * correction mode.
+ */
+class AngularVelocityMeasurement {
   public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    static const types::DimensionType DIMENSION = 3;
-    using MeasurementVector = types::Vector<DIMENSION>;
-    using MeasurementSquareMatrix = types::SquareMatrix<DIMENSION>;
-    AngularVelocityBase(MeasurementVector const &vel,
-                        MeasurementVector const &variance)
+    static constexpr size_t Dimension = 3;
+    using MeasurementVector = types::Vector<Dimension>;
+    using MeasurementSquareMatrix = types::SquareMatrix<Dimension>;
+    AngularVelocityMeasurement(MeasurementVector const &vel,
+                               MeasurementVector const &variance)
         : m_measurement(vel), m_covariance(variance.asDiagonal()) {}
 
     template <typename State>
@@ -84,52 +93,50 @@ class AngularVelocityBase {
     MeasurementSquareMatrix m_covariance;
 };
 
-/// This is the subclass of AngularVelocityBase: only explicit
+/// This is the subclass of AngularVelocityMeasurement: only explicit
 /// specializations, and on state types.
-template <typename StateType> class AngularVelocityMeasurement;
+template <typename StateType> class AngularVelocityEKFMeasurement;
 
-/// AngularVelocityMeasurement with a pose_externalized_rotation::State
+/// AngularVelocityEKFMeasurement with a pose_externalized_rotation::State
 template <>
-class AngularVelocityMeasurement<pose_externalized_rotation::State>
-    : public AngularVelocityBase {
+class AngularVelocityEKFMeasurement<pose_externalized_rotation::State>
+    : public AngularVelocityMeasurement {
   public:
     using State = pose_externalized_rotation::State;
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    static const types::DimensionType STATE_DIMENSION =
-        types::Dimension<State>::value;
-    using Base = AngularVelocityBase;
+    static constexpr size_t StateDimension = getDimension<State>();
+    using Base = AngularVelocityMeasurement;
 
-    AngularVelocityMeasurement(MeasurementVector const &vel,
-                               MeasurementVector const &variance)
+    AngularVelocityEKFMeasurement(MeasurementVector const &vel,
+                                  MeasurementVector const &variance)
         : Base(vel, variance) {}
 
-    types::Matrix<DIMENSION, STATE_DIMENSION> getJacobian(State const &) const {
-        using Jacobian = types::Matrix<DIMENSION, STATE_DIMENSION>;
+    types::Matrix<Dimension, StateDimension> getJacobian(State const &) const {
+        using Jacobian = types::Matrix<Dimension, StateDimension>;
         Jacobian ret = Jacobian::Zero();
         ret.topRightCorner<3, 3>() = types::SquareMatrix<3>::Identity();
         return ret;
     }
 };
 
-/// AngularVelocityMeasurement with a orient_externalized_rotation::State
+/// AngularVelocityEKFMeasurement with a orient_externalized_rotation::State
 /// The code is in fact identical except for the state types, due to a
 /// coincidence of how the state vectors are arranged.
 template <>
-class AngularVelocityMeasurement<orient_externalized_rotation::State>
-    : public AngularVelocityBase {
+class AngularVelocityEKFMeasurement<orient_externalized_rotation::State>
+    : public AngularVelocityMeasurement {
   public:
     using State = orient_externalized_rotation::State;
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    static const types::DimensionType STATE_DIMENSION =
-        types::Dimension<State>::value;
-    using Base = AngularVelocityBase;
+    static constexpr size_t StateDimension = getDimension<State>();
+    using Base = AngularVelocityMeasurement;
 
-    AngularVelocityMeasurement(MeasurementVector const &vel,
-                               MeasurementVector const &variance)
+    AngularVelocityEKFMeasurement(MeasurementVector const &vel,
+                                  MeasurementVector const &variance)
         : Base(vel, variance) {}
 
-    types::Matrix<DIMENSION, STATE_DIMENSION> getJacobian(State const &) const {
-        using Jacobian = types::Matrix<DIMENSION, STATE_DIMENSION>;
+    types::Matrix<Dimension, StateDimension> getJacobian(State const &) const {
+        using Jacobian = types::Matrix<Dimension, StateDimension>;
         Jacobian ret = Jacobian::Zero();
         ret.topRightCorner<3, 3>() = types::SquareMatrix<3>::Identity();
         return ret;
