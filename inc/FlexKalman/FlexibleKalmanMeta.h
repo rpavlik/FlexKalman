@@ -37,8 +37,10 @@
 #define FLEXKALMAN_DEBUG_OUTPUT(Name, Value)
 #endif
 
-/// @brief Header-only framework for building Kalman-style filters, prediction,
-/// and sensor fusion
+/*!
+ * @brief Header-only framework for building Kalman-style filters, prediction,
+ * and sensor fusion
+ */
 namespace flexkalman {
 // NOTE: Everything in this file up through the preceding line
 // will be included, in perhaps slightly-modified form,

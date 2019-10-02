@@ -51,7 +51,7 @@ inline void dumpKalmanDebugOuput(const char name[], const char expr[],
 int main() {
     using ProcessModel = flexkalman::PoseConstantVelocityProcessModel;
     using State = flexkalman::pose_externalized_rotation::State;
-    using Measurement = flexkalman::AbsoluteOrientationMeasurement<State>;
+    using Measurement = flexkalman::AbsoluteOrientationEKFMeasurement<State>;
     State state;
     ProcessModel processModel;
     std::cout << "Initial state:" << std::endl;

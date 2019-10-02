@@ -40,7 +40,7 @@
 
 namespace flexkalman {
 
-/// A constant-velocity model for a 6DOF pose (with velocities)
+//! A constant-velocity model for a 6DOF pose (with velocities)
 class PoseConstantVelocityProcessModel {
   public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
@@ -61,29 +61,31 @@ class PoseConstantVelocityProcessModel {
         m_mu = noise;
     }
 
-    /// Also known as the "process model jacobian" in TAG, this is A.
+    //! Also known as the "process model jacobian" in TAG, this is A.
     StateSquareMatrix getStateTransitionMatrix(State const &, double dt) const {
         return pose_externalized_rotation::stateTransitionMatrix(dt);
     }
 
-    /// Does not update error covariance
+    //! Does not update error covariance
     void predictStateOnly(State &s, double dt) const {
         FLEXKALMAN_DEBUG_OUTPUT("Time change", dt);
         pose_externalized_rotation::applyVelocity(s, dt);
     }
-    /// Updates state vector and error covariance
+    //! Updates state vector and error covariance
     void predictState(State &s, double dt) const {
         predictStateOnly(s, dt);
         auto Pminus = predictErrorCovariance(s, *this, dt);
         s.setErrorCovariance(Pminus);
     }
 
-    /// This is Q(deltaT) - the Sampled Process Noise Covariance
-    /// @return a matrix of dimension n x n.
-    ///
-    /// Like all covariance matrices, it is real symmetrical (self-adjoint),
-    /// so .selfAdjointView<Eigen::Upper>() might provide useful performance
-    /// enhancements in some algorithms.
+    /*!
+     * This is Q(deltaT) - the Sampled Process Noise Covariance
+     * @return a matrix of dimension n x n.
+     *
+     * Like all covariance matrices, it is real symmetrical (self-adjoint),
+     * so .selfAdjointView<Eigen::Upper>() might provide useful performance
+     * enhancements in some algorithms.
+     */
     StateSquareMatrix getSampledProcessNoiseCovariance(double dt) const {
         constexpr auto dim = getDimension<State>();
         StateSquareMatrix cov = StateSquareMatrix::Zero();
@@ -103,8 +105,10 @@ class PoseConstantVelocityProcessModel {
     }
 
   private:
-    /// this is mu-arrow, the auto-correlation vector of the noise
-    /// sources
+    /*!
+     * this is mu-arrow, the auto-correlation vector of the noise
+     * sources
+     */
     NoiseAutocorrelation m_mu;
     double getMu(std::size_t index) const {
         assert(index < (getDimension<State>() / 2) &&

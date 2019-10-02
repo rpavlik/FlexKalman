@@ -40,23 +40,31 @@ inline double computeNu(std::size_t L, double alpha) {
     auto nu = std::sqrt(L + lambda);
     return nu;
 }
-/// For further details on the scaling factors, refer to:
-/// Julier, S. J., & Uhlmann, J. K. (2004). Unscented filtering and
-/// nonlinear estimation. Proceedings of the IEEE, 92(3), 401�422.
-/// http://doi.org/10.1109/JPROC.2003.823141
-/// Appendix V (for alpha), Appendix VI (for beta)
+/*!
+ * For further details on the scaling factors, refer to:
+ * Julier, S. J., & Uhlmann, J. K. (2004). Unscented filtering and
+ * nonlinear estimation. Proceedings of the IEEE, 92(3), 401�422.
+ * http://doi.org/10.1109/JPROC.2003.823141
+ * Appendix V (for alpha), Appendix VI (for beta)
+ */
 struct SigmaPointParameters {
     SigmaPointParameters(double alpha_ = 0.001, double beta_ = 2.,
                          double kappa_ = 0.)
         : alpha(alpha_), beta(beta_), kappa(kappa_) {}
-    /// double L;
-    /// Primary scaling factor, typically in the range [1e-4, 1]
+    /*!
+     * double L;
+     * Primary scaling factor, typically in the range [1e-4, 1]
+     */
     double alpha;
-    /// Secondary scaling to emphasize the 0th sigma point in covariance
-    /// weighting - 2 is optimal for gaussian distributions
+    /*!
+     * Secondary scaling to emphasize the 0th sigma point in covariance
+     * weighting - 2 is optimal for gaussian distributions
+     */
     double beta;
-    /// Tertiary scaling factor, typically 0.
-    /// Some authors recommend parameter estimation to use L - 3
+    /*!
+     * Tertiary scaling factor, typically 0.
+     * Some authors recommend parameter estimation to use L - 3
+     */
     double kappa;
 };
 struct SigmaPointParameterDerivedQuantities {
@@ -72,16 +80,16 @@ struct SigmaPointParameterDerivedQuantities {
     double alphaSquared;
 
   public:
-    /// "Compound scaling factor"
+    //! "Compound scaling factor"
     double lambda;
-    /// Scales the matrix square root in computing sigma points
+    //! Scales the matrix square root in computing sigma points
     double gamma;
 
-    /// Element 0 of weight vector for computing means
+    //! Element 0 of weight vector for computing means
     double weightMean0;
-    /// Element 0 of weight vector for computing covariance
+    //! Element 0 of weight vector for computing covariance
     double weightCov0;
-    /// Other elements of weight vector
+    //! Other elements of weight vector
     double weight;
 };
 
@@ -107,7 +115,7 @@ class AugmentedSigmaPointGenerator {
         weights_[0] = p_.weightMean0;
         weightsForCov_[0] = p_.weightCov0;
         scaledMatrixSqrt_ = cov.llt().matrixL();
-        /// scaledMatrixSqrt_ *= p_.gamma;
+        //! scaledMatrixSqrt_ *= p_.gamma;
         sigmaPoints_ << mean, (p_.gamma * scaledMatrixSqrt_).colwise() + mean,
             (-p_.gamma * scaledMatrixSqrt_).colwise() + mean;
     }
@@ -130,7 +138,7 @@ class AugmentedSigmaPointGenerator {
 
     using ConstOrigMeanVec = Eigen::VectorBlock<const MeanVec, OrigDim>;
 
-    /// Get the "un-augmented" mean
+    //! Get the "un-augmented" mean
     ConstOrigMeanVec getOrigMean() const {
         return mean_.template head<OrigDim>();
     }
@@ -166,7 +174,7 @@ class ReconstructedDistributionFromSigmaPoints {
         SigmaPointsGen const &sigmaPoints,
         TransformedSigmaPointsMat const &xformedPointsMat)
         : xformedCov_(CovMat::Zero()), crossCov_(CrossCovMatrix::Zero()) {
-/// weighted average
+//! weighted average
 #if 1
         xformedMean_ = MeanVec::Zero();
         for (std::size_t i = 0; i < NumSigmaPoints; ++i) {

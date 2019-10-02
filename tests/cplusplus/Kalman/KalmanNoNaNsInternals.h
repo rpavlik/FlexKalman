@@ -34,10 +34,10 @@
 #include "ContentsInvalid.h"
 
 using State = flexkalman::pose_externalized_rotation::State;
-using AbsoluteOrientationMeasurement =
-    flexkalman::AbsoluteOrientationMeasurement<State>;
-using AbsolutePositionMeasurement =
-    flexkalman::AbsolutePositionMeasurement<State>;
+using AbsoluteOrientationEKFMeasurement =
+    flexkalman::AbsoluteOrientationEKFMeasurement<State>;
+using AbsolutePositionEKFMeasurement =
+    flexkalman::AbsolutePositionEKFMeasurement<State>;
 
 static void dumpState(State const &state, const char msg[], size_t iteration) {
     std::cout << "\n"
@@ -76,7 +76,7 @@ TEMPLATE_TEST_CASE("ProcessModelStability", "",
     dumpState(state, "Initial state", iteration);
 
     SECTION("IdentityAbsoluteOrientationMeasurement") {
-        auto meas = AbsoluteOrientationMeasurement{
+        auto meas = AbsoluteOrientationEKFMeasurement{
             Eigen::Quaterniond::Identity(),
             Eigen::Vector3d(0.00001, 0.00001, 0.00001)};
         for (iteration = 0; iteration < 100; ++iteration) {
@@ -87,7 +87,7 @@ TEMPLATE_TEST_CASE("ProcessModelStability", "",
         /// @todo check that it's roughly identity
     }
     SECTION("IdentityAbsolutePositionMeasurement") {
-        auto meas = AbsolutePositionMeasurement{
+        auto meas = AbsolutePositionEKFMeasurement{
             Eigen::Vector3d::Zero(), Eigen::Vector3d::Constant(0.000007)};
         for (iteration = 0; iteration < 100; ++iteration) {
             runFilterAndCheck(state, processModel, meas, 0.1, iteration);
@@ -95,7 +95,7 @@ TEMPLATE_TEST_CASE("ProcessModelStability", "",
         /// @todo check that it's roughly identity
     }
     SECTION("AbsolutePositionMeasurementXlate111") {
-        auto meas = AbsolutePositionMeasurement{
+        auto meas = AbsolutePositionEKFMeasurement{
             Eigen::Vector3d::Constant(1), Eigen::Vector3d::Constant(0.000007)};
         for (iteration = 0; iteration < 100; ++iteration) {
             runFilterAndCheck(state, processModel, meas, 0.1, iteration);

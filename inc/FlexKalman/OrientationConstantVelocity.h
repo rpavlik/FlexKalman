@@ -40,7 +40,7 @@
 
 namespace flexkalman {
 
-/// A model for a 3DOF pose (with angular velocity)
+//! A model for a 3DOF pose (with angular velocity)
 class OrientationConstantVelocityProcessModel {
   public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
@@ -58,7 +58,7 @@ class OrientationConstantVelocityProcessModel {
         m_mu = noise;
     }
 
-    /// Also known as the "process model jacobian" in TAG, this is A.
+    //! Also known as the "process model jacobian" in TAG, this is A.
     StateSquareMatrix getStateTransitionMatrix(State const &, double dt) const {
         return orient_externalized_rotation::stateTransitionMatrix(dt);
     }
@@ -73,12 +73,14 @@ class OrientationConstantVelocityProcessModel {
         s.setErrorCovariance(Pminus);
     }
 
-    /// This is Q(deltaT) - the Sampled Process Noise Covariance
-    /// @return a matrix of dimension n x n.
-    ///
-    /// Like all covariance matrices, it is real symmetrical (self-adjoint),
-    /// so .selfAdjointView<Eigen::Upper>() might provide useful performance
-    /// enhancements in some algorithms.
+    /*!
+     * This is Q(deltaT) - the Sampled Process Noise Covariance
+     * @return a matrix of dimension n x n.
+     *
+     * Like all covariance matrices, it is real symmetrical (self-adjoint),
+     * so .selfAdjointView<Eigen::Upper>() might provide useful performance
+     * enhancements in some algorithms.
+     */
     StateSquareMatrix getSampledProcessNoiseCovariance(double dt) const {
         constexpr auto dim = getDimension<State>();
         StateSquareMatrix cov = StateSquareMatrix::Zero();
@@ -98,8 +100,10 @@ class OrientationConstantVelocityProcessModel {
     }
 
   private:
-    /// this is mu-arrow, the auto-correlation vector of the noise
-    /// sources
+    /*!
+     * this is mu-arrow, the auto-correlation vector of the noise
+     * sources
+     */
     NoiseAutocorrelation m_mu;
     double getMu(std::size_t index) const {
         assert(index < (getDimension<State>() / 2) &&

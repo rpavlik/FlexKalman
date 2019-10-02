@@ -526,12 +526,12 @@ template <typename PolicyT> class IMUOrientationMeasBase {
     MeasurementSquareMatrix m_covariance;
 };
 
-/// This is the subclass of AbsoluteOrientationBase: only explicit
+/// This is the subclass of AbsoluteOrientationMeasurement: only explicit
 /// specializations, and on state types.
 template <typename StateType, typename PolicyT = SplitQ>
 class IMUOrientationMeasurement;
 
-/// AbsoluteOrientationMeasurement with a pose_externalized_rotation::State
+/// AbsoluteOrientationEKFMeasurement with a pose_externalized_rotation::State
 template <typename PolicyT>
 class IMUOrientationMeasurement<pose_externalized_rotation::State, PolicyT>
     : public IMUOrientationMeasBase<PolicyT> {
@@ -608,7 +608,7 @@ namespace uvbi {
     }
 #ifdef UVBI_USE_OLD_MEASUREMENT_CLASS
     using OrientationMeasurement =
-        flexkalman::AbsoluteOrientationMeasurement<BodyState>;
+        flexkalman::AbsoluteOrientationEKFMeasurement<BodyState>;
 #else
     using OrientationMeasurement =
         flexkalman::IMUOrientationMeasurement<BodyState>;

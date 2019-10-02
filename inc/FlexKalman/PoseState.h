@@ -54,8 +54,10 @@ namespace pose_externalized_rotation {
         StateVector::ConstFixedSegmentReturnType<6>::Type;
     using StateSquareMatrix = types::SquareMatrix<Dimension>;
 
-    /// This returns A(deltaT), though if you're just predicting xhat-, use
-    /// applyVelocity() instead for performance.
+    /*!
+     * This returns A(deltaT), though if you're just predicting xhat-, use
+     * applyVelocity() instead for performance.
+     */
     inline StateSquareMatrix stateTransitionMatrix(double dt) {
         // eq. 4.5 in Welch 1996 - except we have all the velocities at the
         // end
@@ -64,16 +66,20 @@ namespace pose_externalized_rotation {
 
         return A;
     }
-    /// Function used to compute the coefficient m in v_new = m * v_old.
-    /// The damping value is for exponential decay.
+    /*!
+     * Function used to compute the coefficient m in v_new = m * v_old.
+     * The damping value is for exponential decay.
+     */
     inline double computeAttenuation(double damping, double dt) {
         return std::pow(damping, dt);
     }
 
-    /// Returns the state transition matrix for a constant velocity with a
-    /// single damping parameter (not for direct use in computing state
-    /// transition, because it is very sparse, but in computing other
-    /// values)
+    /*!
+     * Returns the state transition matrix for a constant velocity with a
+     * single damping parameter (not for direct use in computing state
+     * transition, because it is very sparse, but in computing other
+     * values)
+     */
     inline StateSquareMatrix
     stateTransitionMatrixWithVelocityDamping(double dt, double damping) {
         // eq. 4.5 in Welch 1996
@@ -82,10 +88,12 @@ namespace pose_externalized_rotation {
         return A;
     }
 
-    /// Returns the state transition matrix for a constant velocity with
-    /// separate damping paramters for linear and angular velocity (not for
-    /// direct use in computing state transition, because it is very sparse,
-    /// but in computing other values)
+    /*!
+     * Returns the state transition matrix for a constant velocity with
+     * separate damping paramters for linear and angular velocity (not for
+     * direct use in computing state transition, because it is very sparse,
+     * but in computing other values)
+     */
     inline StateSquareMatrix stateTransitionMatrixWithSeparateVelocityDamping(
         double dt, double posDamping, double oriDamping) {
         // eq. 4.5 in Welch 1996
@@ -101,28 +109,28 @@ namespace pose_externalized_rotation {
 
         static constexpr size_t Dimension = 12;
 
-        /// Default constructor
+        //! Default constructor
         State()
             : m_state(StateVector::Zero()),
               m_errorCovariance(StateSquareMatrix::Identity() *
                                 10 /** @todo almost certainly wrong */),
               m_orientation(Eigen::Quaterniond::Identity()) {}
-        /// set xhat
+        //! set xhat
         void setStateVector(StateVector const &state) { m_state = state; }
-        /// xhat
+        //! xhat
         StateVector const &stateVector() const { return m_state; }
 
         // set P
         void setErrorCovariance(StateSquareMatrix const &errorCovariance) {
             m_errorCovariance = errorCovariance;
         }
-        /// P
+        //! P
         StateSquareMatrix const &errorCovariance() const {
             return m_errorCovariance;
         }
         StateSquareMatrix &errorCovariance() { return m_errorCovariance; }
 
-        /// Intended for startup use.
+        //! Intended for startup use.
         void setQuaternion(Eigen::Quaterniond const &quaternion) {
             m_orientation = quaternion.normalized();
         }
@@ -158,10 +166,10 @@ namespace pose_externalized_rotation {
             return m_state.segment<3>(9);
         }
 
-        /// Linear and angular velocities
+        //! Linear and angular velocities
         StateVectorBlock6 velocities() { return m_state.tail<6>(); }
 
-        /// Linear and angular velocities
+        //! Linear and angular velocities
         ConstStateVectorBlock6 velocities() const { return m_state.tail<6>(); }
 
         Eigen::Quaterniond const &getQuaternion() const {
@@ -174,8 +182,10 @@ namespace pose_externalized_rotation {
                    m_orientation;
         }
 
-        /// Get the position and quaternion combined into a single isometry
-        /// (transformation)
+        /*!
+         * Get the position and quaternion combined into a single isometry
+         * (transformation)
+         */
         Eigen::Isometry3d getIsometry() const {
             Eigen::Isometry3d ret;
             ret.fromPositionOrientationScale(position(), getQuaternion(),
@@ -184,18 +194,22 @@ namespace pose_externalized_rotation {
         }
 
       private:
-        /// In order: x, y, z, incremental rotations phi (about x), theta
-        /// (about y), psy (about z), then their derivatives in the same
-        /// order.
+        /*!
+         * In order: x, y, z, incremental rotations phi (about x), theta
+         * (about y), psy (about z), then their derivatives in the same
+         * order.
+         */
         StateVector m_state;
-        /// P
+        //! P
         StateSquareMatrix m_errorCovariance;
-        /// Externally-maintained orientation per Welch 1996
+        //! Externally-maintained orientation per Welch 1996
         Eigen::Quaterniond m_orientation;
     };
 
-    /// Stream insertion operator, for displaying the state of the state
-    /// class.
+    /*!
+     * Stream insertion operator, for displaying the state of the state
+     * class.
+     */
     template <typename OutputStream>
     inline OutputStream &operator<<(OutputStream &os, State const &state) {
         os << "State:" << state.stateVector().transpose() << "\n";
@@ -205,24 +219,26 @@ namespace pose_externalized_rotation {
         return os;
     }
 
-    /// Computes A(deltaT)xhat(t-deltaT)
+    //! Computes A(deltaT)xhat(t-deltaT)
     inline void applyVelocity(State &state, double dt) {
         // eq. 4.5 in Welch 1996
 
-        /// @todo benchmark - assuming for now that the manual small
-        /// calcuations are faster than the matrix ones.
+        /*!
+         * @todo benchmark - assuming for now that the manual small
+         * calcuations are faster than the matrix ones.
+         */
 
         state.position() += state.velocity() * dt;
         state.incrementalOrientation() += state.angularVelocity() * dt;
     }
 
-    /// Dampen all 6 components of velocity by a single factor.
+    //! Dampen all 6 components of velocity by a single factor.
     inline void dampenVelocities(State &state, double damping, double dt) {
         auto attenuation = computeAttenuation(damping, dt);
         state.velocities() *= attenuation;
     }
 
-    /// Separately dampen the linear and angular velocities
+    //! Separately dampen the linear and angular velocities
     inline void separatelyDampenVelocities(State &state, double posDamping,
                                            double oriDamping, double dt) {
         state.velocity() *= computeAttenuation(posDamping, dt);

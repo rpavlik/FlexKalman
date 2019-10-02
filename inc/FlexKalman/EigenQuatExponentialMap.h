@@ -40,22 +40,26 @@ namespace util {
 
         template <typename Scalar> struct FourthRootMachineEps;
         template <> struct FourthRootMachineEps<double> {
-            /// machine epsilon is 1e-53, so fourth root is roughly 1e-13
+            //! machine epsilon is 1e-53, so fourth root is roughly 1e-13
             static double get() { return 1.e-13; }
         };
         template <> struct FourthRootMachineEps<float> {
-            /// machine epsilon is 1e-24, so fourth root is 1e-6
+            //! machine epsilon is 1e-24, so fourth root is 1e-6
             static float get() { return 1.e-6f; }
         };
-        /// Computes the "historical" (un-normalized) sinc(Theta)
-        /// (sine(theta)/theta for theta != 0, defined as the limit value of 0
-        /// at theta = 0)
+        /*!
+         * Computes the "historical" (un-normalized) sinc(Theta)
+         * (sine(theta)/theta for theta != 0, defined as the limit value of 0
+         * at theta = 0)
+         */
         template <typename Scalar> inline Scalar sinc(Scalar theta) {
-            /// fourth root of machine epsilon is recommended cutoff for taylor
-            /// series expansion vs. direct computation per
-            /// Grassia, F. S. (1998). Practical Parameterization of Rotations
-            /// Using the Exponential Map. Journal of Graphics Tools, 3(3),
-            /// 29-48. http://doi.org/10.1080/10867651.1998.10487493
+            /*!
+             * fourth root of machine epsilon is recommended cutoff for taylor
+             * series expansion vs. direct computation per
+             * Grassia, F. S. (1998). Practical Parameterization of Rotations
+             * Using the Exponential Map. Journal of Graphics Tools, 3(3),
+             * 29-48. http://doi.org/10.1080/10867651.1998.10487493
+             */
             Scalar ret;
             if (theta < FourthRootMachineEps<Scalar>::get()) {
                 // taylor series expansion.
@@ -67,22 +71,24 @@ namespace util {
             return ret;
         }
 
-        /// fully-templated free function for quaternion expontiation
+        //! fully-templated free function for quaternion expontiation
         template <typename Derived>
         inline Eigen::Quaternion<typename Derived::Scalar>
         quat_exp(Eigen::MatrixBase<Derived> const &vec) {
             EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(Derived, 3);
             using Scalar = typename Derived::Scalar;
-            /// Implementation inspired by
-            /// Grassia, F. S. (1998). Practical Parameterization of Rotations
-            /// Using the Exponential Map. Journal of Graphics Tools, 3(3),
-            /// 29–48. http://doi.org/10.1080/10867651.1998.10487493
-            ///
-            /// However, that work introduced a factor of 1/2 which I could not
-            /// derive from the definition of quaternion exponentiation and
-            /// whose absence thus distinguishes this implementation. Without
-            /// that factor of 1/2, the exp and ln functions successfully
-            /// round-trip and match other implementations.
+            /*!
+             * Implementation inspired by
+             * Grassia, F. S. (1998). Practical Parameterization of Rotations
+             * Using the Exponential Map. Journal of Graphics Tools, 3(3),
+             * 29–48. http://doi.org/10.1080/10867651.1998.10487493
+             *
+             * However, that work introduced a factor of 1/2 which I could not
+             * derive from the definition of quaternion exponentiation and
+             * whose absence thus distinguishes this implementation. Without
+             * that factor of 1/2, the exp and ln functions successfully
+             * round-trip and match other implementations.
+             */
             Scalar theta = vec.norm();
             Scalar vecscale = sinc(theta);
             Eigen::Quaternion<Scalar> ret;
@@ -91,8 +97,10 @@ namespace util {
             return ret.normalized();
         }
 
-        /// Taylor series expansion of theta over sin(theta), aka cosecant, for
-        /// use near 0 when you want continuity and validity at 0.
+        /*!
+         * Taylor series expansion of theta over sin(theta), aka cosecant, for
+         * use near 0 when you want continuity and validity at 0.
+         */
         template <typename Scalar>
         inline Scalar cscTaylorExpansion(Scalar theta) {
             return Scalar(1) +
@@ -106,12 +114,14 @@ namespace util {
                        Scalar(15120);
         }
 
-        /// fully-templated free function for quaternion log map, intended for
-        /// implementation use within the class.
-        ///
-        /// Assumes a unit quaternion.
-        ///
-        /// @todo seems to be off by a factor of two in testing?
+        /*!
+         * fully-templated free function for quaternion log map, intended for
+         * implementation use within the class.
+         *
+         * Assumes a unit quaternion.
+         *
+         * @todo seems to be off by a factor of two in testing?
+         */
         template <typename Scalar>
         inline Eigen::Matrix<Scalar, 3, 1>
         quat_ln(Eigen::Quaternion<Scalar> const &quat) {

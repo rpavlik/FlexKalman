@@ -41,8 +41,10 @@
 
 namespace flexkalman {
 
-/// A basically-constant-velocity model, with the addition of some
-/// damping of the velocities inspired by TAG
+/*!
+ * A basically-constant-velocity model, with the addition of some
+ * damping of the velocities inspired by TAG
+ */
 class PoseDampedConstantVelocityProcessModel {
   public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
@@ -67,14 +69,14 @@ class PoseDampedConstantVelocityProcessModel {
     void setNoiseAutocorrelation(NoiseAutocorrelation const &noise) {
         m_constantVelModel.setNoiseAutocorrelation(noise);
     }
-    /// Set the damping - must be positive
+    //! Set the damping - must be positive
     void setDamping(double damping) {
         if (damping > 0) {
             m_damp = damping;
         }
     }
 
-    /// Also known as the "process model jacobian" in TAG, this is A.
+    //! Also known as the "process model jacobian" in TAG, this is A.
     StateSquareMatrix getStateTransitionMatrix(State const &, double dt) const {
         return pose_externalized_rotation::
             stateTransitionMatrixWithVelocityDamping(dt, m_damp);
@@ -92,10 +94,12 @@ class PoseDampedConstantVelocityProcessModel {
         s.setErrorCovariance(Pminus);
     }
 
-    /// This is Q(deltaT) - the Sampled Process Noise Covariance
-    /// @return a matrix of dimension n x n. Note that it is real
-    /// symmetrical (self-adjoint), so .selfAdjointView<Eigen::Upper>()
-    /// might provide useful performance enhancements.
+    /*!
+     * This is Q(deltaT) - the Sampled Process Noise Covariance
+     * @return a matrix of dimension n x n. Note that it is real
+     * symmetrical (self-adjoint), so .selfAdjointView<Eigen::Upper>()
+     * might provide useful performance enhancements.
+     */
     StateSquareMatrix getSampledProcessNoiseCovariance(double dt) const {
         return m_constantVelModel.getSampledProcessNoiseCovariance(dt);
     }

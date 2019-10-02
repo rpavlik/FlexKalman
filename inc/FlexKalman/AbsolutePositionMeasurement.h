@@ -37,18 +37,24 @@
 
 namespace flexkalman {
 
-/// The measurement here has been split into a base and derived type, so
-/// that the derived type only contains the little bit that depends on a
-/// particular state type.
-class AbsolutePositionBase {
+/*!
+ * This class is a 3D position measurement.
+ *
+ * It can be used with any state class that exposes a `position()`
+ * method. On its own, it is only suitable for unscented filter correction,
+ * since the jacobian depends on the arrangement of the state vector. See
+ * AbsolutePositionEKFMeasurement's explicit specializations for use in EKF
+ * correction mode.
+ */
+class AbsolutePositionMeasurement {
   public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     static const size_t Dimension = 3; // 3 position
     using MeasurementVector = types::Vector<Dimension>;
     using MeasurementDiagonalMatrix = types::DiagonalMatrix<Dimension>;
     using MeasurementMatrix = types::SquareMatrix<Dimension>;
-    AbsolutePositionBase(MeasurementVector const &pos,
-                         MeasurementVector const &variance)
+    AbsolutePositionMeasurement(MeasurementVector const &pos,
+                                MeasurementVector const &variance)
         : m_pos(pos), m_covariance(variance.asDiagonal()) {}
 
     template <typename State>
@@ -56,18 +62,20 @@ class AbsolutePositionBase {
         return m_covariance;
     }
 
-    /// Gets the measurement residual, also known as innovation: predicts
-    /// the measurement from the predicted state, and returns the
-    /// difference.
-    ///
-    /// State type doesn't matter as long as we can `.position()`
+    /*!
+     * Gets the measurement residual, also known as innovation: predicts
+     * the measurement from the predicted state, and returns the
+     * difference.
+     *
+     * State type doesn't matter as long as we can `.position()`
+     */
     template <typename State>
     MeasurementVector getResidual(State const &s) const {
         MeasurementVector residual = m_pos - s.position();
         return residual;
     }
 
-    /// Convenience method to be able to store and re-use measurements.
+    //! Convenience method to be able to store and re-use measurements.
     void setMeasurement(MeasurementVector const &pos) { m_pos = pos; }
 
   private:
@@ -75,23 +83,24 @@ class AbsolutePositionBase {
     MeasurementDiagonalMatrix m_covariance;
 };
 
-/// This is the subclass of AbsolutePositionBase: only explicit
-/// specializations,
-/// and on state types.
-template <typename StateType> class AbsolutePositionMeasurement;
+/*!
+ * This is the subclass of AbsolutePositionMeasurement: only explicit
+ * specializations, and on state types.
+ */
+template <typename StateType> class AbsolutePositionEKFMeasurement;
 
-/// AbsolutePositionMeasurement with a pose_externalized_rotation::State
+//! AbsolutePositionEKFMeasurement with a pose_externalized_rotation::State
 template <>
-class AbsolutePositionMeasurement<pose_externalized_rotation::State>
-    : public AbsolutePositionBase {
+class AbsolutePositionEKFMeasurement<pose_externalized_rotation::State>
+    : public AbsolutePositionMeasurement {
   public:
     using State = pose_externalized_rotation::State;
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     static constexpr size_t StateDimension = getDimension<State>();
-    using Base = AbsolutePositionBase;
+    using Base = AbsolutePositionMeasurement;
     using Jacobian = types::Matrix<Dimension, StateDimension>;
-    AbsolutePositionMeasurement(MeasurementVector const &pos,
-                                MeasurementVector const &variance)
+    AbsolutePositionEKFMeasurement(MeasurementVector const &pos,
+                                   MeasurementVector const &variance)
         : Base(pos, variance), m_jacobian(Jacobian::Zero()) {
         m_jacobian.block<3, 3>(0, 0) = types::SquareMatrix<3>::Identity();
     }

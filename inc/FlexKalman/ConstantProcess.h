@@ -35,12 +35,14 @@
 
 namespace flexkalman {
 
-/// A simple process model for a "constant" process: all prediction does at
-/// most is bump up the uncertainty. Since it's widely applicable, it's
-/// templated on state type.
-///
-/// One potential application is for beacon autocalibration in a device
-/// filter.
+/*!
+ * A simple process model for a "constant" process: all prediction does at
+ * most is bump up the uncertainty. Since it's widely applicable, it's
+ * templated on state type.
+ *
+ * One potential application is for beacon autocalibration in a device
+ * filter.
+ */
 template <typename StateType> class ConstantProcess {
   public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW

@@ -1,14 +1,18 @@
 /** @file
     @brief Header
 
-    @date 2015
+    @date 2015-2019
 
+    @author
+    Ryan Pavlik
+    <ryan.pavlik@collabora.com>
     @author
     Sensics, Inc.
     <http://sensics.com/osvr>
 */
 
 // Copyright 2015 Sensics, Inc.
+// Copyright 2019 Collabora, Ltd.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -75,17 +79,19 @@ class AngularVelocityMeasurement {
         return residual;
     }
 
-    /// Gets the measurement residual, also known as innovation: predicts
-    /// the measurement from the predicted state, and returns the
-    /// difference.
-    ///
-    /// State type doesn't matter as long as we can `.angularVelocity()`
+    /*!
+     * Gets the measurement residual, also known as innovation: predicts
+     * the measurement from the predicted state, and returns the
+     * difference.
+     *
+     * State type doesn't matter as long as we can `.angularVelocity()`
+     */
     template <typename State>
     MeasurementVector getResidual(State const &s) const {
         return getResidual(predictMeasurement(s), s);
     }
 
-    /// Convenience method to be able to store and re-use measurements.
+    //! Convenience method to be able to store and re-use measurements.
     void setMeasurement(MeasurementVector const &vel) { m_measurement = vel; }
 
   private:
@@ -93,11 +99,16 @@ class AngularVelocityMeasurement {
     MeasurementSquareMatrix m_covariance;
 };
 
-/// This is the subclass of AngularVelocityMeasurement: only explicit
-/// specializations, and on state types.
+/*!
+ * This is the subclass of AngularVelocityMeasurement: only explicit
+ * specializations, and on state types.
+ *
+ * Only required for EKF-style correction (since jacobian depends closely on the
+ * state).
+ */
 template <typename StateType> class AngularVelocityEKFMeasurement;
 
-/// AngularVelocityEKFMeasurement with a pose_externalized_rotation::State
+//! AngularVelocityEKFMeasurement with a pose_externalized_rotation::State
 template <>
 class AngularVelocityEKFMeasurement<pose_externalized_rotation::State>
     : public AngularVelocityMeasurement {
@@ -119,9 +130,11 @@ class AngularVelocityEKFMeasurement<pose_externalized_rotation::State>
     }
 };
 
-/// AngularVelocityEKFMeasurement with a orient_externalized_rotation::State
-/// The code is in fact identical except for the state types, due to a
-/// coincidence of how the state vectors are arranged.
+/*!
+ * AngularVelocityEKFMeasurement with a orient_externalized_rotation::State
+ * The code is in fact identical except for the state types, due to a
+ * coincidence of how the state vectors are arranged.
+ */
 template <>
 class AngularVelocityEKFMeasurement<orient_externalized_rotation::State>
     : public AngularVelocityMeasurement {

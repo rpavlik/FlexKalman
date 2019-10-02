@@ -62,7 +62,7 @@ class SigmaPointCorrectionApplication {
     using MeasurementVec = types::Vector<m>;
     using MeasurementSquareMatrix = types::SquareMatrix<m>;
 
-    /// state augmented with measurement noise mean
+    //! state augmented with measurement noise mean
     static constexpr size_t AugmentedStateDim = n + m;
     using AugmentedStateVec = types::Vector<AugmentedStateDim>;
     using AugmentedStateCovMatrix = types::SquareMatrix<AugmentedStateDim>;
@@ -97,7 +97,7 @@ class SigmaPointCorrectionApplication {
     static AugmentedStateVec getAugmentedStateVec(State const &s,
                                                   Measurement const &m) {
         AugmentedStateVec ret;
-        /// assuming measurement noise is zero mean
+        //! assuming measurement noise is zero mean
         ret << s.stateVector(), MeasurementVec::Zero();
         return ret;
     }
@@ -110,9 +110,11 @@ class SigmaPointCorrectionApplication {
         return ret;
     }
 
-    /// Transforms sigma points by having the measurement class compute the
-    /// estimated measurement for a state whose state vector we update to
-    /// each of the sigma points in turn.
+    /*!
+     * Transforms sigma points by having the measurement class compute the
+     * estimated measurement for a state whose state vector we update to
+     * each of the sigma points in turn.
+     */
     static TransformedSigmaPointsMat
     transformSigmaPoints(State const &s, Measurement &meas,
                          SigmaPointsGen const &sigmaPoints) {
@@ -151,28 +153,32 @@ class SigmaPointCorrectionApplication {
         return ret;
     }
 
-    /// Finish computing the rest and correct the state.
-    ///
-    /// @param cancelIfNotFinite If the new error covariance is detected to
-    /// contain non-finite values, should we cancel the correction and not
-    /// apply it?
-    ///
-    /// @return true if correction completed
+    /*!
+     * Finish computing the rest and correct the state.
+     *
+     * @param cancelIfNotFinite If the new error covariance is detected to
+     * contain non-finite values, should we cancel the correction and not
+     * apply it?
+     *
+     * @return true if correction completed
+     */
     bool finishCorrection(bool cancelIfNotFinite = true) {
-        /// Logically state.errorCovariance() - K * Pvv * K.transpose(),
-        /// but considering just the second term, we can
-        /// replace K with its definition (Pxv Pvv^-1), distribute the
-        /// transpose on the right over the product, then pull out
-        /// Pvv^-1 * Pvv * (Pvv^-1).transpose()
-        /// as "B", leaving Pxv B Pxv.transpose()
-        ///
-        /// Since innovationCovariance aka Pvv is symmetric,
-        /// (Pvv^-1).transpose() = Pvv^-1.
-        /// Left multiplication gives
-        /// Pvv B = Pvv * Pvv^-1 * Pvv * Pvv^-1
-        /// whose right hand side is the Pvv-sized identity, and that is in
-        /// a form that allows us to use our existing LDLT decomp of Pvv to
-        /// solve for B then evaluate the full original expression.
+        /*!
+         * Logically state.errorCovariance() - K * Pvv * K.transpose(),
+         * but considering just the second term, we can
+         * replace K with its definition (Pxv Pvv^-1), distribute the
+         * transpose on the right over the product, then pull out
+         * Pvv^-1 * Pvv * (Pvv^-1).transpose()
+         * as "B", leaving Pxv B Pxv.transpose()
+         *
+         * Since innovationCovariance aka Pvv is symmetric,
+         * (Pvv^-1).transpose() = Pvv^-1.
+         * Left multiplication gives
+         * Pvv B = Pvv * Pvv^-1 * Pvv * Pvv^-1
+         * whose right hand side is the Pvv-sized identity, and that is in
+         * a form that allows us to use our existing LDLT decomp of Pvv to
+         * solve for B then evaluate the full original expression.
+         */
         StateSquareMatrix newP =
             state.errorCovariance() -
             reconstruction.getCrossCov() *
@@ -197,13 +203,13 @@ class SigmaPointCorrectionApplication {
     SigmaPointsGen sigmaPoints;
     TransformedSigmaPointsMat transformedPoints;
     Reconstruction reconstruction;
-    /// aka Pvv
+    //! aka Pvv
     MeasurementSquareMatrix innovationCovariance;
     Eigen::LDLT<MeasurementSquareMatrix> PvvDecomp;
 #if 0
     GainMatrix K;
 #endif
-    /// reconstructed mean measurement residual/delta z/innovation
+    //! reconstructed mean measurement residual/delta z/innovation
     types::Vector<m> deltaz;
     StateVec stateCorrection;
     bool stateCorrectionFinite;
@@ -217,15 +223,17 @@ beginUnscentedCorrection(
     return SigmaPointCorrectionApplication<State, Measurement>(s, m, params);
 }
 
-/// Correct a Kalman filter's state using a measurement that provides a
-/// two-parameter getResidual function, in the manner of an
-/// Unscented Kalman Filter (UKF).
-///
-/// @param cancelIfNotFinite If the state correction or new error covariance
-/// is detected to contain non-finite values, should we cancel the
-/// correction and not apply it?
-///
-/// @return true if correction completed
+/*!
+ * Correct a Kalman filter's state using a measurement that provides a
+ * two-parameter getResidual function, in the manner of an
+ * Unscented Kalman Filter (UKF).
+ *
+ * @param cancelIfNotFinite If the state correction or new error covariance
+ * is detected to contain non-finite values, should we cancel the
+ * correction and not apply it?
+ *
+ * @return true if correction completed
+ */
 template <typename StateType, typename MeasurementType>
 static inline bool
 correctUnscented(StateType &state, MeasurementType &meas,
