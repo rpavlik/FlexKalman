@@ -1238,11 +1238,11 @@ class SigmaPointCorrectionApplication {
     using GainMatrix = types::Matrix<n, m>;
 
     SigmaPointCorrectionApplication(
-        State &s, Measurement &m,
+        State &s, Measurement &meas,
         SigmaPointParameters const &params = SigmaPointParameters())
-        : state(s), measurement(m),
-          sigmaPoints(getAugmentedStateVec(s, m), getAugmentedStateCov(s, m),
-                      params),
+        : state(s), measurement(meas),
+          sigmaPoints(getAugmentedStateVec(s),
+                      getAugmentedStateCov(s, measurement), params),
           transformedPoints(
               transformSigmaPoints(state, measurement, sigmaPoints)),
           reconstruction(sigmaPoints, transformedPoints),
@@ -1254,8 +1254,7 @@ class SigmaPointCorrectionApplication {
               computeStateCorrection(reconstruction, deltaz, PvvDecomp)),
           stateCorrectionFinite(stateCorrection.array().allFinite()) {}
 
-    static AugmentedStateVec getAugmentedStateVec(State const &s,
-                                                  Measurement const &m) {
+    static AugmentedStateVec getAugmentedStateVec(State const &s) {
         AugmentedStateVec ret;
         //! assuming measurement noise is zero mean
         ret << s.stateVector(), MeasurementVec::Zero();
