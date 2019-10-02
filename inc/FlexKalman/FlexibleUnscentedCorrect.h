@@ -142,17 +142,17 @@ class SigmaPointCorrectionApplication {
     }
 
 #if 0
-        // Solve for K in K=Pxy Pvv^-1
-        // where the cross-covariance matrix from the reconstruction is
-        // transpose(Pxy) and Pvv is the reconstructed covariance plus the
-        // measurement covariance
-        static GainMatrix computeKalmanGain(MeasurementSquareMatrix const &Pvv,
-                                            Reconstruction const &recon) {
-            // (Actually solves with transpose(Pvv) * transpose(K) =
-            // transpose(Pxy) )
-            GainMatrix ret = Pvv.transpose().ldlt().solve(recon.getCrossCov());
-            return ret;
-        }
+    // Solve for K in K=Pxy Pvv^-1
+    // where the cross-covariance matrix from the reconstruction is
+    // transpose(Pxy) and Pvv is the reconstructed covariance plus the
+    // measurement covariance
+    static GainMatrix computeKalmanGain(MeasurementSquareMatrix const &Pvv,
+                                        Reconstruction const &recon) {
+        // (Actually solves with transpose(Pvv) * transpose(K) =
+        // transpose(Pxy) )
+        GainMatrix ret = Pvv.transpose().ldlt().solve(recon.getCrossCov());
+        return ret;
+    }
 #endif
     static StateVec computeStateCorrection(
         Reconstruction const &recon, MeasurementVec const &deltaz,
