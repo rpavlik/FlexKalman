@@ -77,16 +77,10 @@ class AbsoluteOrientationMeasurement {
     template <typename State>
     MeasurementVector getResidual(State const &s) const {
         const Eigen::Quaterniond prediction = s.getCombinedQuaternion();
-        const Eigen::Quaterniond residualq = m_quat * prediction.inverse();
         // Two equivalent quaternions: but their logs are typically
         // different: one is the "short way" and the other is the "long
         // way". We'll compute both and pick the "short way".
-        MeasurementVector residual = util::quat_ln(residualq);
-        MeasurementVector equivResidual =
-            util::quat_ln(Eigen::Quaterniond(-(residualq.coeffs())));
-        return residual.squaredNorm() < equivResidual.squaredNorm()
-                   ? residual
-                   : equivResidual;
+        return 2 * util::smallest_quat_ln(m_quat * prediction.conjugate());
     }
     //! Convenience method to be able to store and re-use measurements.
     void setMeasurement(Eigen::Quaterniond const &quat) { m_quat = quat; }

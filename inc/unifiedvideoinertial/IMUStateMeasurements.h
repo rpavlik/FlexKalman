@@ -472,16 +472,7 @@ template <typename PolicyT> class IMUOrientationMeasBase {
         // way". We'll compute both and pick the "short way".
         // Multiplication of the log by 2 is the way to convert from a quat
         // to a rotation vector.
-        MeasurementVector residual = 2 * util::quat_ln(residualq);
-#if 0
-            MeasurementVector equivResidual =
-                2 * util::quat_ln(Eigen::Quaterniond(-(residualq.coeffs())));
-            return residual.squaredNorm() < equivResidual.squaredNorm()
-                       ? residual
-                       : equivResidual;
-#else
-        return residual;
-#endif
+        return 2 * util::smallest_quat_ln(residualq);
     }
 
     template <typename State>
@@ -498,16 +489,7 @@ template <typename PolicyT> class IMUOrientationMeasBase {
         // way". We'll compute both and pick the "short way".
         // Multiplication of the log by 2 is the way to convert from a quat
         // to a rotation vector.
-        MeasurementVector residual = 2 * util::quat_ln(residualq);
-#if 1
-        MeasurementVector equivResidual =
-            2 * util::quat_ln(Eigen::Quaterniond(-(residualq.coeffs())));
-        return residual.squaredNorm() < equivResidual.squaredNorm()
-                   ? residual
-                   : equivResidual;
-#else
-        return residual;
-#endif
+        return 2 * util::smallest_quat_ln(residualq);
     }
 
     /// Convenience method to be able to store and re-use measurements.
@@ -521,8 +503,6 @@ template <typename PolicyT> class IMUOrientationMeasBase {
     }
 
   private:
-    Eigen::Quaterniond m_iRc;
-    Eigen::Quaterniond m_cRi;
     Eigen::Quaterniond m_quat;
     MeasurementSquareMatrix m_covariance;
 };
