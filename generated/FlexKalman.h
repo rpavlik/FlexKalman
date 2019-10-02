@@ -41,6 +41,7 @@
 #include <Eigen/Geometry>
 #include <cassert>
 #include <cstddef>
+#include <functional>
 #include <type_traits>
 
 #ifndef FLEXKALMAN_DEBUG_OUTPUT
@@ -1806,16 +1807,7 @@ template <typename StateA, typename StateB> class AugmentedState {
     using StateVector = types::Vector<Dimension>;
 
     //! Constructor
-    AugmentedState(StateA &a, StateB &b) : a_(a), b_(b) {}
-
-    //! Copy constructor
-    AugmentedState(AugmentedState const &other) = default;
-
-    //! Move constructor
-    AugmentedState(AugmentedState &&other) : a_(other.a_), b_(other.b_) {}
-
-    //! non-assignable
-    AugmentedState &operator=(AugmentedState const &other) = delete;
+    AugmentedState(StateA &a, StateB &b) : a_(std::ref(a)), b_(std::ref(b)) {}
 
     //! @name Methods required of State types
     /// @{
@@ -1860,20 +1852,21 @@ template <typename StateA, typename StateB> class AugmentedState {
     //! @name Access to the components of the state
     /// @{
     //! Access the first part of the state
-    StateTypeA &a() { return a_; }
+    StateTypeA &a() { return a_.get(); }
     //! Access the first part of the state
-    StateTypeA const &a() const { return a_; }
+    StateTypeA const &a() const { return a_.get(); }
 
     //! Access the second part of the state
-    StateTypeB &b() { return b_; }
+    StateTypeB &b() { return b_.get(); }
     //! Access the second part of the state
-    StateTypeB const &b() const { return b_; }
+    StateTypeB const &b() const { return b_.get(); }
     //! @}
 
   private:
-    StateA &a_;
-    StateB &b_;
+    std::reference_wrapper<StateA> a_;
+    std::reference_wrapper<StateB> b_;
 };
+
 /*!
  * Template alias to make removing const from the deduced types less
  * verbose/painful.
@@ -1887,7 +1880,7 @@ using DeducedAugmentedState =
 template <typename StateA, typename StateB>
 inline DeducedAugmentedState<StateA, StateB> makeAugmentedState(StateA &a,
                                                                 StateB &b) {
-    return DeducedAugmentedState<StateA, StateB>{a, b};
+    return {a, b};
 }
 
 
@@ -1905,17 +1898,8 @@ template <typename ModelA, typename ModelB> class AugmentedProcessModel {
 
     //! Constructor
     AugmentedProcessModel(ModelTypeA &modA, ModelTypeB &modB)
-        : a_(modA), b_(modB) {}
+        : a_(std::ref(modA)), b_(std::ref(modB)) {}
 
-    //! Copy constructor
-    AugmentedProcessModel(AugmentedProcessModel const &other) = default;
-
-    //! Move constructor
-    AugmentedProcessModel(AugmentedProcessModel &&other)
-        : a_(other.a_), b_(other.b_) {}
-    //! non-assignable
-    AugmentedProcessModel &
-    operator=(AugmentedProcessModel const &other) = delete;
     //! @name Method required of Process Model types
     /// @{
     void predictState(State &state, double dt) {
@@ -1926,16 +1910,17 @@ template <typename ModelA, typename ModelB> class AugmentedProcessModel {
 
     //! @name Access to the components of the process model
     /// @{
-    ModelTypeA &modelA() { return a_; }
-    ModelTypeA const &modelA() const { return a_; }
+    ModelTypeA &modelA() { return a_.get(); }
+    ModelTypeA const &modelA() const { return a_.get(); }
 
-    ModelTypeB &modelB() { return b_; }
-    ModelTypeB const &modelB() const { return b_; }
+    ModelTypeB &modelB() { return b_.get(); }
+    ModelTypeB const &modelB() const { return b_.get(); }
     //! @}
   private:
-    ModelTypeA &a_;
-    ModelTypeB &b_;
+    std::reference_wrapper<ModelTypeA> a_;
+    std::reference_wrapper<ModelTypeB> b_;
 };
+
 /*!
  * Template alias to make removing const from the deduced types less
  * verbose/painful.
@@ -1952,7 +1937,7 @@ using DeducedAugmentedProcessModel =
 template <typename ModelA, typename ModelB>
 inline DeducedAugmentedProcessModel<ModelA, ModelB>
 makeAugmentedProcessModel(ModelA &a, ModelB &b) {
-    return DeducedAugmentedProcessModel<ModelA, ModelB>{a, b};
+    return {a, b};
 }
 
 

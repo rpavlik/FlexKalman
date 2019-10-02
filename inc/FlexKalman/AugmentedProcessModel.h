@@ -31,6 +31,7 @@
 // - none
 
 // Standard includes
+#include <functional>
 #include <type_traits>
 
 namespace flexkalman {
@@ -49,17 +50,8 @@ template <typename ModelA, typename ModelB> class AugmentedProcessModel {
 
     //! Constructor
     AugmentedProcessModel(ModelTypeA &modA, ModelTypeB &modB)
-        : a_(modA), b_(modB) {}
+        : a_(std::ref(modA)), b_(std::ref(modB)) {}
 
-    //! Copy constructor
-    AugmentedProcessModel(AugmentedProcessModel const &other) = default;
-
-    //! Move constructor
-    AugmentedProcessModel(AugmentedProcessModel &&other)
-        : a_(other.a_), b_(other.b_) {}
-    //! non-assignable
-    AugmentedProcessModel &
-    operator=(AugmentedProcessModel const &other) = delete;
     //! @name Method required of Process Model types
     /// @{
     void predictState(State &state, double dt) {
@@ -70,16 +62,17 @@ template <typename ModelA, typename ModelB> class AugmentedProcessModel {
 
     //! @name Access to the components of the process model
     /// @{
-    ModelTypeA &modelA() { return a_; }
-    ModelTypeA const &modelA() const { return a_; }
+    ModelTypeA &modelA() { return a_.get(); }
+    ModelTypeA const &modelA() const { return a_.get(); }
 
-    ModelTypeB &modelB() { return b_; }
-    ModelTypeB const &modelB() const { return b_; }
+    ModelTypeB &modelB() { return b_.get(); }
+    ModelTypeB const &modelB() const { return b_.get(); }
     //! @}
   private:
-    ModelTypeA &a_;
-    ModelTypeB &b_;
+    std::reference_wrapper<ModelTypeA> a_;
+    std::reference_wrapper<ModelTypeB> b_;
 };
+
 /*!
  * Template alias to make removing const from the deduced types less
  * verbose/painful.
@@ -96,7 +89,7 @@ using DeducedAugmentedProcessModel =
 template <typename ModelA, typename ModelB>
 inline DeducedAugmentedProcessModel<ModelA, ModelB>
 makeAugmentedProcessModel(ModelA &a, ModelB &b) {
-    return DeducedAugmentedProcessModel<ModelA, ModelB>{a, b};
+    return {a, b};
 }
 
 } // namespace flexkalman
