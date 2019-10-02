@@ -98,6 +98,26 @@ namespace util {
         }
 
         /*!
+         * fully-templated free function for "small-angle" approximation of
+         * quaternion expontiation
+         */
+        template <typename Derived>
+        inline Eigen::Quaternion<typename Derived::Scalar>
+        small_angle_quat_exp(Eigen::MatrixBase<Derived> const &vec) {
+            EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(Derived, 3);
+            using Scalar = typename Derived::Scalar;
+            //! @todo get better way of determining "zero vec" for this purpose.
+            if (vec.isApproxToConstant(0, 1.e-4)) {
+                return Eigen::Quaternion<Scalar>::Identity();
+            }
+            // For non-zero vectors, the vector scale sinc(theta) approximately
+            // equals 1, while the scale for w, cos(theta), is approximately 0.
+            // So, we treat this as a "pure" quaternion and normalize it.
+            return Eigen::Quaternion<Scalar>{0, vec.x(), vec.y(), vec.z()}
+                .normalized();
+        }
+
+        /*!
          * Taylor series expansion of theta over sin(theta), aka cosecant, for
          * use near 0 when you want continuity and validity at 0.
          */
@@ -115,8 +135,7 @@ namespace util {
         }
 
         /*!
-         * fully-templated free function for quaternion log map, intended for
-         * implementation use within the class.
+         * fully-templated free function for quaternion log map.
          *
          * Assumes a unit quaternion.
          *
@@ -144,8 +163,26 @@ namespace util {
             return quat.vec() * phiOverSin;
         }
 
+        /*!
+         * Takes the smallest of two equivalent quat logarithms.
+         *
+         * The quaternions are equivalent, but their logarithms are often
+         * different, so we choose the "shortest one". Often used for angular
+         * residuals.
+         */
+        static inline Eigen::Vector3d
+        smallest_quat_ln(Eigen::Quaterniond const &q) {
+            //! @todo optimize - to avoid duplicating sign-invariant parts of
+            //! quat_ln
+            Eigen::Vector3d v = quat_ln(q);
+            Eigen::Vector3d equiv = quat_ln(Eigen::Quaterniond(-(q.coeffs())));
+
+            return v.squaredNorm() < equiv.squaredNorm() ? v : equiv;
+        }
     } // namespace ei_quat_exp_map
     using ei_quat_exp_map::quat_exp;
     using ei_quat_exp_map::quat_ln;
+    using ei_quat_exp_map::small_angle_quat_exp;
+    using ei_quat_exp_map::smallest_quat_ln;
 } // namespace util
 } // namespace flexkalman
