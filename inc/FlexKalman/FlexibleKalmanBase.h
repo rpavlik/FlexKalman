@@ -72,21 +72,11 @@ namespace types {
     /// A vector of length n
     template <size_t n> using Vector = Eigen::Matrix<Scalar, n, 1>;
 
-    /// A vector of length = dimension of T
-    template <typename T> using DimVector = Vector<T::Dimension>;
-
     /// A square matrix, n x n
     template <size_t n> using SquareMatrix = Eigen::Matrix<Scalar, n, n>;
 
-    /// A square matrix, n x n, where n is the dimension of T
-    template <typename T> using DimSquareMatrix = SquareMatrix<T::Dimension>;
-
     /// A square diagonal matrix, n x n
     template <size_t n> using DiagonalMatrix = Eigen::DiagonalMatrix<Scalar, n>;
-
-    /// A square diagonal matrix, n x n, where n is the dimension of T
-    template <typename T>
-    using DimDiagonalMatrix = DiagonalMatrix<T::Dimension>;
 
     /// A matrix with rows = m,  cols = n
     template <size_t m, size_t n> using Matrix = Eigen::Matrix<Scalar, m, n>;
@@ -102,13 +92,13 @@ namespace types {
 /// Usage is optional, most likely called from the process model
 /// `updateState()`` method.
 template <typename StateType, typename ProcessModelType>
-inline types::DimSquareMatrix<StateType>
+inline types::SquareMatrix<getDimension<StateType>()>
 predictErrorCovariance(StateType const &state, ProcessModelType &processModel,
                        double dt) {
-    types::DimSquareMatrix<StateType> A =
-        processModel.getStateTransitionMatrix(state, dt);
+    using StateSquareMatrix = types::SquareMatrix<getDimension<StateType>()>;
+    StateSquareMatrix A = processModel.getStateTransitionMatrix(state, dt);
     // FLEXKALMAN_DEBUG_OUTPUT("State transition matrix", A);
-    types::DimSquareMatrix<StateType> P = state.errorCovariance();
+    StateSquareMatrix P = state.errorCovariance();
     /// @todo Determine if the fact that Q is (at least in one case)
     /// symmetrical implies anything else useful performance-wise here or
     /// later in the data flow.

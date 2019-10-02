@@ -65,14 +65,14 @@ namespace uvbi {
         /// Base state history entry - handles standard states with everything
         /// in the state vector and error covariance.
         template <typename State> class StateHistoryEntryBase {
-            using StateVec = flexkalman::types::DimVector<State>;
-            using StateMatrix = flexkalman::types::DimSquareMatrix<State>;
 
-            // Using std::array here so that we can easily stick this in a
-            // vector
-            // without worrying about alignment.
             static constexpr size_t StateDim =
                 flexkalman::getDimension<State>();
+            using StateVec = flexkalman::types::Vector<StateDim>;
+            using StateMatrix = flexkalman::types::SquareMatrix<StateDim>;
+
+            // Using std::array here so that we can easily stick this in a
+            // vector without worrying about alignment.
             using StateVectorBackup =
                 std::array<flexkalman::types::Scalar, StateDim>;
             using StateCovarianceBackup =

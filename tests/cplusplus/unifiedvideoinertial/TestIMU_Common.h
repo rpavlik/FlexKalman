@@ -78,7 +78,8 @@ struct TestData {
     /// Default constructor is no translation, identity rotation, 10 along
     /// main diagonal as the state covariance matrix.
     BodyState state;
-    flexkalman::types::DimSquareMatrix<BodyState> originalStateError;
+    static constexpr size_t StateDim = flexkalman::getDimension<BodyState>();
+    flexkalman::types::SquareMatrix<StateDim> originalStateError;
 
     BodyProcessModel processModel;
     Eigen::Vector3d imuVariance;

@@ -45,8 +45,9 @@ template <typename StateType> class ConstantProcess {
   public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     using State = StateType;
-    using StateVector = types::DimVector<State>;
-    using StateSquareMatrix = types::DimSquareMatrix<State>;
+    static constexpr size_t Dimension = getDimension<State>();
+    using StateVector = types::Vector<Dimension>;
+    using StateSquareMatrix = types::SquareMatrix<Dimension>;
     ConstantProcess() : m_constantNoise(StateSquareMatrix::Zero()) {}
     void predictState(State &state, double dt) {
 

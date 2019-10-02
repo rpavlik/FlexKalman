@@ -83,9 +83,11 @@ struct CorrectionInProgress {
     /// That's as far as we go here before you choose to continue.
 
     /// Finish computing the rest and correct the state.
+    ///
     /// @param cancelIfNotFinite If the new error covariance is detected to
     /// contain non-finite values, should we cancel the correction and not
     /// apply it?
+    ///
     /// @return true if correction completed
     bool finishCorrection(bool cancelIfNotFinite = true) {
         // Compute the new error covariance
@@ -94,15 +96,15 @@ struct CorrectionInProgress {
         types::SquareMatrix<n> newP = P - (PHt * denom.solve(PHt.transpose()));
 
 #if 0
-            // Test fails with this one:
-            // VariedProcessModelStability/1.AbsolutePoseMeasurementXlate111,
-            // where TypeParam =
-            // flexkalman::PoseDampedConstantVelocityProcessModel
-            FLEXKALMAN_DEBUG_OUTPUT(
-                "error covariance scale",
-                (types::SquareMatrix<n>::Identity() - PHt * denom.solve(H)));
-            types::SquareMatrix<n> newP =
-                (types::SquareMatrix<n>::Identity() - PHt * denom.solve(H)) * P;
+        // Test fails with this one:
+        // VariedProcessModelStability/1.AbsolutePoseMeasurementXlate111,
+        // where TypeParam =
+        // flexkalman::PoseDampedConstantVelocityProcessModel
+        FLEXKALMAN_DEBUG_OUTPUT(
+            "error covariance scale",
+            (types::SquareMatrix<n>::Identity() - PHt * denom.solve(H)));
+        types::SquareMatrix<n> newP =
+            (types::SquareMatrix<n>::Identity() - PHt * denom.solve(H)) * P;
 #endif
 
         if (!newP.array().allFinite()) {
@@ -116,8 +118,8 @@ struct CorrectionInProgress {
         state_.setErrorCovariance(newP);
 
 #if 0
-            // Doesn't seem necessary to re-symmetrize the covariance matrix.
-            state_.setErrorCovariance((newP + newP.transpose()) / 2.);
+        // Doesn't seem necessary to re-symmetrize the covariance matrix.
+        state_.setErrorCovariance((newP + newP.transpose()) / 2.);
 #endif
 
         // Let the state do any cleanup it has to (like fixing externalized

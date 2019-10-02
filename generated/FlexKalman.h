@@ -78,21 +78,11 @@ namespace types {
     /// A vector of length n
     template <size_t n> using Vector = Eigen::Matrix<Scalar, n, 1>;
 
-    /// A vector of length = dimension of T
-    template <typename T> using DimVector = Vector<T::Dimension>;
-
     /// A square matrix, n x n
     template <size_t n> using SquareMatrix = Eigen::Matrix<Scalar, n, n>;
 
-    /// A square matrix, n x n, where n is the dimension of T
-    template <typename T> using DimSquareMatrix = SquareMatrix<T::Dimension>;
-
     /// A square diagonal matrix, n x n
     template <size_t n> using DiagonalMatrix = Eigen::DiagonalMatrix<Scalar, n>;
-
-    /// A square diagonal matrix, n x n, where n is the dimension of T
-    template <typename T>
-    using DimDiagonalMatrix = DiagonalMatrix<T::Dimension>;
 
     /// A matrix with rows = m,  cols = n
     template <size_t m, size_t n> using Matrix = Eigen::Matrix<Scalar, m, n>;
@@ -108,13 +98,13 @@ namespace types {
 /// Usage is optional, most likely called from the process model
 /// `updateState()`` method.
 template <typename StateType, typename ProcessModelType>
-inline types::DimSquareMatrix<StateType>
+inline types::SquareMatrix<getDimension<StateType>()>
 predictErrorCovariance(StateType const &state, ProcessModelType &processModel,
                        double dt) {
-    types::DimSquareMatrix<StateType> A =
-        processModel.getStateTransitionMatrix(state, dt);
+    using StateSquareMatrix = types::SquareMatrix<getDimension<StateType>()>;
+    StateSquareMatrix A = processModel.getStateTransitionMatrix(state, dt);
     // FLEXKALMAN_DEBUG_OUTPUT("State transition matrix", A);
-    types::DimSquareMatrix<StateType> P = state.errorCovariance();
+    StateSquareMatrix P = state.errorCovariance();
     /// @todo Determine if the fact that Q is (at least in one case)
     /// symmetrical implies anything else useful performance-wise here or
     /// later in the data flow.
@@ -169,9 +159,11 @@ struct CorrectionInProgress {
     /// That's as far as we go here before you choose to continue.
 
     /// Finish computing the rest and correct the state.
+    ///
     /// @param cancelIfNotFinite If the new error covariance is detected to
     /// contain non-finite values, should we cancel the correction and not
     /// apply it?
+    ///
     /// @return true if correction completed
     bool finishCorrection(bool cancelIfNotFinite = true) {
         // Compute the new error covariance
@@ -180,15 +172,15 @@ struct CorrectionInProgress {
         types::SquareMatrix<n> newP = P - (PHt * denom.solve(PHt.transpose()));
 
 #if 0
-            // Test fails with this one:
-            // VariedProcessModelStability/1.AbsolutePoseMeasurementXlate111,
-            // where TypeParam =
-            // flexkalman::PoseDampedConstantVelocityProcessModel
-            FLEXKALMAN_DEBUG_OUTPUT(
-                "error covariance scale",
-                (types::SquareMatrix<n>::Identity() - PHt * denom.solve(H)));
-            types::SquareMatrix<n> newP =
-                (types::SquareMatrix<n>::Identity() - PHt * denom.solve(H)) * P;
+        // Test fails with this one:
+        // VariedProcessModelStability/1.AbsolutePoseMeasurementXlate111,
+        // where TypeParam =
+        // flexkalman::PoseDampedConstantVelocityProcessModel
+        FLEXKALMAN_DEBUG_OUTPUT(
+            "error covariance scale",
+            (types::SquareMatrix<n>::Identity() - PHt * denom.solve(H)));
+        types::SquareMatrix<n> newP =
+            (types::SquareMatrix<n>::Identity() - PHt * denom.solve(H)) * P;
 #endif
 
         if (!newP.array().allFinite()) {
@@ -202,8 +194,8 @@ struct CorrectionInProgress {
         state_.setErrorCovariance(newP);
 
 #if 0
-            // Doesn't seem necessary to re-symmetrize the covariance matrix.
-            state_.setErrorCovariance((newP + newP.transpose()) / 2.);
+        // Doesn't seem necessary to re-symmetrize the covariance matrix.
+        state_.setErrorCovariance((newP + newP.transpose()) / 2.);
 #endif
 
         // Let the state do any cleanup it has to (like fixing externalized
@@ -1071,22 +1063,24 @@ class ReconstructedDistributionFromSigmaPoints {
 };
 
 
+/*!
+ * The UKF parallel to CorrectionInProgress as used in an EKF.
+ *
+ * Initialization is done by beginUnscentedCorrection (like
+ * beginExtendedCorrection). stateCorrectionFinite is provided immediately,
+ * while the finishCorrection() method takes an optional bool (true by default)
+ * to optionally cancel if the new error covariance is not finite.
+ */
 template <typename State, typename Measurement>
 class SigmaPointCorrectionApplication {
   public:
-#if 0
-        static constexpr size_t StateDim =
-            getDimension<State>();
-        static constexpr size_t MeasurementDim =
-            getDimension<Measurement>();
-#endif
     static constexpr size_t n = getDimension<State>();
     static constexpr size_t m = getDimension<Measurement>();
 
-    using StateVec = types::DimVector<State>;
-    using StateSquareMatrix = types::DimSquareMatrix<State>;
-    using MeasurementVec = types::DimVector<Measurement>;
-    using MeasurementSquareMatrix = types::DimSquareMatrix<Measurement>;
+    using StateVec = types::Vector<n>;
+    using StateSquareMatrix = types::SquareMatrix<n>;
+    using MeasurementVec = types::Vector<m>;
+    using MeasurementSquareMatrix = types::SquareMatrix<m>;
 
     /// state augmented with measurement noise mean
     static constexpr size_t AugmentedStateDim = n + m;
@@ -1115,18 +1109,10 @@ class SigmaPointCorrectionApplication {
           innovationCovariance(
               computeInnovationCovariance(state, measurement, reconstruction)),
           PvvDecomp(innovationCovariance.ldlt()),
-#if 0
-              K(computeKalmanGain(innovationCovariance, reconstruction)),
-#endif
           deltaz(measurement.getResidual(reconstruction.getMean(), state)),
-#if 0
-              stateCorrection(K * deltaz),
-#else
           stateCorrection(
               computeStateCorrection(reconstruction, deltaz, PvvDecomp)),
-#endif
-          stateCorrectionFinite(stateCorrection.array().allFinite()) {
-    }
+          stateCorrectionFinite(stateCorrection.array().allFinite()) {}
 
     static AugmentedStateVec getAugmentedStateVec(State const &s,
                                                   Measurement const &m) {
@@ -1186,15 +1172,13 @@ class SigmaPointCorrectionApplication {
     }
 
     /// Finish computing the rest and correct the state.
+    ///
     /// @param cancelIfNotFinite If the new error covariance is detected to
     /// contain non-finite values, should we cancel the correction and not
     /// apply it?
+    ///
     /// @return true if correction completed
     bool finishCorrection(bool cancelIfNotFinite = true) {
-#if 0
-            StateSquareMatrix newP = state.errorCovariance() -
-                                     K * innovationCovariance * K.transpose();
-#else
         /// Logically state.errorCovariance() - K * Pvv * K.transpose(),
         /// but considering just the second term, we can
         /// replace K with its definition (Pxv Pvv^-1), distribute the
@@ -1214,7 +1198,6 @@ class SigmaPointCorrectionApplication {
             reconstruction.getCrossCov() *
                 PvvDecomp.solve(MeasurementSquareMatrix::Identity()) *
                 reconstruction.getCrossCov().transpose();
-#endif
         bool finite = newP.array().allFinite();
         if (cancelIfNotFinite && !finite) {
             return false;
@@ -1238,13 +1221,14 @@ class SigmaPointCorrectionApplication {
     MeasurementSquareMatrix innovationCovariance;
     Eigen::LDLT<MeasurementSquareMatrix> PvvDecomp;
 #if 0
-        GainMatrix K;
+    GainMatrix K;
 #endif
     /// reconstructed mean measurement residual/delta z/innovation
     types::Vector<m> deltaz;
     StateVec stateCorrection;
     bool stateCorrectionFinite;
 };
+
 template <typename State, typename Measurement>
 inline SigmaPointCorrectionApplication<State, Measurement>
 beginUnscentedCorrection(
@@ -2192,8 +2176,9 @@ template <typename StateType> class ConstantProcess {
   public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     using State = StateType;
-    using StateVector = types::DimVector<State>;
-    using StateSquareMatrix = types::DimSquareMatrix<State>;
+    static constexpr size_t Dimension = getDimension<State>();
+    using StateVector = types::Vector<Dimension>;
+    using StateSquareMatrix = types::SquareMatrix<Dimension>;
     ConstantProcess() : m_constantNoise(StateSquareMatrix::Zero()) {}
     void predictState(State &state, double dt) {
 

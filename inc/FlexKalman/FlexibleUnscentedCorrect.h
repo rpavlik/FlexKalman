@@ -43,22 +43,24 @@
 
 namespace flexkalman {
 
+/*!
+ * The UKF parallel to CorrectionInProgress as used in an EKF.
+ *
+ * Initialization is done by beginUnscentedCorrection (like
+ * beginExtendedCorrection). stateCorrectionFinite is provided immediately,
+ * while the finishCorrection() method takes an optional bool (true by default)
+ * to optionally cancel if the new error covariance is not finite.
+ */
 template <typename State, typename Measurement>
 class SigmaPointCorrectionApplication {
   public:
-#if 0
-        static constexpr size_t StateDim =
-            getDimension<State>();
-        static constexpr size_t MeasurementDim =
-            getDimension<Measurement>();
-#endif
     static constexpr size_t n = getDimension<State>();
     static constexpr size_t m = getDimension<Measurement>();
 
-    using StateVec = types::DimVector<State>;
-    using StateSquareMatrix = types::DimSquareMatrix<State>;
-    using MeasurementVec = types::DimVector<Measurement>;
-    using MeasurementSquareMatrix = types::DimSquareMatrix<Measurement>;
+    using StateVec = types::Vector<n>;
+    using StateSquareMatrix = types::SquareMatrix<n>;
+    using MeasurementVec = types::Vector<m>;
+    using MeasurementSquareMatrix = types::SquareMatrix<m>;
 
     /// state augmented with measurement noise mean
     static constexpr size_t AugmentedStateDim = n + m;
@@ -87,18 +89,10 @@ class SigmaPointCorrectionApplication {
           innovationCovariance(
               computeInnovationCovariance(state, measurement, reconstruction)),
           PvvDecomp(innovationCovariance.ldlt()),
-#if 0
-              K(computeKalmanGain(innovationCovariance, reconstruction)),
-#endif
           deltaz(measurement.getResidual(reconstruction.getMean(), state)),
-#if 0
-              stateCorrection(K * deltaz),
-#else
           stateCorrection(
               computeStateCorrection(reconstruction, deltaz, PvvDecomp)),
-#endif
-          stateCorrectionFinite(stateCorrection.array().allFinite()) {
-    }
+          stateCorrectionFinite(stateCorrection.array().allFinite()) {}
 
     static AugmentedStateVec getAugmentedStateVec(State const &s,
                                                   Measurement const &m) {
@@ -158,15 +152,13 @@ class SigmaPointCorrectionApplication {
     }
 
     /// Finish computing the rest and correct the state.
+    ///
     /// @param cancelIfNotFinite If the new error covariance is detected to
     /// contain non-finite values, should we cancel the correction and not
     /// apply it?
+    ///
     /// @return true if correction completed
     bool finishCorrection(bool cancelIfNotFinite = true) {
-#if 0
-            StateSquareMatrix newP = state.errorCovariance() -
-                                     K * innovationCovariance * K.transpose();
-#else
         /// Logically state.errorCovariance() - K * Pvv * K.transpose(),
         /// but considering just the second term, we can
         /// replace K with its definition (Pxv Pvv^-1), distribute the
@@ -186,7 +178,6 @@ class SigmaPointCorrectionApplication {
             reconstruction.getCrossCov() *
                 PvvDecomp.solve(MeasurementSquareMatrix::Identity()) *
                 reconstruction.getCrossCov().transpose();
-#endif
         bool finite = newP.array().allFinite();
         if (cancelIfNotFinite && !finite) {
             return false;
@@ -210,13 +201,14 @@ class SigmaPointCorrectionApplication {
     MeasurementSquareMatrix innovationCovariance;
     Eigen::LDLT<MeasurementSquareMatrix> PvvDecomp;
 #if 0
-        GainMatrix K;
+    GainMatrix K;
 #endif
     /// reconstructed mean measurement residual/delta z/innovation
     types::Vector<m> deltaz;
     StateVec stateCorrection;
     bool stateCorrectionFinite;
 };
+
 template <typename State, typename Measurement>
 inline SigmaPointCorrectionApplication<State, Measurement>
 beginUnscentedCorrection(

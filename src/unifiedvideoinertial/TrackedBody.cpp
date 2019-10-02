@@ -55,7 +55,9 @@ namespace uvbi {
     };
     TrackedBody::TrackedBody(TrackingSystem &system, BodyId id)
         : m_system(system), m_id(id), m_impl(new Impl) {
-        using StateVec = flexkalman::types::DimVector<BodyState>;
+        static constexpr size_t StateDim =
+            flexkalman::getDimension<BodyState>();
+        using StateVec = flexkalman::types::Vector<StateDim>;
         /// Set error covariance matrix diagonal to large values for safety.
         m_state.setErrorCovariance(StateVec::Constant(10).asDiagonal());
 
