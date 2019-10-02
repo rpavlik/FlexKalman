@@ -102,8 +102,8 @@ type (the "Curiously-Recurring Template Pattern").
   - Returns a predicted measurement given a state.
   - This is only technically required for the unscented-style correction, but you may implemented in all cases since it helps to implement `getResidual()`.
 - `Vector<m> getResidual(Vector<m> const &prediction, State const& state) const`
-  - Unlike the single-argument `getResidual()`, this version does not use the actual data of the measurement. Instead, it uses a prediction, likely from `predictMeasurement()`.
-  - This is only technically required for the unscented-style correction, but you may implemented in all cases since it helps to implement the single-parameter `getResidual()` - it becomes `return getResidual(predictMeasurement(s), s);`
+  - Unlike the single-argument `getResidual()`, this version does not (usually) use the actual data of the measurement. Instead, it uses a prediction, likely from `predictMeasurement()`.
+  - This is only technically required for the unscented-style correction, but you may implemented in all cases since it helps to implement the single-parameter `getResidual()` - it becomes `return getResidual(predictMeasurement(s), s);` (often)
 
 ## Acknowledgments
 

@@ -37,25 +37,15 @@
 // - none
 
 namespace flexkalman {
-
-/*!
- * This class is a 3D position measurement.
- *
- * It can be used with any state class that exposes a `position()`
- * method. On its own, it is only suitable for unscented filter correction,
- * since the jacobian depends on the arrangement of the state vector. See
- * AbsolutePositionEKFMeasurement's explicit specializations for use in EKF
- * correction mode.
- */
-class AbsolutePositionMeasurement {
+class AbsolutePositionMeasurementBase {
   public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     static const size_t Dimension = 3; // 3 position
     using MeasurementVector = types::Vector<Dimension>;
     using MeasurementDiagonalMatrix = types::DiagonalMatrix<Dimension>;
     using MeasurementMatrix = types::SquareMatrix<Dimension>;
-    AbsolutePositionMeasurement(MeasurementVector const &pos,
-                                MeasurementVector const &variance)
+    AbsolutePositionMeasurementBase(MeasurementVector const &pos,
+                                    MeasurementVector const &variance)
         : m_pos(pos), m_covariance(variance.asDiagonal()) {}
 
     template <typename State>
@@ -83,6 +73,22 @@ class AbsolutePositionMeasurement {
     MeasurementVector m_pos;
     MeasurementDiagonalMatrix m_covariance;
 };
+/*!
+ * This class is a 3D position measurement.
+ *
+ * It can be used with any state class that exposes a `position()`
+ * method. On its own, it is only suitable for unscented filter correction,
+ * since the jacobian depends on the arrangement of the state vector. See
+ * AbsolutePositionEKFMeasurement's explicit specializations for use in EKF
+ * correction mode.
+ */
+class AbsolutePositionMeasurement
+    : public AbsolutePositionMeasurementBase,
+      public MeasurementBase<AbsolutePositionMeasurement> {
+  public:
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+    using AbsolutePositionMeasurementBase::AbsolutePositionMeasurementBase;
+};
 
 /*!
  * This is the subclass of AbsolutePositionMeasurement: only explicit
@@ -93,18 +99,19 @@ template <typename StateType> class AbsolutePositionEKFMeasurement;
 //! AbsolutePositionEKFMeasurement with a pose_externalized_rotation::State
 template <>
 class AbsolutePositionEKFMeasurement<pose_externalized_rotation::State>
-    : public AbsolutePositionMeasurement,
+    : public AbsolutePositionMeasurementBase,
       public MeasurementBase<
           AbsolutePositionEKFMeasurement<pose_externalized_rotation::State>> {
   public:
     using State = pose_externalized_rotation::State;
+    using AbsolutePositionMeasurementBase::Dimension;
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     static constexpr size_t StateDimension = getDimension<State>();
-    using Base = AbsolutePositionMeasurement;
     using Jacobian = types::Matrix<Dimension, StateDimension>;
     AbsolutePositionEKFMeasurement(MeasurementVector const &pos,
                                    MeasurementVector const &variance)
-        : Base(pos, variance), m_jacobian(Jacobian::Zero()) {
+        : AbsolutePositionMeasurementBase(pos, variance),
+          m_jacobian(Jacobian::Zero()) {
         m_jacobian.block<3, 3>(0, 0) = types::SquareMatrix<3>::Identity();
     }
 
