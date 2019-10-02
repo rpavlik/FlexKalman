@@ -9,7 +9,11 @@
     and Exhibit (pp. 1--30). Reston, Virigina: American Institute of Aeronautics
     and Astronautics. http://doi.org/10.2514/6.2004-5120
 
-    @date 2016
+    @date 2016-2019
+
+    @author
+    Ryan Pavlik
+    <ryan.pavlik@collabora.com>
 
     @author
     Sensics, Inc.
@@ -17,6 +21,7 @@
 */
 
 // Copyright 2016 Sensics, Inc.
+// Copyright 2019 Collabora, Ltd.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -42,6 +47,10 @@
 // - none
 
 namespace flexkalman {
+
+template <typename Derived> class StateBase;
+template <typename Derived> class MeasurementBase;
+template <typename Derived> class ProcessModelBase;
 
 /*!
  * The UKF parallel to CorrectionInProgress as used in an EKF.
@@ -218,9 +227,10 @@ class SigmaPointCorrectionApplication {
 template <typename State, typename Measurement>
 inline SigmaPointCorrectionApplication<State, Measurement>
 beginUnscentedCorrection(
-    State &s, Measurement &m,
+    StateBase<State> &state, MeasurementBase<Measurement> &meas,
     SigmaPointParameters const &params = SigmaPointParameters()) {
-    return SigmaPointCorrectionApplication<State, Measurement>(s, m, params);
+    return SigmaPointCorrectionApplication<State, Measurement>(
+        state.derived(), meas.derived(), params);
 }
 
 /*!
@@ -234,9 +244,9 @@ beginUnscentedCorrection(
  *
  * @return true if correction completed
  */
-template <typename StateType, typename MeasurementType>
+template <typename State, typename Measurement>
 static inline bool
-correctUnscented(StateType &state, MeasurementType &meas,
+correctUnscented(StateBase<State> &state, MeasurementBase<Measurement> &meas,
                  bool cancelIfNotFinite = true,
                  SigmaPointParameters const &params = SigmaPointParameters()) {
 

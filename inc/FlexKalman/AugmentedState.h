@@ -25,6 +25,7 @@
 #pragma once
 
 // Internal Includes
+#include "BaseTypes.h"
 #include "FlexibleKalmanBase.h"
 
 // Library/third-party includes
@@ -40,7 +41,8 @@ namespace flexkalman {
  * State type that consists entirely of references to two independent
  * sub-states.
  */
-template <typename StateA, typename StateB> class AugmentedState {
+template <typename StateA, typename StateB>
+class AugmentedState : public StateBase<AugmentedState<StateA, StateB>> {
   public:
     using StateTypeA = StateA;
     using StateTypeB = StateB;

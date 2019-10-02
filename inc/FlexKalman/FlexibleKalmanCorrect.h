@@ -40,6 +40,10 @@
 
 namespace flexkalman {
 
+template <typename Derived> class StateBase;
+template <typename Derived> class MeasurementBase;
+template <typename Derived> class ProcessModelBase;
+
 template <typename StateType, typename MeasurementType>
 struct CorrectionInProgress {
     //! Dimension of measurement
@@ -136,25 +140,25 @@ struct CorrectionInProgress {
     StateType &state_;
 };
 
-template <typename StateType, typename ProcessModelType,
-          typename MeasurementType>
-inline CorrectionInProgress<StateType, MeasurementType>
-beginExtendedCorrection(StateType &state, ProcessModelType &processModel,
-                        MeasurementType &meas) {
+template <typename State, typename ProcessModel, typename Measurement>
+inline CorrectionInProgress<State, Measurement>
+beginExtendedCorrection(StateBase<State> &state,
+                        ProcessModelBase<ProcessModel> &processModel,
+                        MeasurementBase<Measurement> &meas) {
 
     //! Dimension of measurement
-    static constexpr auto m = getDimension<MeasurementType>();
+    static constexpr size_t m = getDimension<Measurement>();
     //! Dimension of state
-    static constexpr auto n = getDimension<StateType>();
+    static constexpr size_t n = getDimension<State>();
 
     //! Measurement Jacobian
-    types::Matrix<m, n> H = meas.getJacobian(state);
+    types::Matrix<m, n> H = meas.derived().getJacobian(state.derived());
 
     //! Measurement covariance
-    types::SquareMatrix<m> R = meas.getCovariance(state);
+    types::SquareMatrix<m> R = meas.derived().getCovariance(state.derived());
 
     //! State error covariance
-    types::SquareMatrix<n> P = state.errorCovariance();
+    types::SquareMatrix<n> P = state.derived().errorCovariance();
 
     //! The kalman gain stuff to not invert (called P12 in TAG)
     types::Matrix<n, m> PHt = P * H.transpose();
@@ -166,8 +170,7 @@ beginExtendedCorrection(StateType &state, ProcessModelType &processModel,
     types::SquareMatrix<m> S = H * PHt + R;
 
     //! More computation is done in initializers/constructor
-    return CorrectionInProgress<StateType, MeasurementType>(state, meas, P, PHt,
-                                                            S);
+    return {state.derived(), meas.derived(), P, PHt, S};
 }
 
 /*!
@@ -180,11 +183,11 @@ beginExtendedCorrection(StateType &state, ProcessModelType &processModel,
  *
  * @return true if correction completed
  */
-template <typename StateType, typename ProcessModelType,
-          typename MeasurementType>
-static inline bool
-correctExtended(StateType &state, ProcessModelType &processModel,
-                MeasurementType &meas, bool cancelIfNotFinite = true) {
+template <typename State, typename ProcessModel, typename Measurement>
+static inline bool correctExtended(StateBase<State> &state,
+                                   ProcessModelBase<ProcessModel> &processModel,
+                                   MeasurementBase<Measurement> &meas,
+                                   bool cancelIfNotFinite = true) {
 
     auto inProgress = beginExtendedCorrection(state, processModel, meas);
     if (cancelIfNotFinite && !inProgress.stateCorrectionFinite) {
@@ -195,11 +198,10 @@ correctExtended(StateType &state, ProcessModelType &processModel,
 }
 
 //! Delegates to correctExtended, a more explicit name which is preferred.
-template <typename StateType, typename ProcessModelType,
-          typename MeasurementType>
-static inline bool correct(StateType &state, ProcessModelType &processModel,
-                           MeasurementType &meas,
-                           bool cancelIfNotFinite = true) {
+template <typename State, typename ProcessModel, typename Measurement>
+static inline bool
+correct(StateBase<State> &state, ProcessModelBase<ProcessModel> &processModel,
+        MeasurementBase<Measurement> &meas, bool cancelIfNotFinite = true) {
     return correctExtended(state, processModel, meas, cancelIfNotFinite);
 }
 

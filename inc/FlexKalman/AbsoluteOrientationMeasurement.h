@@ -28,6 +28,7 @@
 #pragma once
 
 // Internal Includes
+#include "BaseTypes.h"
 #include "EigenQuatExponentialMap.h"
 #include "ExternalQuaternion.h"
 #include "FlexibleKalmanBase.h"
@@ -115,7 +116,9 @@ template <typename StateType> class AbsoluteOrientationEKFMeasurement;
 //! AbsoluteOrientationEKFMeasurement with a pose_externalized_rotation::State
 template <>
 class AbsoluteOrientationEKFMeasurement<pose_externalized_rotation::State>
-    : public AbsoluteOrientationMeasurement {
+    : public AbsoluteOrientationMeasurement,
+      public MeasurementBase<AbsoluteOrientationEKFMeasurement<
+          pose_externalized_rotation::State>> {
   public:
     using State = pose_externalized_rotation::State;
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW

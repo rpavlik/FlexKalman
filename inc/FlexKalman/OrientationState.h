@@ -30,6 +30,7 @@
 #pragma once
 
 // Internal Includes
+#include "BaseTypes.h"
 #include "ExternalQuaternion.h"
 #include "FlexibleKalmanBase.h"
 
@@ -70,9 +71,11 @@ namespace orient_externalized_rotation {
         A.bottomRightCorner<3, 3>() *= attenuation;
         return A;
     }
-    class State : public HasDimension<6> {
+    class State : public StateBase<State> {
       public:
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
+        static constexpr size_t Dimension = 6;
 
         //! Default constructor
         State()

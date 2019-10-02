@@ -25,6 +25,7 @@
 #pragma once
 
 // Internal Includes
+#include "BaseTypes.h"
 #include "FlexibleKalmanBase.h"
 #include "PoseState.h"
 
@@ -92,7 +93,9 @@ template <typename StateType> class AbsolutePositionEKFMeasurement;
 //! AbsolutePositionEKFMeasurement with a pose_externalized_rotation::State
 template <>
 class AbsolutePositionEKFMeasurement<pose_externalized_rotation::State>
-    : public AbsolutePositionMeasurement {
+    : public AbsolutePositionMeasurement,
+      public MeasurementBase<
+          AbsolutePositionEKFMeasurement<pose_externalized_rotation::State>> {
   public:
     using State = pose_externalized_rotation::State;
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW

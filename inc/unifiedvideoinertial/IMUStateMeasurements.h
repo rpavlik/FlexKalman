@@ -34,6 +34,7 @@
 #include "Angles.h"
 #include "EigenExtras.h"
 #include "FlexKalman/AbsoluteOrientationMeasurement.h"
+#include "FlexKalman/BaseTypes.h"
 #include "FlexKalman/EigenQuatExponentialMap.h"
 #include "FlexKalman/FlexibleKalmanFilter.h"
 
@@ -534,7 +535,9 @@ class IMUOrientationMeasurement;
 /// AbsoluteOrientationEKFMeasurement with a pose_externalized_rotation::State
 template <typename PolicyT>
 class IMUOrientationMeasurement<pose_externalized_rotation::State, PolicyT>
-    : public IMUOrientationMeasBase<PolicyT> {
+    : public IMUOrientationMeasBase<PolicyT>,
+      public flexkalman::MeasurementBase<IMUOrientationMeasurement<
+          pose_externalized_rotation::State, PolicyT>> {
   public:
     using State = pose_externalized_rotation::State;
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
@@ -559,7 +562,8 @@ class IMUOrientationMeasurement<pose_externalized_rotation::State, PolicyT>
     }
 };
 
-class IMUAngVelMeasurement {
+class IMUAngVelMeasurement
+    : public flexkalman::MeasurementBase<IMUAngVelMeasurement> {
   public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     static constexpr size_t Dimension = 3;

@@ -30,6 +30,7 @@
 #pragma once
 
 // Internal Includes
+#include "BaseTypes.h"
 #include "PoseConstantVelocity.h"
 #include "PoseState.h"
 
@@ -46,7 +47,9 @@ namespace flexkalman {
  * damping of the velocities inspired by TAG. This model has separate
  * damping/attenuation of linear and angular velocities.
  */
-class PoseSeparatelyDampedConstantVelocityProcessModel {
+class PoseSeparatelyDampedConstantVelocityProcessModel
+    : public ProcessModelBase<
+          PoseSeparatelyDampedConstantVelocityProcessModel> {
   public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     using State = pose_externalized_rotation::State;

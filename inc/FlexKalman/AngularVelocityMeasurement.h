@@ -29,6 +29,7 @@
 #pragma once
 
 // Internal Includes
+#include "BaseTypes.h"
 #include "ExternalQuaternion.h"
 #include "FlexibleKalmanBase.h"
 #include "OrientationState.h"
@@ -52,7 +53,8 @@ namespace flexkalman {
  * AngularVelocityEKFMeasurement's explicit specializations for use in EKF
  * correction mode.
  */
-class AngularVelocityMeasurement {
+class AngularVelocityMeasurement
+    : public MeasurementBase<AngularVelocityMeasurement> {
   public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     static constexpr size_t Dimension = 3;

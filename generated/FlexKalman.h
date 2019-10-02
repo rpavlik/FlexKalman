@@ -125,6 +125,10 @@ predictErrorCovariance(StateType const &state, ProcessModelType &processModel,
 }
 
 
+template <typename Derived> class StateBase;
+template <typename Derived> class MeasurementBase;
+template <typename Derived> class ProcessModelBase;
+
 template <typename StateType, typename MeasurementType>
 struct CorrectionInProgress {
     //! Dimension of measurement
@@ -221,25 +225,25 @@ struct CorrectionInProgress {
     StateType &state_;
 };
 
-template <typename StateType, typename ProcessModelType,
-          typename MeasurementType>
-inline CorrectionInProgress<StateType, MeasurementType>
-beginExtendedCorrection(StateType &state, ProcessModelType &processModel,
-                        MeasurementType &meas) {
+template <typename State, typename ProcessModel, typename Measurement>
+inline CorrectionInProgress<State, Measurement>
+beginExtendedCorrection(StateBase<State> &state,
+                        ProcessModelBase<ProcessModel> &processModel,
+                        MeasurementBase<Measurement> &meas) {
 
     //! Dimension of measurement
-    static constexpr auto m = getDimension<MeasurementType>();
+    static constexpr size_t m = getDimension<Measurement>();
     //! Dimension of state
-    static constexpr auto n = getDimension<StateType>();
+    static constexpr size_t n = getDimension<State>();
 
     //! Measurement Jacobian
-    types::Matrix<m, n> H = meas.getJacobian(state);
+    types::Matrix<m, n> H = meas.derived().getJacobian(state.derived());
 
     //! Measurement covariance
-    types::SquareMatrix<m> R = meas.getCovariance(state);
+    types::SquareMatrix<m> R = meas.derived().getCovariance(state.derived());
 
     //! State error covariance
-    types::SquareMatrix<n> P = state.errorCovariance();
+    types::SquareMatrix<n> P = state.derived().errorCovariance();
 
     //! The kalman gain stuff to not invert (called P12 in TAG)
     types::Matrix<n, m> PHt = P * H.transpose();
@@ -251,8 +255,7 @@ beginExtendedCorrection(StateType &state, ProcessModelType &processModel,
     types::SquareMatrix<m> S = H * PHt + R;
 
     //! More computation is done in initializers/constructor
-    return CorrectionInProgress<StateType, MeasurementType>(state, meas, P, PHt,
-                                                            S);
+    return {state.derived(), meas.derived(), P, PHt, S};
 }
 
 /*!
@@ -265,11 +268,11 @@ beginExtendedCorrection(StateType &state, ProcessModelType &processModel,
  *
  * @return true if correction completed
  */
-template <typename StateType, typename ProcessModelType,
-          typename MeasurementType>
-static inline bool
-correctExtended(StateType &state, ProcessModelType &processModel,
-                MeasurementType &meas, bool cancelIfNotFinite = true) {
+template <typename State, typename ProcessModel, typename Measurement>
+static inline bool correctExtended(StateBase<State> &state,
+                                   ProcessModelBase<ProcessModel> &processModel,
+                                   MeasurementBase<Measurement> &meas,
+                                   bool cancelIfNotFinite = true) {
 
     auto inProgress = beginExtendedCorrection(state, processModel, meas);
     if (cancelIfNotFinite && !inProgress.stateCorrectionFinite) {
@@ -280,14 +283,17 @@ correctExtended(StateType &state, ProcessModelType &processModel,
 }
 
 //! Delegates to correctExtended, a more explicit name which is preferred.
-template <typename StateType, typename ProcessModelType,
-          typename MeasurementType>
-static inline bool correct(StateType &state, ProcessModelType &processModel,
-                           MeasurementType &meas,
-                           bool cancelIfNotFinite = true) {
+template <typename State, typename ProcessModel, typename Measurement>
+static inline bool
+correct(StateBase<State> &state, ProcessModelBase<ProcessModel> &processModel,
+        MeasurementBase<Measurement> &meas, bool cancelIfNotFinite = true) {
     return correctExtended(state, processModel, meas, cancelIfNotFinite);
 }
 
+
+template <typename Derived> class StateBase;
+template <typename Derived> class MeasurementBase;
+template <typename Derived> class ProcessModelBase;
 
 /*!
  * Advance time in the filter, by applying the process model to the state with
@@ -299,13 +305,15 @@ static inline bool correct(StateType &state, ProcessModelType &processModel,
  * getPrediction() instead.
  */
 template <typename StateType, typename ProcessModelType>
-static inline void predict(StateType &state, ProcessModelType &processModel,
+static inline void predict(StateBase<StateType> &state,
+                           ProcessModelBase<ProcessModelType> &processModel,
                            double dt) {
-    processModel.predictState(state, dt);
-    FLEXKALMAN_DEBUG_OUTPUT("Predicted state", state.stateVector().transpose());
+    processModel.derived().predictState(state.derived(), dt);
+    FLEXKALMAN_DEBUG_OUTPUT("Predicted state",
+                            state.derived().stateVector().transpose());
 
     FLEXKALMAN_DEBUG_OUTPUT("Predicted error covariance",
-                            state.errorCovariance());
+                            state.derived().errorCovariance());
 }
 
 /*!
@@ -317,11 +325,13 @@ static inline void predict(StateType &state, ProcessModelType &processModel,
  */
 template <typename StateType, typename ProcessModelType>
 static inline void
-predictAndPostCorrectStateOnly(StateType &state, ProcessModelType &processModel,
+predictAndPostCorrectStateOnly(StateBase<StateType> &state,
+                               ProcessModelBase<ProcessModelType> &processModel,
                                double dt) {
-    processModel.predictStateOnly(state, dt);
-    state.postCorrect();
-    FLEXKALMAN_DEBUG_OUTPUT("Predicted state", state.stateVector().transpose());
+    processModel.derived().predictStateOnly(state.derived(), dt);
+    state.derived().postCorrect();
+    FLEXKALMAN_DEBUG_OUTPUT("Predicted state",
+                            state.derived().stateVector().transpose());
 }
 
 /*!
@@ -332,18 +342,61 @@ predictAndPostCorrectStateOnly(StateType &state, ProcessModelType &processModel,
  */
 template <typename StateType, typename ProcessModelType>
 static inline StateType
-getPrediction(StateType const &state, ProcessModelType const &processModel,
-              double dt, bool predictCovariance = false) {
-    StateType stateCopy{state};
+getPrediction(StateBase<StateType> const &state,
+              ProcessModelBase<ProcessModelType> const &processModel, double dt,
+              bool predictCovariance = false) {
+    StateType stateCopy{state.derived()};
     if (predictCovariance) {
-        processModel.predictState(stateCopy, dt);
+        processModel.derived().predictState(stateCopy, dt);
     } else {
-        processModel.predictStateOnly(stateCopy, dt);
+        processModel.derived().predictStateOnly(stateCopy, dt);
     }
     stateCopy.postCorrect();
     return stateCopy;
 }
 
+
+/*!
+ * @brief CRTP base for state types.
+ *
+ * All your State types should derive from this template, passing themselves as
+ * the Derived type.
+ */
+template <typename Derived> class StateBase {
+  public:
+    Derived &derived() noexcept { return *static_cast<Derived *>(this); }
+    Derived const &derived() const noexcept {
+        return *static_cast<Derived const *>(this);
+    }
+};
+
+/*!
+ * @brief CRTP base for measurement types.
+ *
+ * All your Measurement types should derive from this template, passing
+ * themselves as the Derived type.
+ */
+template <typename Derived> class MeasurementBase {
+  public:
+    Derived &derived() noexcept { return *static_cast<Derived *>(this); }
+    Derived const &derived() const noexcept {
+        return *static_cast<Derived const *>(this);
+    }
+};
+
+/*!
+ * @brief CRTP base for process model types.
+ *
+ * All your ProcessModel types should derive from this template, passing
+ * themselves as the Derived type.
+ */
+template <typename Derived> class ProcessModelBase {
+  public:
+    Derived &derived() noexcept { return *static_cast<Derived *>(this); }
+    Derived const &derived() const noexcept {
+        return *static_cast<Derived const *>(this);
+    }
+};
 namespace util {
     namespace ei_quat_exp_map {
 
@@ -567,7 +620,7 @@ namespace pose_externalized_rotation {
         return A;
     }
 
-    class State {
+    class State : public StateBase<State> {
       public:
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
@@ -784,7 +837,9 @@ template <typename StateType> class AbsoluteOrientationEKFMeasurement;
 //! AbsoluteOrientationEKFMeasurement with a pose_externalized_rotation::State
 template <>
 class AbsoluteOrientationEKFMeasurement<pose_externalized_rotation::State>
-    : public AbsoluteOrientationMeasurement {
+    : public AbsoluteOrientationMeasurement,
+      public MeasurementBase<AbsoluteOrientationEKFMeasurement<
+          pose_externalized_rotation::State>> {
   public:
     using State = pose_externalized_rotation::State;
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
@@ -806,7 +861,8 @@ class AbsoluteOrientationEKFMeasurement<pose_externalized_rotation::State>
 
 
 //! A constant-velocity model for a 6DOF pose (with velocities)
-class PoseConstantVelocityProcessModel {
+class PoseConstantVelocityProcessModel
+    : public ProcessModelBase<PoseConstantVelocityProcessModel> {
   public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     using State = pose_externalized_rotation::State;
@@ -894,7 +950,9 @@ class PoseConstantVelocityProcessModel {
  * damping of the velocities inspired by TAG. This model has separate
  * damping/attenuation of linear and angular velocities.
  */
-class PoseSeparatelyDampedConstantVelocityProcessModel {
+class PoseSeparatelyDampedConstantVelocityProcessModel
+    : public ProcessModelBase<
+          PoseSeparatelyDampedConstantVelocityProcessModel> {
   public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     using State = pose_externalized_rotation::State;
@@ -1141,6 +1199,10 @@ class ReconstructedDistributionFromSigmaPoints {
 };
 
 
+template <typename Derived> class StateBase;
+template <typename Derived> class MeasurementBase;
+template <typename Derived> class ProcessModelBase;
+
 /*!
  * The UKF parallel to CorrectionInProgress as used in an EKF.
  *
@@ -1316,9 +1378,10 @@ class SigmaPointCorrectionApplication {
 template <typename State, typename Measurement>
 inline SigmaPointCorrectionApplication<State, Measurement>
 beginUnscentedCorrection(
-    State &s, Measurement &m,
+    StateBase<State> &state, MeasurementBase<Measurement> &meas,
     SigmaPointParameters const &params = SigmaPointParameters()) {
-    return SigmaPointCorrectionApplication<State, Measurement>(s, m, params);
+    return SigmaPointCorrectionApplication<State, Measurement>(
+        state.derived(), meas.derived(), params);
 }
 
 /*!
@@ -1332,9 +1395,9 @@ beginUnscentedCorrection(
  *
  * @return true if correction completed
  */
-template <typename StateType, typename MeasurementType>
+template <typename State, typename Measurement>
 static inline bool
-correctUnscented(StateType &state, MeasurementType &meas,
+correctUnscented(StateBase<State> &state, MeasurementBase<Measurement> &meas,
                  bool cancelIfNotFinite = true,
                  SigmaPointParameters const &params = SigmaPointParameters()) {
 
@@ -1350,9 +1413,10 @@ correctUnscented(StateType &state, MeasurementType &meas,
  * A very simple (3D by default) vector state with no velocity, ideal for
  * use as a position, with ConstantProcess for beacon autocalibration
  */
-template <size_t Dim = 3> class PureVectorState {
+template <size_t Dim = 3>
+class PureVectorState : public StateBase<PureVectorState<Dim>> {
   public:
-    static const size_t Dimension = Dim;
+    static constexpr size_t Dimension = Dim;
     using SquareMatrix = types::SquareMatrix<Dimension>;
     using StateVector = types::Vector<Dimension>;
 
@@ -1709,9 +1773,10 @@ namespace pose_exp_map {
         auto attenuation = computeAttenuation(damping, dt);
         velocities(state) *= attenuation;
     }
-    class State : public HasDimension<12> {
+    class State : public StateBase<State> {
       public:
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+        static constexpr size_t Dimension = 12;
 
         //! Default constructor
         State()
@@ -1794,7 +1859,8 @@ namespace pose_exp_map {
  * State type that consists entirely of references to two independent
  * sub-states.
  */
-template <typename StateA, typename StateB> class AugmentedState {
+template <typename StateA, typename StateB>
+class AugmentedState : public StateBase<AugmentedState<StateA, StateB>> {
   public:
     using StateTypeA = StateA;
     using StateTypeB = StateB;
@@ -1888,7 +1954,9 @@ inline DeducedAugmentedState<StateA, StateB> makeAugmentedState(StateA &a,
  * Process model type that consists entirely of references to two
  * sub-process models, for operating on an AugmentedState<>.
  */
-template <typename ModelA, typename ModelB> class AugmentedProcessModel {
+template <typename ModelA, typename ModelB>
+class AugmentedProcessModel
+    : public ProcessModelBase<AugmentedProcessModel<ModelA, ModelB>> {
   public:
     using ModelTypeA = ModelA;
     using ModelTypeB = ModelB;
@@ -1969,9 +2037,11 @@ namespace orient_externalized_rotation {
         A.bottomRightCorner<3, 3>() *= attenuation;
         return A;
     }
-    class State : public HasDimension<6> {
+    class State : public StateBase<State> {
       public:
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
+        static constexpr size_t Dimension = 6;
 
         //! Default constructor
         State()
@@ -2076,7 +2146,8 @@ namespace orient_externalized_rotation {
 
 
 //! A model for a 3DOF pose (with angular velocity)
-class OrientationConstantVelocityProcessModel {
+class OrientationConstantVelocityProcessModel
+    : public ProcessModelBase<OrientationConstantVelocityProcessModel> {
   public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     using State = orient_externalized_rotation::State;
@@ -2158,7 +2229,8 @@ class OrientationConstantVelocityProcessModel {
  * A basically-constant-velocity model, with the addition of some
  * damping of the velocities inspired by TAG
  */
-class PoseDampedConstantVelocityProcessModel {
+class PoseDampedConstantVelocityProcessModel
+    : public ProcessModelBase<PoseDampedConstantVelocityProcessModel> {
   public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     using State = pose_externalized_rotation::State;
@@ -2278,7 +2350,9 @@ template <typename StateType> class AbsolutePositionEKFMeasurement;
 //! AbsolutePositionEKFMeasurement with a pose_externalized_rotation::State
 template <>
 class AbsolutePositionEKFMeasurement<pose_externalized_rotation::State>
-    : public AbsolutePositionMeasurement {
+    : public AbsolutePositionMeasurement,
+      public MeasurementBase<
+          AbsolutePositionEKFMeasurement<pose_externalized_rotation::State>> {
   public:
     using State = pose_externalized_rotation::State;
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
@@ -2309,7 +2383,8 @@ class AbsolutePositionEKFMeasurement<pose_externalized_rotation::State>
  * One potential application is for beacon autocalibration in a device
  * filter.
  */
-template <typename StateType> class ConstantProcess {
+template <typename StateType>
+class ConstantProcess : public ProcessModelBase<ConstantProcess<StateType>> {
   public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     using State = StateType;
@@ -2353,7 +2428,8 @@ template <typename StateType> class ConstantProcess {
  * AngularVelocityEKFMeasurement's explicit specializations for use in EKF
  * correction mode.
  */
-class AngularVelocityMeasurement {
+class AngularVelocityMeasurement
+    : public MeasurementBase<AngularVelocityMeasurement> {
   public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     static constexpr size_t Dimension = 3;

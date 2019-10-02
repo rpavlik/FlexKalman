@@ -25,6 +25,7 @@
 #pragma once
 
 // Internal Includes
+#include "BaseTypes.h"
 #include "FlexibleKalmanBase.h"
 
 // Library/third-party includes
@@ -38,9 +39,10 @@ namespace flexkalman {
  * A very simple (3D by default) vector state with no velocity, ideal for
  * use as a position, with ConstantProcess for beacon autocalibration
  */
-template <size_t Dim = 3> class PureVectorState {
+template <size_t Dim = 3>
+class PureVectorState : public StateBase<PureVectorState<Dim>> {
   public:
-    static const size_t Dimension = Dim;
+    static constexpr size_t Dimension = Dim;
     using SquareMatrix = types::SquareMatrix<Dimension>;
     using StateVector = types::Vector<Dimension>;
 

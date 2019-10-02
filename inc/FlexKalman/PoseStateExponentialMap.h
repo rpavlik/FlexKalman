@@ -29,6 +29,7 @@
 #pragma once
 
 // Internal Includes
+#include "BaseTypes.h"
 #include "FlexibleKalmanBase.h"
 #include "MatrixExponentialMap.h"
 
@@ -132,9 +133,10 @@ namespace pose_exp_map {
         auto attenuation = computeAttenuation(damping, dt);
         velocities(state) *= attenuation;
     }
-    class State : public HasDimension<12> {
+    class State : public StateBase<State> {
       public:
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+        static constexpr size_t Dimension = 12;
 
         //! Default constructor
         State()

@@ -30,6 +30,7 @@
 #pragma once
 
 // Internal Includes
+#include "BaseTypes.h"
 #include "OrientationState.h"
 
 // Library/third-party includes
@@ -41,7 +42,8 @@
 namespace flexkalman {
 
 //! A model for a 3DOF pose (with angular velocity)
-class OrientationConstantVelocityProcessModel {
+class OrientationConstantVelocityProcessModel
+    : public ProcessModelBase<OrientationConstantVelocityProcessModel> {
   public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     using State = orient_externalized_rotation::State;

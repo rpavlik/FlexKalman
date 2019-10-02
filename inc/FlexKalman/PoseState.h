@@ -30,6 +30,7 @@
 #pragma once
 
 // Internal Includes
+#include "BaseTypes.h"
 #include "ExternalQuaternion.h"
 #include "FlexibleKalmanBase.h"
 
@@ -103,7 +104,7 @@ namespace pose_externalized_rotation {
         return A;
     }
 
-    class State {
+    class State : public StateBase<State> {
       public:
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 

@@ -25,6 +25,7 @@
 #pragma once
 
 // Internal Includes
+#include "BaseTypes.h"
 #include "FlexibleKalmanBase.h"
 
 // Library/third-party includes
@@ -43,7 +44,8 @@ namespace flexkalman {
  * One potential application is for beacon autocalibration in a device
  * filter.
  */
-template <typename StateType> class ConstantProcess {
+template <typename StateType>
+class ConstantProcess : public ProcessModelBase<ConstantProcess<StateType>> {
   public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     using State = StateType;

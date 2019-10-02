@@ -26,6 +26,7 @@
 
 // Internal Includes
 #include "AugmentedState.h"
+#include "BaseTypes.h"
 
 // Library/third-party includes
 // - none
@@ -40,7 +41,9 @@ namespace flexkalman {
  * Process model type that consists entirely of references to two
  * sub-process models, for operating on an AugmentedState<>.
  */
-template <typename ModelA, typename ModelB> class AugmentedProcessModel {
+template <typename ModelA, typename ModelB>
+class AugmentedProcessModel
+    : public ProcessModelBase<AugmentedProcessModel<ModelA, ModelB>> {
   public:
     using ModelTypeA = ModelA;
     using ModelTypeB = ModelB;

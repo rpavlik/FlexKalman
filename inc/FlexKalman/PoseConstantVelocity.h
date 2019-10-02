@@ -30,6 +30,7 @@
 #pragma once
 
 // Internal Includes
+#include "BaseTypes.h"
 #include "PoseState.h"
 
 // Library/third-party includes
@@ -41,7 +42,8 @@
 namespace flexkalman {
 
 //! A constant-velocity model for a 6DOF pose (with velocities)
-class PoseConstantVelocityProcessModel {
+class PoseConstantVelocityProcessModel
+    : public ProcessModelBase<PoseConstantVelocityProcessModel> {
   public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     using State = pose_externalized_rotation::State;

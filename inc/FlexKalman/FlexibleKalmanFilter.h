@@ -41,6 +41,10 @@
 
 namespace flexkalman {
 
+template <typename Derived> class StateBase;
+template <typename Derived> class MeasurementBase;
+template <typename Derived> class ProcessModelBase;
+
 /*!
  * Advance time in the filter, by applying the process model to the state with
  * the given dt.
@@ -51,13 +55,15 @@ namespace flexkalman {
  * getPrediction() instead.
  */
 template <typename StateType, typename ProcessModelType>
-static inline void predict(StateType &state, ProcessModelType &processModel,
+static inline void predict(StateBase<StateType> &state,
+                           ProcessModelBase<ProcessModelType> &processModel,
                            double dt) {
-    processModel.predictState(state, dt);
-    FLEXKALMAN_DEBUG_OUTPUT("Predicted state", state.stateVector().transpose());
+    processModel.derived().predictState(state.derived(), dt);
+    FLEXKALMAN_DEBUG_OUTPUT("Predicted state",
+                            state.derived().stateVector().transpose());
 
     FLEXKALMAN_DEBUG_OUTPUT("Predicted error covariance",
-                            state.errorCovariance());
+                            state.derived().errorCovariance());
 }
 
 /*!
@@ -69,11 +75,13 @@ static inline void predict(StateType &state, ProcessModelType &processModel,
  */
 template <typename StateType, typename ProcessModelType>
 static inline void
-predictAndPostCorrectStateOnly(StateType &state, ProcessModelType &processModel,
+predictAndPostCorrectStateOnly(StateBase<StateType> &state,
+                               ProcessModelBase<ProcessModelType> &processModel,
                                double dt) {
-    processModel.predictStateOnly(state, dt);
-    state.postCorrect();
-    FLEXKALMAN_DEBUG_OUTPUT("Predicted state", state.stateVector().transpose());
+    processModel.derived().predictStateOnly(state.derived(), dt);
+    state.derived().postCorrect();
+    FLEXKALMAN_DEBUG_OUTPUT("Predicted state",
+                            state.derived().stateVector().transpose());
 }
 
 /*!
@@ -84,13 +92,14 @@ predictAndPostCorrectStateOnly(StateType &state, ProcessModelType &processModel,
  */
 template <typename StateType, typename ProcessModelType>
 static inline StateType
-getPrediction(StateType const &state, ProcessModelType const &processModel,
-              double dt, bool predictCovariance = false) {
-    StateType stateCopy{state};
+getPrediction(StateBase<StateType> const &state,
+              ProcessModelBase<ProcessModelType> const &processModel, double dt,
+              bool predictCovariance = false) {
+    StateType stateCopy{state.derived()};
     if (predictCovariance) {
-        processModel.predictState(stateCopy, dt);
+        processModel.derived().predictState(stateCopy, dt);
     } else {
-        processModel.predictStateOnly(stateCopy, dt);
+        processModel.derived().predictStateOnly(stateCopy, dt);
     }
     stateCopy.postCorrect();
     return stateCopy;
