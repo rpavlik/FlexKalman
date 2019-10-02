@@ -33,7 +33,7 @@
 
 namespace videotracker {
 namespace uvbi {
-    ImageSource::~ImageSource() {}
+    ImageSource::~ImageSource() = default;
     void ImageSource::retrieve(cv::Mat &color, cv::Mat &gray,
                                videotracker::util::TimeValue &timestamp) {
         retrieveColor(color, timestamp);

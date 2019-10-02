@@ -183,6 +183,8 @@ namespace uvbi {
 
             /// Make a vector of the inlier beacon IDs.
             std::vector<ZeroBasedBeaconId> inlierBeaconIds;
+            inlierBeaconIds.reserve(inlierIndices.rows);
+
             for (int i = 0; i < inlierIndices.rows; i++) {
                 inlierBeaconIds.push_back(beaconIds[i]);
             }

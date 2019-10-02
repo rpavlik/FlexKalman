@@ -107,7 +107,8 @@ namespace uvbi {
         cv::Point2f point;
     };
 
-    inline WindowCoordsPoint invertLoc(cv::Mat const &image, cv::Point2f loc) {
+    inline WindowCoordsPoint invertLoc(cv::Mat const &image,
+                                       const cv::Point2f &loc) {
 
         return USING_INVERTED_LED_POSITION
                    ? WindowCoordsPoint{cv::Point2f(image.cols - loc.x,
@@ -115,7 +116,7 @@ namespace uvbi {
                    : WindowCoordsPoint{loc};
     }
 
-    inline Eigen::Vector2d pointToEigenVec(cv::Point2f pt) {
+    inline Eigen::Vector2d pointToEigenVec(const cv::Point2f &pt) {
         return Eigen::Vector2d(pt.x, pt.y);
     }
     inline cv::Point2f eigenVecToPoint(Eigen::Vector2d const &vec) {
@@ -132,7 +133,8 @@ namespace uvbi {
 
             /// Utility function to draw a keypoint-sized circle on the image at
             /// the LED location.
-            void drawLedCircle(Led const &led, bool filled, cv::Vec3b color) {
+            void drawLedCircle(Led const &led, bool filled,
+                               const cv::Vec3b &color) {
                 cv::circle(image_, led.getLocation(),
                            led.getMeasurement().diameter / 2.,
                            cv::Scalar(color), filled ? -1 : 1);
@@ -141,47 +143,51 @@ namespace uvbi {
             /// Utility function to label an LED with its 1-based beacon ID (in
             /// window space)
             void drawLedLabel(OneBasedBeaconId id, WindowCoordsPoint const &loc,
-                              cv::Vec3b color = CVCOLOR_GRAY, double size = 0.5,
-                              cv::Point2f offset = cv::Point2f(0, 0)) {
+                              const cv::Vec3b &color = CVCOLOR_GRAY,
+                              double size = 0.5,
+                              const cv::Point2f &offset = cv::Point2f(0, 0)) {
                 auto label = std::to_string(id.value());
                 cv::putText(image_, label, loc.point + offset,
                             cv::FONT_HERSHEY_SIMPLEX, size, cv::Scalar(color));
             }
 
             /// Utility function to label an LED with its 1-based beacon ID
-            void drawLedLabel(OneBasedBeaconId id, cv::Point2f location,
-                              cv::Vec3b color = CVCOLOR_GRAY, double size = 0.5,
-                              cv::Point2f offset = cv::Point2f(0, 0)) {
+            void drawLedLabel(OneBasedBeaconId id, const cv::Point2f &location,
+                              const cv::Vec3b &color = CVCOLOR_GRAY,
+                              double size = 0.5,
+                              const cv::Point2f &offset = cv::Point2f(0, 0)) {
                 drawLedLabel(id, toWindowCoords(location), color, size, offset);
             }
 
             /// @overload
             /// Takes an Eigen::Vector2d as the location, with optional offset.
             void drawLedLabel(OneBasedBeaconId id, Eigen::Vector2d const &loc,
-                              cv::Vec3b color = CVCOLOR_GRAY, double size = 0.5,
-                              cv::Point2f offset = cv::Point2f(0, 0)) {
+                              const cv::Vec3b &color = CVCOLOR_GRAY,
+                              double size = 0.5,
+                              const cv::Point2f &offset = cv::Point2f(0, 0)) {
                 drawLedLabel(id, eigenVecToPoint(loc), color, size, offset);
             }
 
             /// @overload
             /// Takes an LED directly, with optional offset.
-            void drawLedLabel(Led const &led, cv::Vec3b color = CVCOLOR_GRAY,
+            void drawLedLabel(Led const &led,
+                              const cv::Vec3b &color = CVCOLOR_GRAY,
                               double size = 0.5,
-                              cv::Point2f offset = cv::Point2f(0, 0)) {
+                              const cv::Point2f &offset = cv::Point2f(0, 0)) {
                 drawLedLabel(led.getOneBasedID(),
                              WindowCoordsPoint{led.getLocation()}, color, size,
                              offset);
             }
 
-            void drawStatusMessage(std::string message,
-                                   cv::Vec3b color = CVCOLOR_GREEN,
+            void drawStatusMessage(const std::string &message,
+                                   const cv::Vec3b &color = CVCOLOR_GREEN,
                                    std::int16_t line = 1) {
                 static const auto LINE_OFFSET = 20.f;
                 cv::putText(image_, message, cv::Point2f(0, line * LINE_OFFSET),
                             cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(color));
             }
 
-            WindowCoordsPoint toWindowCoords(cv::Point2f loc) const {
+            WindowCoordsPoint toWindowCoords(const cv::Point2f &loc) const {
                 return USING_INVERTED_LED_POSITION
                            ? WindowCoordsPoint{cv::Point2f(image_.cols - loc.x,
                                                            image_.rows - loc.y)}
@@ -229,7 +235,8 @@ namespace uvbi {
     } // namespace
     inline void drawOriginAxes(Reprojection &reproject, DebugImage &dbgImg,
                                double size = 0.02) {
-        auto drawLine = [&](Eigen::Vector3d const &axis, cv::Vec3b color) {
+        auto drawLine = [&](Eigen::Vector3d const &axis,
+                            const cv::Vec3b &color) {
             auto beginWindowPoint =
                 dbgImg.vecToWindowCoords(reproject(axis * 0.5 * size));
             auto endWindowPoint =

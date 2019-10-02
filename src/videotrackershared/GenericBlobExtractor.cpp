@@ -33,7 +33,7 @@
 
 namespace videotracker {
 
-GenericBlobExtractor::~GenericBlobExtractor() {}
+GenericBlobExtractor::~GenericBlobExtractor() = default;
 
 cv::Mat const &GenericBlobExtractor::getDebugThresholdImage() {
     if (m_debugThresholdImageDirty) {

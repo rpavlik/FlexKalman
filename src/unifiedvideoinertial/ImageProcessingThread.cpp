@@ -73,7 +73,7 @@ namespace uvbi {
     }
 
     void ImageProcessingThread::threadAction() {
-        while (1) {
+        while (true) {
             {
                 std::unique_lock<std::mutex> lock(stateMutex_);
 

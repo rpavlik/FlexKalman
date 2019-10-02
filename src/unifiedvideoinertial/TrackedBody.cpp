@@ -44,7 +44,6 @@
 
 namespace videotracker {
 namespace uvbi {
-    using nonstd::optional;
     using BodyStateHistoryEntry = StateHistoryEntry<BodyState>;
 
     struct TrackedBody::Impl {
@@ -67,7 +66,7 @@ namespace uvbi {
             getParams().processNoiseAutocorrelation));
     }
 
-    TrackedBody::~TrackedBody() {}
+    TrackedBody::~TrackedBody() = default;
 
     TrackedBodyIMU *
     TrackedBody::createIntegratedIMU(double orientationVariance,

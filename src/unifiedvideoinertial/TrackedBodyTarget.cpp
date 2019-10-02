@@ -275,7 +275,7 @@ namespace uvbi {
         m_verifyInvariants();
     }
 
-    TrackedBodyTarget::~TrackedBodyTarget() {}
+    TrackedBodyTarget::~TrackedBodyTarget() = default;
 
     BodyTargetId TrackedBodyTarget::getQualifiedId() const {
         return BodyTargetId(getBody().getId(), getId());
@@ -314,7 +314,7 @@ namespace uvbi {
         LedMeasurementVec const &undistortedLeds) {
         // std::list<LedMeasurement> measurements{begin(undistortedLeds),
         // end(undistortedLeds)};
-        LedMeasurementVec measurements{undistortedLeds};
+        auto measurements = LedMeasurementVec{undistortedLeds};
         const auto prevUsableLedCount = usableLeds().size();
         /// Clear the "usableLeds" that will be populated in a later step, if we
         /// get that far.

@@ -42,7 +42,7 @@ namespace uvbi {
                 storeRes();
             }
         }
-        virtual ~OpenCVImageSource() {}
+        ~OpenCVImageSource() override = default;
 
         bool ok() const override { return m_camera && m_camera->isOpened(); }
         bool grab() override;

@@ -55,7 +55,6 @@ namespace uvbi {
     using nonstd::nullopt;
     using videotracker::util::Angle;
     using videotracker::util::AngleRadiansd;
-    namespace filters = util::filters;
 
     using videotracker::util::time::duration;
 
@@ -80,7 +79,7 @@ namespace uvbi {
           m_suppliedCamPosition(camPosition),
           m_cameraIsForward(cameraIsForward) {}
 
-    bool RoomCalibration::wantVideoData(TrackingSystem const &sys,
+    bool RoomCalibration::wantVideoData(TrackingSystem const & /*sys*/,
                                         BodyTargetId const &target) const {
         // This was once all in one conditional expression but it was almost
         // impossible for humans to parse, thus I leave it to computers to parse
@@ -247,7 +246,7 @@ namespace uvbi {
     }
     void RoomCalibration::processIMUData(TrackingSystem const &sys,
                                          BodyId const &body,
-                                         util::TimeValue const &timestamp,
+                                         util::TimeValue const & /*timestamp*/,
                                          Eigen::Quaterniond const &quat) {
         if (haveIMUData() && m_imuBody != body) {
 // Already got data from a different IMU

@@ -50,10 +50,10 @@ namespace uvbi {
                        const char *serial_number = nullptr);
 
         /// Destructor
-        virtual ~UVCImageSource();
+        ~UVCImageSource() override;
 
         /// @return true if the camera/image source is OK
-        virtual bool ok() const override;
+        bool ok() const override;
 
         /// Trigger camera capture. May not necessarily include retrieval.
         /// Blocks until an image is available. or failure occurs.
@@ -61,17 +61,16 @@ namespace uvbi {
         /// Timestamp after this call returns.
         ///
         /// @return false if the camera failed.
-        virtual bool grab() override;
+        bool grab() override;
 
         /// Get resolution of the images from this source.
-        virtual cv::Size resolution() const override;
+        cv::Size resolution() const override;
 
         /// For those devices that naturally read a non-corrupt color image,
         /// overriding just this method will let the default implementation of
         /// retrieve() do the RGB to Gray for you.
-        virtual void
-        retrieveColor(cv::Mat &color,
-                      videotracker::util::TimeValue &timestamp) override;
+        void retrieveColor(cv::Mat &color,
+                           videotracker::util::TimeValue &timestamp) override;
 
       protected:
         /// This callback function is called each time a new frame is received
@@ -213,7 +212,7 @@ namespace uvbi {
             if (frames_.empty()) {
                 throw std::runtime_error("Error: There's no frames available.");
             }
-            current_frame.reset(frames_.front().release());
+            current_frame = std::move(frames_.front());
             frames_.pop();
         }
 
