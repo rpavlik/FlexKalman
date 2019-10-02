@@ -91,8 +91,8 @@ class AbsolutePositionMeasurement
 };
 
 /*!
- * This is the subclass of AbsolutePositionMeasurement: only explicit
- * specializations, and on state types.
+ * This is the EKF-specific relative of AbsolutePositionMeasurement: only
+ * explicit specializations, and on state types.
  */
 template <typename StateType> class AbsolutePositionEKFMeasurement;
 

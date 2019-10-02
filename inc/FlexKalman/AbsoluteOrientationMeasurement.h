@@ -42,23 +42,15 @@
 // - none
 
 namespace flexkalman {
-/*!
- * A measurement of absolute orientation in 3D space.
- *
- * It can be used with any state class that exposes a `getCombinedQuaternion()`
- * method (that is, an externalized quaternion state). On its own, it is only
- * suitable for unscented filter correction, since the jacobian depends on the
- * arrangement of the state vector. See AbsoluteOrientationEKFMeasurement's
- * explicit specializations for use in EKF correction mode.
- */
-class AbsoluteOrientationMeasurement {
+
+class AbsoluteOrientationMeasurementBase {
   public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     static constexpr size_t Dimension = 3;
     using MeasurementVector = types::Vector<Dimension>;
     using MeasurementSquareMatrix = types::SquareMatrix<Dimension>;
-    AbsoluteOrientationMeasurement(Eigen::Quaterniond const &quat,
-                                   types::Vector<3> const &emVariance)
+    AbsoluteOrientationMeasurementBase(Eigen::Quaterniond const &quat,
+                                       types::Vector<3> const &emVariance)
         : m_quat(quat), m_covariance(emVariance.asDiagonal()) {}
 
     template <typename State>
@@ -105,6 +97,23 @@ class AbsoluteOrientationMeasurement {
     Eigen::Quaterniond m_quat;
     MeasurementSquareMatrix m_covariance;
 };
+/*!
+ * A measurement of absolute orientation in 3D space.
+ *
+ * It can be used with any state class that exposes a `getCombinedQuaternion()`
+ * method (that is, an externalized quaternion state). On its own, it is only
+ * suitable for unscented filter correction, since the jacobian depends on the
+ * arrangement of the state vector. See AbsoluteOrientationEKFMeasurement's
+ * explicit specializations for use in EKF correction mode.
+ */
+class AbsoluteOrientationMeasurement
+    : public AbsoluteOrientationMeasurementBase,
+      public MeasurementBase<AbsoluteOrientationMeasurement> {
+  public:
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+    using AbsoluteOrientationMeasurementBase::
+        AbsoluteOrientationMeasurementBase;
+};
 
 /*!
  * This is the EKF-specific relative of AbsoluteOrientationMeasurement: only
@@ -112,15 +121,14 @@ class AbsoluteOrientationMeasurement {
  *
  * Only required for EKF-style correction (since jacobian depends closely on the
  * state).
- *
- * Most of its code delegates to a contained AbsoluteOrientationMeasurement.
  */
 template <typename StateType> class AbsoluteOrientationEKFMeasurement;
 
 //! AbsoluteOrientationEKFMeasurement with a pose_externalized_rotation::State
 template <>
 class AbsoluteOrientationEKFMeasurement<pose_externalized_rotation::State>
-    : public MeasurementBase<AbsoluteOrientationEKFMeasurement<
+    : public AbsoluteOrientationMeasurementBase,
+      public MeasurementBase<AbsoluteOrientationEKFMeasurement<
           pose_externalized_rotation::State>> {
   public:
     using State = pose_externalized_rotation::State;
@@ -132,7 +140,7 @@ class AbsoluteOrientationEKFMeasurement<pose_externalized_rotation::State>
 
     AbsoluteOrientationEKFMeasurement(Eigen::Quaterniond const &quat,
                                       types::Vector<3> const &eulerVariance)
-        : generic_(quat, eulerVariance) {}
+        : AbsoluteOrientationMeasurementBase(quat, eulerVariance) {}
 
     types::Matrix<Dimension, StateDimension> getJacobian(State const &s) const {
         using namespace pose_externalized_rotation;
@@ -141,25 +149,6 @@ class AbsoluteOrientationEKFMeasurement<pose_externalized_rotation::State>
         ret.block<Dimension, 3>(0, 3) = types::SquareMatrix<3>::Identity();
         return ret;
     }
-    MeasurementSquareMatrix const &getCovariance(State const &s) {
-        return generic_.getCovariance(s);
-    }
-    MeasurementVector predictMeasurement(State const &state) const {
-        return generic_.predictMeasurement(state);
-    }
-    MeasurementVector getResidual(State const &s) const {
-        return generic_.getResidual(s);
-    }
-    MeasurementVector getResidual(MeasurementVector const &predictedMeasurement,
-                                  State const &s) const {
-        return generic_.getResidual(predictedMeasurement, s);
-    }
-    void setMeasurement(Eigen::Quaterniond const &quat) {
-        generic_.setMeasurement(quat);
-    }
-
-  private:
-    AbsoluteOrientationMeasurement generic_;
 };
 
 } // namespace flexkalman

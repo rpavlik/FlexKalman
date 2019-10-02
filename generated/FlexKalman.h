@@ -800,23 +800,15 @@ namespace pose_externalized_rotation {
     }
 } // namespace pose_externalized_rotation
 
-/*!
- * A measurement of absolute orientation in 3D space.
- *
- * It can be used with any state class that exposes a `getCombinedQuaternion()`
- * method (that is, an externalized quaternion state). On its own, it is only
- * suitable for unscented filter correction, since the jacobian depends on the
- * arrangement of the state vector. See AbsoluteOrientationEKFMeasurement's
- * explicit specializations for use in EKF correction mode.
- */
-class AbsoluteOrientationMeasurement {
+
+class AbsoluteOrientationMeasurementBase {
   public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     static constexpr size_t Dimension = 3;
     using MeasurementVector = types::Vector<Dimension>;
     using MeasurementSquareMatrix = types::SquareMatrix<Dimension>;
-    AbsoluteOrientationMeasurement(Eigen::Quaterniond const &quat,
-                                   types::Vector<3> const &emVariance)
+    AbsoluteOrientationMeasurementBase(Eigen::Quaterniond const &quat,
+                                       types::Vector<3> const &emVariance)
         : m_quat(quat), m_covariance(emVariance.asDiagonal()) {}
 
     template <typename State>
@@ -863,6 +855,23 @@ class AbsoluteOrientationMeasurement {
     Eigen::Quaterniond m_quat;
     MeasurementSquareMatrix m_covariance;
 };
+/*!
+ * A measurement of absolute orientation in 3D space.
+ *
+ * It can be used with any state class that exposes a `getCombinedQuaternion()`
+ * method (that is, an externalized quaternion state). On its own, it is only
+ * suitable for unscented filter correction, since the jacobian depends on the
+ * arrangement of the state vector. See AbsoluteOrientationEKFMeasurement's
+ * explicit specializations for use in EKF correction mode.
+ */
+class AbsoluteOrientationMeasurement
+    : public AbsoluteOrientationMeasurementBase,
+      public MeasurementBase<AbsoluteOrientationMeasurement> {
+  public:
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+    using AbsoluteOrientationMeasurementBase::
+        AbsoluteOrientationMeasurementBase;
+};
 
 /*!
  * This is the EKF-specific relative of AbsoluteOrientationMeasurement: only
@@ -870,15 +879,14 @@ class AbsoluteOrientationMeasurement {
  *
  * Only required for EKF-style correction (since jacobian depends closely on the
  * state).
- *
- * Most of its code delegates to a contained AbsoluteOrientationMeasurement.
  */
 template <typename StateType> class AbsoluteOrientationEKFMeasurement;
 
 //! AbsoluteOrientationEKFMeasurement with a pose_externalized_rotation::State
 template <>
 class AbsoluteOrientationEKFMeasurement<pose_externalized_rotation::State>
-    : public MeasurementBase<AbsoluteOrientationEKFMeasurement<
+    : public AbsoluteOrientationMeasurementBase,
+      public MeasurementBase<AbsoluteOrientationEKFMeasurement<
           pose_externalized_rotation::State>> {
   public:
     using State = pose_externalized_rotation::State;
@@ -890,7 +898,7 @@ class AbsoluteOrientationEKFMeasurement<pose_externalized_rotation::State>
 
     AbsoluteOrientationEKFMeasurement(Eigen::Quaterniond const &quat,
                                       types::Vector<3> const &eulerVariance)
-        : generic_(quat, eulerVariance) {}
+        : AbsoluteOrientationMeasurementBase(quat, eulerVariance) {}
 
     types::Matrix<Dimension, StateDimension> getJacobian(State const &s) const {
         using namespace pose_externalized_rotation;
@@ -899,25 +907,6 @@ class AbsoluteOrientationEKFMeasurement<pose_externalized_rotation::State>
         ret.block<Dimension, 3>(0, 3) = types::SquareMatrix<3>::Identity();
         return ret;
     }
-    MeasurementSquareMatrix const &getCovariance(State const &s) {
-        return generic_.getCovariance(s);
-    }
-    MeasurementVector predictMeasurement(State const &state) const {
-        return generic_.predictMeasurement(state);
-    }
-    MeasurementVector getResidual(State const &s) const {
-        return generic_.getResidual(s);
-    }
-    MeasurementVector getResidual(MeasurementVector const &predictedMeasurement,
-                                  State const &s) const {
-        return generic_.getResidual(predictedMeasurement, s);
-    }
-    void setMeasurement(Eigen::Quaterniond const &quat) {
-        generic_.setMeasurement(quat);
-    }
-
-  private:
-    AbsoluteOrientationMeasurement generic_;
 };
 
 
@@ -2408,8 +2397,8 @@ class AbsolutePositionMeasurement
 };
 
 /*!
- * This is the subclass of AbsolutePositionMeasurement: only explicit
- * specializations, and on state types.
+ * This is the EKF-specific relative of AbsolutePositionMeasurement: only
+ * explicit specializations, and on state types.
  */
 template <typename StateType> class AbsolutePositionEKFMeasurement;
 
@@ -2486,24 +2475,14 @@ class ConstantProcess : public ProcessModelBase<ConstantProcess<StateType>> {
 };
 
 
-/*!
- * This class is a 3D angular velocity measurement.
- *
- * It can be used with any state class that exposes a `angularVelocity()`
- * method. On its own, it is only suitable for unscented filter correction,
- * since the jacobian depends on the arrangement of the state vector. See
- * AngularVelocityEKFMeasurement's explicit specializations for use in EKF
- * correction mode.
- */
-class AngularVelocityMeasurement
-    : public MeasurementBase<AngularVelocityMeasurement> {
+class AngularVelocityMeasurementBase {
   public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     static constexpr size_t Dimension = 3;
     using MeasurementVector = types::Vector<Dimension>;
     using MeasurementSquareMatrix = types::SquareMatrix<Dimension>;
-    AngularVelocityMeasurement(MeasurementVector const &vel,
-                               MeasurementVector const &variance)
+    AngularVelocityMeasurementBase(MeasurementVector const &vel,
+                                   MeasurementVector const &variance)
         : m_measurement(vel), m_covariance(variance.asDiagonal()) {}
 
     template <typename State>
@@ -2542,6 +2521,22 @@ class AngularVelocityMeasurement
     MeasurementVector m_measurement;
     MeasurementSquareMatrix m_covariance;
 };
+/*!
+ * This class is a 3D angular velocity measurement.
+ *
+ * It can be used with any state class that exposes a `angularVelocity()`
+ * method. On its own, it is only suitable for unscented filter correction,
+ * since the jacobian depends on the arrangement of the state vector. See
+ * AngularVelocityEKFMeasurement's explicit specializations for use in EKF
+ * correction mode.
+ */
+class AngularVelocityMeasurement
+    : public AngularVelocityMeasurementBase,
+      public MeasurementBase<AngularVelocityMeasurement> {
+  public:
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+    using AngularVelocityMeasurementBase::AngularVelocityMeasurementBase;
+};
 
 /*!
  * This is the EKF-specific relative of AngularVelocityMeasurement: only
@@ -2549,15 +2544,14 @@ class AngularVelocityMeasurement
  *
  * Only required for EKF-style correction (since jacobian depends closely on the
  * state).
- *
- * Most of its code delegates to a contained AngularVelocityMeasurement.
  */
 template <typename StateType> class AngularVelocityEKFMeasurement;
 
 //! AngularVelocityEKFMeasurement with a pose_externalized_rotation::State
 template <>
 class AngularVelocityEKFMeasurement<pose_externalized_rotation::State>
-    : public MeasurementBase<
+    : public AngularVelocityMeasurementBase,
+      public MeasurementBase<
           AngularVelocityEKFMeasurement<pose_externalized_rotation::State>> {
   public:
     using State = pose_externalized_rotation::State;
@@ -2569,7 +2563,7 @@ class AngularVelocityEKFMeasurement<pose_externalized_rotation::State>
 
     AngularVelocityEKFMeasurement(MeasurementVector const &vel,
                                   MeasurementVector const &variance)
-        : generic_(vel, variance) {}
+        : AngularVelocityMeasurementBase(vel, variance) {}
 
     types::Matrix<Dimension, StateDimension> getJacobian(State const &) const {
         using Jacobian = types::Matrix<Dimension, StateDimension>;
@@ -2577,25 +2571,6 @@ class AngularVelocityEKFMeasurement<pose_externalized_rotation::State>
         ret.topRightCorner<3, 3>() = types::SquareMatrix<3>::Identity();
         return ret;
     }
-    MeasurementSquareMatrix const &getCovariance(State const &s) {
-        return generic_.getCovariance(s);
-    }
-    MeasurementVector predictMeasurement(State const &state) const {
-        return generic_.predictMeasurement(state);
-    }
-    MeasurementVector getResidual(State const &s) const {
-        return generic_.getResidual(s);
-    }
-    MeasurementVector getResidual(MeasurementVector const &predictedMeasurement,
-                                  State const &s) const {
-        return generic_.getResidual(predictedMeasurement, s);
-    }
-    void setMeasurement(MeasurementVector const &m) {
-        generic_.setMeasurement(m);
-    }
-
-  private:
-    AngularVelocityMeasurement generic_;
 };
 
 /*!
@@ -2605,7 +2580,8 @@ class AngularVelocityEKFMeasurement<pose_externalized_rotation::State>
  */
 template <>
 class AngularVelocityEKFMeasurement<orient_externalized_rotation::State>
-    : public MeasurementBase<
+    : public AngularVelocityMeasurementBase,
+      public MeasurementBase<
           AngularVelocityEKFMeasurement<orient_externalized_rotation::State>> {
   public:
     using State = orient_externalized_rotation::State;
@@ -2617,7 +2593,7 @@ class AngularVelocityEKFMeasurement<orient_externalized_rotation::State>
 
     AngularVelocityEKFMeasurement(MeasurementVector const &vel,
                                   MeasurementVector const &variance)
-        : generic_(vel, variance) {}
+        : AngularVelocityMeasurementBase(vel, variance) {}
 
     types::Matrix<Dimension, StateDimension> getJacobian(State const &) const {
         using Jacobian = types::Matrix<Dimension, StateDimension>;
@@ -2625,25 +2601,6 @@ class AngularVelocityEKFMeasurement<orient_externalized_rotation::State>
         ret.topRightCorner<3, 3>() = types::SquareMatrix<3>::Identity();
         return ret;
     }
-    MeasurementSquareMatrix const &getCovariance(State const &s) {
-        return generic_.getCovariance(s);
-    }
-    MeasurementVector predictMeasurement(State const &state) const {
-        return generic_.predictMeasurement(state);
-    }
-    MeasurementVector getResidual(State const &s) const {
-        return generic_.getResidual(s);
-    }
-    MeasurementVector getResidual(MeasurementVector const &predictedMeasurement,
-                                  State const &s) const {
-        return generic_.getResidual(predictedMeasurement, s);
-    }
-    void setMeasurement(MeasurementVector const &m) {
-        generic_.setMeasurement(m);
-    }
-
-  private:
-    AngularVelocityMeasurement generic_;
 };
 
 } // namespace flexkalman
