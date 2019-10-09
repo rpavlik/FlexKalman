@@ -2358,7 +2358,16 @@ class AbsolutePositionMeasurementBase {
     MeasurementMatrix getCovariance(State const &) const {
         return m_covariance;
     }
-
+    template <typename State>
+    MeasurementVector predictMeasurement(State const &s) const {
+        return s.position();
+    }
+    template <typename State>
+    MeasurementVector getResidual(MeasurementVector const &prediction,
+                                  State const &s) const {
+        MeasurementVector residual = m_pos - prediction;
+        return residual;
+    }
     /*!
      * Gets the measurement residual, also known as innovation: predicts
      * the measurement from the predicted state, and returns the
@@ -2368,8 +2377,7 @@ class AbsolutePositionMeasurementBase {
      */
     template <typename State>
     MeasurementVector getResidual(State const &s) const {
-        MeasurementVector residual = m_pos - s.position();
-        return residual;
+        return getResidual(predictMeasurement(s), s);
     }
 
     //! Convenience method to be able to store and re-use measurements.
