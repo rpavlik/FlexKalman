@@ -1754,6 +1754,42 @@ namespace matrix_exponential_map {
         Eigen::Quaterniond m_quat;
     };
 
+    /*!
+     * Converts a rotation vector to a rotation matrix:
+     * Uses Rodrigues' formula, and the first two terms of the Taylor
+     * expansions of the trig functions (so as to be nonsingular as the
+     * angle goes to zero).
+     */
+    template <typename Derived>
+    inline Eigen::Matrix<typename Derived::Scalar, 3, 3>
+    rodrigues(Eigen::MatrixBase<Derived> const &v) {
+        EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(Derived, 3);
+        using Scalar = typename Derived::Scalar;
+        Scalar theta = v.norm();
+        Eigen::Matrix<Scalar, 3, 3> Omega = makeSkewSymmetrixCrossProductMatrix(
+            v); //! two-term taylor approx of sin(theta)/theta
+        Scalar k1 = Scalar(1) - theta * theta / Scalar(6);
+
+        //! two-term taylor approx of (1-cos(theta))/theta
+        Scalar k2 = theta / Scalar(2) - theta * theta * theta / Scalar(24);
+
+        return Eigen::Matrix<Scalar, 3, 3>::Identity() + k1 * Omega +
+               k2 * Omega * Omega;
+    }
+
+    /*!
+     * Convert a matrix exponential map to a quat.
+     */
+    template <typename Derived>
+    inline Eigen::Quaternion<typename Derived::Scalar>
+    toQuat(Eigen::MatrixBase<Derived> const &v) {
+        EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(Derived, 3);
+        using Scalar = typename Derived::Scalar;
+        double theta = v.norm();
+        Eigen::Vector3d xyz = v * std::sin(theta / 2.);
+        return Eigen::Quaterniond(std::cos(theta / 2.), xyz.x(), xyz.y(),
+                                  xyz.z());
+    }
 } // namespace matrix_exponential_map
 
 
