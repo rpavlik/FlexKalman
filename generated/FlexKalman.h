@@ -1518,14 +1518,13 @@ class PureVectorState : public StateBase<PureVectorState<Dim>> {
  * @return a matrix M such that for some 3D vector u, Mu = v x u.
  */
 template <typename Derived>
-inline Eigen::Matrix3d
+inline Eigen::Matrix<typename Derived::Scalar, 3, 3>
 makeSkewSymmetrixCrossProductMatrix(Eigen::MatrixBase<Derived> const &v) {
-    Eigen::Matrix3d ret;
-    // clang-format off
-                ret << 0, -v.z(), v.y(),
-                       v.z(), 0, -v.x(),
-                       -v.y(), v.x(), 0;
-    // clang-format on
+    EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(Derived, 3);
+    Eigen::Matrix<typename Derived::Scalar, 3, 3> ret;
+    ret << 0, -v.z(), v.y(), //
+        v.z(), 0, -v.x(),    //
+        -v.y(), v.x(), 0;
     return ret;
 }
 
