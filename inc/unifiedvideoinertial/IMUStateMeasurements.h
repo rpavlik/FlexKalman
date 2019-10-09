@@ -54,7 +54,6 @@ namespace {
         static Eigen::Matrix3d
         getCommonSingleQJacobian(Eigen::Quaterniond const &innovationQuat) {
             auto &q = innovationQuat;
-#ifdef UVBI_USE_CODEGEN
             /// pre-compute the manually-extracted subexpressions.
             Eigen::Vector3d q2(q.vec().cwiseProduct(q.vec()));
             auto q_vecnorm = std::sqrt(q2.sum());
@@ -83,38 +82,6 @@ namespace {
             ret << q2.x() * tmp3 + tmp1, -tmp4 + tmp6, tmp7 + tmp8, tmp4 + tmp6,
                 q2.y() * tmp3 + tmp1, tmp10 - tmp9, -tmp7 + tmp8, tmp10 + tmp9,
                 q2.z() * tmp3 + tmp1;
-#else
-            /// @todo must be updated based on revised matrices (some sign
-            /// changes primarily)
-            auto qvecnorm = q.vec().norm();
-
-            if (qvecnorm < 1e-4) {
-                // effectively 0 - must avoid divide by zero.
-                // All numerators also go to 0 in this case, so we'll just
-                // eliminate them.
-                // The exception is the second term of the main diagonal:
-                // nominally -qw/2*vecnorm.
-                // qw would be 1, but in this form at least, the math goes
-                // to -infinity.
-
-                // When the jacobian is computed symbolically specifically
-                // for the case that q is the identity quaternion, a zero
-                // matrix
-                // is returned.
-                return Eigen::Matrix3d::Zero();
-            }
-            Eigen::Matrix3d ret =
-                // first term: qw * (qvec outer product with itself), over 2
-                // * vecnorm^3
-                (q.w() * q.vec() * q.vec().transpose() /
-                 (2 * qvecnorm * qvecnorm * qvecnorm)) +
-                // second term of each element: cross-product matrix of the
-                // negative vector part of quaternion over 2*vecnorm, minus
-                // the identity matrix * qw/2*vecnorm
-                ((vbtracker::skewSymmetricCrossProductMatrix3(-q.vec()) -
-                  Eigen::Matrix3d::Identity() * q.w()) /
-                 (2 * qvecnorm));
-#endif
             return ret;
         }
         static Eigen::Quaterniond
@@ -590,15 +557,10 @@ namespace uvbi {
                               Angle /*yawCorrection*/) {
         return roomToCameraRotation * imuQuat;
     }
-#ifdef UVBI_USE_OLD_MEASUREMENT_CLASS
-    using OrientationMeasurement =
-        flexkalman::AbsoluteOrientationEKFMeasurement<BodyState>;
-#else
     using OrientationMeasurement =
         flexkalman::IMUOrientationMeasurement<BodyState>;
     template <typename PolicyT>
     using OrientationMeasurementUsingPolicy =
         flexkalman::IMUOrientationMeasurement<BodyState, PolicyT>;
-#endif // UVBI_USE_OLD_MEASUREMENT_CLASS
 } // namespace uvbi
 } // namespace videotracker
