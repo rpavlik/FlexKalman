@@ -1554,12 +1554,36 @@ namespace matrix_exponential_map {
      * @param omega a 3D "matrix exponential map" rotation vector, which
      * will be modified if required.
      */
-    template <typename T> inline void avoidSingularities(T &&omega) {
+    template <typename Derived>
+    inline void avoidSingularities(Eigen::MatrixBase<Derived> &omega) {
+        EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(Derived, 3);
         // if magnitude gets too close to 2pi, in this case, pi...
         if (omega.squaredNorm() > EIGEN_PI * EIGEN_PI) {
             // replace omega with an equivalent one.
-            omega = ((1 - (2 * EIGEN_PI) / omega.norm()) * omega).eval();
+            omega.derived() =
+                ((1 - (2 * EIGEN_PI) / omega.norm()) * omega).eval();
         }
+    }
+    /*!
+     * Return a matrix exponential map rotation vector, modified if required
+     * to avoid singularities.
+     *
+     * @param omega a 3D "matrix exponential map" rotation vector.
+     *
+     * This call returns the result instead of modifying in place.
+     *
+     * @see avoidSingularities()
+     */
+    template <typename Derived>
+    inline Eigen::Matrix<typename Derived::Scalar, 3, 1>
+    singularitiesAvoided(Eigen::MatrixBase<Derived> const &omega) {
+        EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(Derived, 3);
+        // if magnitude gets too close to 2pi, in this case, pi...
+        if (omega.squaredNorm() > EIGEN_PI * EIGEN_PI) {
+            // replace omega with an equivalent one.
+            return (1 - (2 * EIGEN_PI) / omega.norm()) * omega;
+        }
+        return omega;
     }
 
     /*!
@@ -1567,7 +1591,9 @@ namespace matrix_exponential_map {
      * @param omega a 3D "exponential map" rotation vector
      */
     template <typename Derived>
-    inline double getAngle(Eigen::MatrixBase<Derived> const &omega) {
+    inline typename Derived::Scalar
+    getAngle(Eigen::MatrixBase<Derived> const &omega) {
+        EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(Derived, 3);
         return omega.norm();
     }
 
@@ -1594,7 +1620,9 @@ namespace matrix_exponential_map {
          */
         template <typename Derived>
         explicit ExponentialMapData(Eigen::MatrixBase<Derived> const &omega)
-            : m_omega(omega) {}
+            : m_omega(omega) {
+            EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(Derived, 3);
+        }
 
         ExponentialMapData() : m_omega(Eigen::Vector3d::Zero()) {}
 
@@ -1846,8 +1874,10 @@ namespace pose_exp_map {
         }
 
         void postCorrect() {
-            matrix_exponential_map::avoidSingularities(orientation(m_state));
-            m_cacheData.reset(Eigen::Vector3d(orientation(m_state)));
+            types::Vector<3> ori = orientation(m_state);
+            matrix_exponential_map::avoidSingularities(ori);
+            orientation(m_state) = ori;
+            m_cacheData.reset(ori);
         }
 
         StateVectorBlock3 position() { return pose_exp_map::position(m_state); }

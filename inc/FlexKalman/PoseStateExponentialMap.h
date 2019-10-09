@@ -158,8 +158,10 @@ namespace pose_exp_map {
         }
 
         void postCorrect() {
-            matrix_exponential_map::avoidSingularities(orientation(m_state));
-            m_cacheData.reset(Eigen::Vector3d(orientation(m_state)));
+            types::Vector<3> ori = orientation(m_state);
+            matrix_exponential_map::avoidSingularities(ori);
+            orientation(m_state) = ori;
+            m_cacheData.reset(ori);
         }
 
         StateVectorBlock3 position() { return pose_exp_map::position(m_state); }
