@@ -42,7 +42,7 @@ namespace uvbi {
     class FakeImageSource : public ImageSource {
       public:
         FakeImageSource(std::string const &imagesDir);
-        virtual ~FakeImageSource() {}
+        ~FakeImageSource() override = default;
 
         bool ok() const override { return !m_images.empty(); }
         bool grab() override;

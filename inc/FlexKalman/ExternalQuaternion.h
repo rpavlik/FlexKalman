@@ -37,15 +37,19 @@
 namespace flexkalman {
 
 namespace external_quat {
-    /// For use in maintaining an "external quaternion" and 3 incremental
-    /// orientations, as done by Welch based on earlier work.
-    ///
-    /// Performs exponentiation from a vector to a quaternion.
+    /*!
+     * For use in maintaining an "external quaternion" and 3 incremental
+     * orientations, as done by Welch based on earlier work.
+     *
+     * Performs exponentiation from a vector to a quaternion.
+     */
     inline Eigen::Quaterniond vecToQuat(types::Vector<3> const &incRotVec) {
         return util::quat_exp(incRotVec / 2.);
     }
-/// Computes what is effectively the Jacobian matrix of partial
-/// derivatives of incrementalOrientationToQuat()
+/*!
+ * Computes what is effectively the Jacobian matrix of partial
+ * derivatives of incrementalOrientationToQuat()
+ */
 #if 0
         inline types::Matrix<4, 3> jacobian(Eigen::Vector3d const &incRotVec) {
             assert(vecToQuatScalarPartSquared(incRotVec) >= 0 &&

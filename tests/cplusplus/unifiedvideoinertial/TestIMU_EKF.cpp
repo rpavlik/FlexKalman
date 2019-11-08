@@ -39,6 +39,7 @@ TEMPLATE_TEST_CASE("identity calibration output", "[.][ekf]", flexkalman::QFirst
 #endif
 TEMPLATE_TEST_CASE("identity calibration output", "[.][ekf]",
                    flexkalman::SplitQ, flexkalman::QLastWithSplitInnovation) {
+    Catch::StringMaker<float>::precision = 15;
     using MeasurementType = OrientationMeasurementUsingPolicy<TestType>;
     using JacobianType = typename MeasurementType::JacobianType;
     unique_ptr<TestData> data(new TestData);

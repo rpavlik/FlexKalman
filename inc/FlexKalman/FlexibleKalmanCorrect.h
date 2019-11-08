@@ -40,11 +40,15 @@
 
 namespace flexkalman {
 
+template <typename Derived> class StateBase;
+template <typename Derived> class MeasurementBase;
+template <typename Derived> class ProcessModelBase;
+
 template <typename StateType, typename MeasurementType>
 struct CorrectionInProgress {
-    /// Dimension of measurement
+    //! Dimension of measurement
     static constexpr size_t m = getDimension<MeasurementType>();
-    /// Dimension of state
+    //! Dimension of state
     static constexpr size_t n = getDimension<StateType>();
 
     CorrectionInProgress(StateType &state, MeasurementType &meas,
@@ -55,38 +59,44 @@ struct CorrectionInProgress {
           stateCorrection(PHt * denom.solve(deltaz)), state_(state),
           stateCorrectionFinite(stateCorrection.array().allFinite()) {}
 
-    /// State error covariance
+    //! State error covariance
     types::SquareMatrix<n> P;
 
-    /// The kalman gain stuff to not invert (called P12 in TAG)
+    //! The kalman gain stuff to not invert (called P12 in TAG)
     types::Matrix<n, m> PHt;
 
-    /// Decomposition of S
-    ///
-    /// Not going to directly compute Kalman gain K = PHt (S^-1)
-    /// Instead, decomposed S to solve things of the form (S^-1)x
-    /// repeatedly later, by using the substitution
-    /// Kx = PHt denom.solve(x)
-    /// @todo Figure out if this is the best decomp to use
+    /*!
+     * Decomposition of S
+     *
+     * Not going to directly compute Kalman gain K = PHt (S^-1)
+     * Instead, decomposed S to solve things of the form (S^-1)x
+     * repeatedly later, by using the substitution
+     * Kx = PHt denom.solve(x)
+     * @todo Figure out if this is the best decomp to use
+     */
     // TooN/TAG use this one, and others online seem to suggest it.
     Eigen::LDLT<types::SquareMatrix<m>> denom;
 
-    /// Measurement residual/delta z/innovation
+    //! Measurement residual/delta z/innovation
     types::Vector<m> deltaz;
 
-    /// Corresponding state change to apply.
+    //! Corresponding state change to apply.
     types::Vector<n> stateCorrection;
 
-    /// Is the state correction free of NaNs and +- infs?
+    //! Is the state correction free of NaNs and +- infs?
     bool stateCorrectionFinite;
 
-    /// That's as far as we go here before you choose to continue.
+    //! That's as far as we go here before you choose to continue.
 
-    /// Finish computing the rest and correct the state.
-    /// @param cancelIfNotFinite If the new error covariance is detected to
-    /// contain non-finite values, should we cancel the correction and not
-    /// apply it?
-    /// @return true if correction completed
+    /*!
+     * Finish computing the rest and correct the state.
+     *
+     * @param cancelIfNotFinite If the new error covariance is detected to
+     * contain non-finite values, should we cancel the correction and not
+     * apply it?
+     *
+     * @return true if correction completed
+     */
     bool finishCorrection(bool cancelIfNotFinite = true) {
         // Compute the new error covariance
         // differs from the (I-KH)P form by not factoring out the P (since
@@ -94,15 +104,15 @@ struct CorrectionInProgress {
         types::SquareMatrix<n> newP = P - (PHt * denom.solve(PHt.transpose()));
 
 #if 0
-            // Test fails with this one:
-            // VariedProcessModelStability/1.AbsolutePoseMeasurementXlate111,
-            // where TypeParam =
-            // flexkalman::PoseDampedConstantVelocityProcessModel
-            FLEXKALMAN_DEBUG_OUTPUT(
-                "error covariance scale",
-                (types::SquareMatrix<n>::Identity() - PHt * denom.solve(H)));
-            types::SquareMatrix<n> newP =
-                (types::SquareMatrix<n>::Identity() - PHt * denom.solve(H)) * P;
+        // Test fails with this one:
+        // VariedProcessModelStability/1.AbsolutePoseMeasurementXlate111,
+        // where TypeParam =
+        // flexkalman::PoseDampedConstantVelocityProcessModel
+        FLEXKALMAN_DEBUG_OUTPUT(
+            "error covariance scale",
+            (types::SquareMatrix<n>::Identity() - PHt * denom.solve(H)));
+        types::SquareMatrix<n> newP =
+            (types::SquareMatrix<n>::Identity() - PHt * denom.solve(H)) * P;
 #endif
 
         if (!newP.array().allFinite()) {
@@ -116,8 +126,8 @@ struct CorrectionInProgress {
         state_.setErrorCovariance(newP);
 
 #if 0
-            // Doesn't seem necessary to re-symmetrize the covariance matrix.
-            state_.setErrorCovariance((newP + newP.transpose()) / 2.);
+        // Doesn't seem necessary to re-symmetrize the covariance matrix.
+        state_.setErrorCovariance((newP + newP.transpose()) / 2.);
 #endif
 
         // Let the state do any cleanup it has to (like fixing externalized
@@ -130,51 +140,54 @@ struct CorrectionInProgress {
     StateType &state_;
 };
 
-template <typename StateType, typename ProcessModelType,
-          typename MeasurementType>
-inline CorrectionInProgress<StateType, MeasurementType>
-beginExtendedCorrection(StateType &state, ProcessModelType &processModel,
-                        MeasurementType &meas) {
+template <typename State, typename ProcessModel, typename Measurement>
+inline CorrectionInProgress<State, Measurement>
+beginExtendedCorrection(StateBase<State> &state,
+                        ProcessModelBase<ProcessModel> &processModel,
+                        MeasurementBase<Measurement> &meas) {
 
-    /// Dimension of measurement
-    static constexpr auto m = getDimension<MeasurementType>();
-    /// Dimension of state
-    static constexpr auto n = getDimension<StateType>();
+    //! Dimension of measurement
+    static constexpr size_t m = getDimension<Measurement>();
+    //! Dimension of state
+    static constexpr size_t n = getDimension<State>();
 
-    /// Measurement Jacobian
-    types::Matrix<m, n> H = meas.getJacobian(state);
+    //! Measurement Jacobian
+    types::Matrix<m, n> H = meas.derived().getJacobian(state.derived());
 
-    /// Measurement covariance
-    types::SquareMatrix<m> R = meas.getCovariance(state);
+    //! Measurement covariance
+    types::SquareMatrix<m> R = meas.derived().getCovariance(state.derived());
 
-    /// State error covariance
-    types::SquareMatrix<n> P = state.errorCovariance();
+    //! State error covariance
+    types::SquareMatrix<n> P = state.derived().errorCovariance();
 
-    /// The kalman gain stuff to not invert (called P12 in TAG)
+    //! The kalman gain stuff to not invert (called P12 in TAG)
     types::Matrix<n, m> PHt = P * H.transpose();
 
-    /// the stuff to invert for the kalman gain
-    /// also sometimes called S or the "Innovation Covariance"
+    /*!
+     * the stuff to invert for the kalman gain
+     * also sometimes called S or the "Innovation Covariance"
+     */
     types::SquareMatrix<m> S = H * PHt + R;
 
-    /// More computation is done in initializers/constructor
-    return CorrectionInProgress<StateType, MeasurementType>(state, meas, P, PHt,
-                                                            S);
+    //! More computation is done in initializers/constructor
+    return {state.derived(), meas.derived(), P, PHt, S};
 }
 
-/// Correct a Kalman filter's state using a measurement that provides a
-/// Jacobian, in the manner of an Extended Kalman Filter (EKF).
-///
-/// @param cancelIfNotFinite If the state correction or new error covariance
-/// is detected to contain non-finite values, should we cancel the
-/// correction and not apply it?
-///
-/// @return true if correction completed
-template <typename StateType, typename ProcessModelType,
-          typename MeasurementType>
-static inline bool
-correctExtended(StateType &state, ProcessModelType &processModel,
-                MeasurementType &meas, bool cancelIfNotFinite = true) {
+/*!
+ * Correct a Kalman filter's state using a measurement that provides a
+ * Jacobian, in the manner of an Extended Kalman Filter (EKF).
+ *
+ * @param cancelIfNotFinite If the state correction or new error covariance
+ * is detected to contain non-finite values, should we cancel the
+ * correction and not apply it?
+ *
+ * @return true if correction completed
+ */
+template <typename State, typename ProcessModel, typename Measurement>
+static inline bool correctExtended(StateBase<State> &state,
+                                   ProcessModelBase<ProcessModel> &processModel,
+                                   MeasurementBase<Measurement> &meas,
+                                   bool cancelIfNotFinite = true) {
 
     auto inProgress = beginExtendedCorrection(state, processModel, meas);
     if (cancelIfNotFinite && !inProgress.stateCorrectionFinite) {
@@ -184,12 +197,11 @@ correctExtended(StateType &state, ProcessModelType &processModel,
     return inProgress.finishCorrection(cancelIfNotFinite);
 }
 
-/// Delegates to correctExtended, a more explicit name which is preferred.
-template <typename StateType, typename ProcessModelType,
-          typename MeasurementType>
-static inline bool correct(StateType &state, ProcessModelType &processModel,
-                           MeasurementType &meas,
-                           bool cancelIfNotFinite = true) {
+//! Delegates to correctExtended, a more explicit name which is preferred.
+template <typename State, typename ProcessModel, typename Measurement>
+static inline bool
+correct(StateBase<State> &state, ProcessModelBase<ProcessModel> &processModel,
+        MeasurementBase<Measurement> &meas, bool cancelIfNotFinite = true) {
     return correctExtended(state, processModel, meas, cancelIfNotFinite);
 }
 

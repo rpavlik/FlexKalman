@@ -25,6 +25,7 @@
 #pragma once
 
 // Internal Includes
+#include "BaseTypes.h"
 #include "FlexibleKalmanBase.h"
 
 // Library/third-party includes
@@ -34,11 +35,14 @@
 // - none
 namespace flexkalman {
 
-/// A very simple (3D by default) vector state with no velocity, ideal for
-/// use as a position, with ConstantProcess for beacon autocalibration
-template <size_t Dim = 3> class PureVectorState {
+/*!
+ * A very simple (3D by default) vector state with no velocity, ideal for
+ * use as a position, with ConstantProcess for beacon autocalibration
+ */
+template <size_t Dim = 3>
+class PureVectorState : public StateBase<PureVectorState<Dim>> {
   public:
-    static const size_t Dimension = Dim;
+    static constexpr size_t Dimension = Dim;
     using SquareMatrix = types::SquareMatrix<Dimension>;
     using StateVector = types::Vector<Dimension>;
 
@@ -60,24 +64,24 @@ template <size_t Dim = 3> class PureVectorState {
 
     PureVectorState(StateVector const &state, SquareMatrix const &covariance)
         : m_state(state), m_errorCovariance(covariance) {}
-    /// @name Methods required of State types
+    //! @name Methods required of State types
     /// @{
-    /// set xhat
+    //! set xhat
     void setStateVector(StateVector const &state) { m_state = state; }
-    /// xhat
+    //! xhat
     StateVector const &stateVector() const { return m_state; }
     // set P
     void setErrorCovariance(SquareMatrix const &errorCovariance) {
         m_errorCovariance = errorCovariance;
     }
-    /// P
+    //! P
     SquareMatrix const &errorCovariance() const { return m_errorCovariance; }
     void postCorrect() {}
-    /// @}
+    //! @}
   private:
-    /// x
+    //! x
     StateVector m_state;
-    /// P
+    //! P
     SquareMatrix m_errorCovariance;
 };
 

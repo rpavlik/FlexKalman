@@ -26,18 +26,24 @@
 
 // Internal Includes
 #include "AugmentedState.h"
+#include "BaseTypes.h"
 
 // Library/third-party includes
 // - none
 
 // Standard includes
+#include <functional>
 #include <type_traits>
 
 namespace flexkalman {
 
-/// Process model type that consists entirely of references to two
-/// sub-process models, for operating on an AugmentedState<>.
-template <typename ModelA, typename ModelB> class AugmentedProcessModel {
+/*!
+ * Process model type that consists entirely of references to two
+ * sub-process models, for operating on an AugmentedState<>.
+ */
+template <typename ModelA, typename ModelB>
+class AugmentedProcessModel
+    : public ProcessModelBase<AugmentedProcessModel<ModelA, ModelB>> {
   public:
     using ModelTypeA = ModelA;
     using ModelTypeB = ModelB;
@@ -45,52 +51,48 @@ template <typename ModelA, typename ModelB> class AugmentedProcessModel {
     using StateB = typename ModelB::State;
     using State = AugmentedState<StateA, StateB>;
 
-    /// Constructor
+    //! Constructor
     AugmentedProcessModel(ModelTypeA &modA, ModelTypeB &modB)
-        : a_(modA), b_(modB) {}
+        : a_(std::ref(modA)), b_(std::ref(modB)) {}
 
-    /// Copy constructor
-    AugmentedProcessModel(AugmentedProcessModel const &other) = default;
-
-    /// Move constructor
-    AugmentedProcessModel(AugmentedProcessModel &&other)
-        : a_(other.a_), b_(other.b_) {}
-    /// non-assignable
-    AugmentedProcessModel &
-    operator=(AugmentedProcessModel const &other) = delete;
-    /// @name Method required of Process Model types
+    //! @name Method required of Process Model types
     /// @{
     void predictState(State &state, double dt) {
         modelA().predictState(state.a(), dt);
         modelB().predictState(state.b(), dt);
     }
-    /// @}
+    //! @}
 
-    /// @name Access to the components of the process model
+    //! @name Access to the components of the process model
     /// @{
-    ModelTypeA &modelA() { return a_; }
-    ModelTypeA const &modelA() const { return a_; }
+    ModelTypeA &modelA() { return a_.get(); }
+    ModelTypeA const &modelA() const { return a_.get(); }
 
-    ModelTypeB &modelB() { return b_; }
-    ModelTypeB const &modelB() const { return b_; }
-    /// @}
+    ModelTypeB &modelB() { return b_.get(); }
+    ModelTypeB const &modelB() const { return b_.get(); }
+    //! @}
   private:
-    ModelTypeA &a_;
-    ModelTypeB &b_;
+    std::reference_wrapper<ModelTypeA> a_;
+    std::reference_wrapper<ModelTypeB> b_;
 };
-/// Template alias to make removing const from the deduced types less
-/// verbose/painful.
+
+/*!
+ * Template alias to make removing const from the deduced types less
+ * verbose/painful.
+ */
 template <typename ModelA, typename ModelB>
 using DeducedAugmentedProcessModel =
     AugmentedProcessModel<typename std::remove_const<ModelA>::type,
                           typename std::remove_const<ModelB>::type>;
 
-/// Factory function, akin to `std::tie()`, to make an augmented process
-/// model.
+/*!
+ * Factory function, akin to `std::tie()`, to make an augmented process
+ * model.
+ */
 template <typename ModelA, typename ModelB>
 inline DeducedAugmentedProcessModel<ModelA, ModelB>
 makeAugmentedProcessModel(ModelA &a, ModelB &b) {
-    return DeducedAugmentedProcessModel<ModelA, ModelB>{a, b};
+    return {a, b};
 }
 
 } // namespace flexkalman

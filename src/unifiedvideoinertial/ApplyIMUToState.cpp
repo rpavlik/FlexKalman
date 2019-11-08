@@ -45,7 +45,7 @@ namespace videotracker {
 namespace uvbi {
     using videotracker::util::Angle;
     inline void applyOriToState(TrackingSystem const &sys, BodyState &state,
-                                BodyProcessModel &processModel,
+                                BodyProcessModel & /*processModel*/,
                                 CannedIMUMeasurement const &meas) {
         Eigen::Quaterniond quat;
         meas.restoreQuat(quat);
@@ -99,8 +99,9 @@ namespace uvbi {
         }
     }
 
-    inline void applyAngVelToState(TrackingSystem const &sys, BodyState &state,
-                                   BodyProcessModel &processModel,
+    inline void applyAngVelToState(TrackingSystem const & /*sys*/,
+                                   BodyState &state,
+                                   BodyProcessModel & /*processModel*/,
                                    CannedIMUMeasurement const &meas) {
 
         Eigen::Vector3d angVel;

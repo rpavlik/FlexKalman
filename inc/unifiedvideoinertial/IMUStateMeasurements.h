@@ -34,6 +34,7 @@
 #include "Angles.h"
 #include "EigenExtras.h"
 #include "FlexKalman/AbsoluteOrientationMeasurement.h"
+#include "FlexKalman/BaseTypes.h"
 #include "FlexKalman/EigenQuatExponentialMap.h"
 #include "FlexKalman/FlexibleKalmanFilter.h"
 
@@ -53,7 +54,6 @@ namespace {
         static Eigen::Matrix3d
         getCommonSingleQJacobian(Eigen::Quaterniond const &innovationQuat) {
             auto &q = innovationQuat;
-#ifdef UVBI_USE_CODEGEN
             /// pre-compute the manually-extracted subexpressions.
             Eigen::Vector3d q2(q.vec().cwiseProduct(q.vec()));
             auto q_vecnorm = std::sqrt(q2.sum());
@@ -82,38 +82,6 @@ namespace {
             ret << q2.x() * tmp3 + tmp1, -tmp4 + tmp6, tmp7 + tmp8, tmp4 + tmp6,
                 q2.y() * tmp3 + tmp1, tmp10 - tmp9, -tmp7 + tmp8, tmp10 + tmp9,
                 q2.z() * tmp3 + tmp1;
-#else
-            /// @todo must be updated based on revised matrices (some sign
-            /// changes primarily)
-            auto qvecnorm = q.vec().norm();
-
-            if (qvecnorm < 1e-4) {
-                // effectively 0 - must avoid divide by zero.
-                // All numerators also go to 0 in this case, so we'll just
-                // eliminate them.
-                // The exception is the second term of the main diagonal:
-                // nominally -qw/2*vecnorm.
-                // qw would be 1, but in this form at least, the math goes
-                // to -infinity.
-
-                // When the jacobian is computed symbolically specifically
-                // for the case that q is the identity quaternion, a zero
-                // matrix
-                // is returned.
-                return Eigen::Matrix3d::Zero();
-            }
-            Eigen::Matrix3d ret =
-                // first term: qw * (qvec outer product with itself), over 2
-                // * vecnorm^3
-                (q.w() * q.vec() * q.vec().transpose() /
-                 (2 * qvecnorm * qvecnorm * qvecnorm)) +
-                // second term of each element: cross-product matrix of the
-                // negative vector part of quaternion over 2*vecnorm, minus
-                // the identity matrix * qw/2*vecnorm
-                ((vbtracker::skewSymmetricCrossProductMatrix3(-q.vec()) -
-                  Eigen::Matrix3d::Identity() * q.w()) /
-                 (2 * qvecnorm));
-#endif
             return ret;
         }
         static Eigen::Quaterniond
@@ -471,16 +439,7 @@ template <typename PolicyT> class IMUOrientationMeasBase {
         // way". We'll compute both and pick the "short way".
         // Multiplication of the log by 2 is the way to convert from a quat
         // to a rotation vector.
-        MeasurementVector residual = 2 * util::quat_ln(residualq);
-#if 0
-            MeasurementVector equivResidual =
-                2 * util::quat_ln(Eigen::Quaterniond(-(residualq.coeffs())));
-            return residual.squaredNorm() < equivResidual.squaredNorm()
-                       ? residual
-                       : equivResidual;
-#else
-        return residual;
-#endif
+        return 2 * util::smallest_quat_ln(residualq);
     }
 
     template <typename State>
@@ -497,16 +456,7 @@ template <typename PolicyT> class IMUOrientationMeasBase {
         // way". We'll compute both and pick the "short way".
         // Multiplication of the log by 2 is the way to convert from a quat
         // to a rotation vector.
-        MeasurementVector residual = 2 * util::quat_ln(residualq);
-#if 1
-        MeasurementVector equivResidual =
-            2 * util::quat_ln(Eigen::Quaterniond(-(residualq.coeffs())));
-        return residual.squaredNorm() < equivResidual.squaredNorm()
-                   ? residual
-                   : equivResidual;
-#else
-        return residual;
-#endif
+        return 2 * util::smallest_quat_ln(residualq);
     }
 
     /// Convenience method to be able to store and re-use measurements.
@@ -520,21 +470,21 @@ template <typename PolicyT> class IMUOrientationMeasBase {
     }
 
   private:
-    Eigen::Quaterniond m_iRc;
-    Eigen::Quaterniond m_cRi;
     Eigen::Quaterniond m_quat;
     MeasurementSquareMatrix m_covariance;
 };
 
-/// This is the subclass of AbsoluteOrientationBase: only explicit
+/// This is the subclass of AbsoluteOrientationMeasurement: only explicit
 /// specializations, and on state types.
 template <typename StateType, typename PolicyT = SplitQ>
 class IMUOrientationMeasurement;
 
-/// AbsoluteOrientationMeasurement with a pose_externalized_rotation::State
+/// AbsoluteOrientationEKFMeasurement with a pose_externalized_rotation::State
 template <typename PolicyT>
 class IMUOrientationMeasurement<pose_externalized_rotation::State, PolicyT>
-    : public IMUOrientationMeasBase<PolicyT> {
+    : public IMUOrientationMeasBase<PolicyT>,
+      public flexkalman::MeasurementBase<IMUOrientationMeasurement<
+          pose_externalized_rotation::State, PolicyT>> {
   public:
     using State = pose_externalized_rotation::State;
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
@@ -559,7 +509,8 @@ class IMUOrientationMeasurement<pose_externalized_rotation::State, PolicyT>
     }
 };
 
-class IMUAngVelMeasurement {
+class IMUAngVelMeasurement
+    : public flexkalman::MeasurementBase<IMUAngVelMeasurement> {
   public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     static constexpr size_t Dimension = 3;
@@ -606,15 +557,10 @@ namespace uvbi {
                               Angle /*yawCorrection*/) {
         return roomToCameraRotation * imuQuat;
     }
-#ifdef UVBI_USE_OLD_MEASUREMENT_CLASS
-    using OrientationMeasurement =
-        flexkalman::AbsoluteOrientationMeasurement<BodyState>;
-#else
     using OrientationMeasurement =
         flexkalman::IMUOrientationMeasurement<BodyState>;
     template <typename PolicyT>
     using OrientationMeasurementUsingPolicy =
         flexkalman::IMUOrientationMeasurement<BodyState, PolicyT>;
-#endif // UVBI_USE_OLD_MEASUREMENT_CLASS
 } // namespace uvbi
 } // namespace videotracker

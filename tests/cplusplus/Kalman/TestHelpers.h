@@ -1,7 +1,11 @@
 /** @file
-    @brief Implementation
+    @brief Header
 
-    @date 2015
+    @date 2015-2019
+
+    @author
+    Ryan Pavlik
+    <ryan.pavlik@collabora.com>
 
     @author
     Sensics, Inc.
@@ -9,6 +13,7 @@
 */
 
 // Copyright 2015 Sensics, Inc.
+// Copyright 2019 Collabora, Ltd.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,22 +27,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Internal Includes
-#include "unifiedvideoinertial/ImageSources/ImageSource.h"
+#pragma once
 
-// Library/third-party includes
-#include <opencv2/imgproc/imgproc.hpp>
+// DO NOT include headers here! This is shared between the "combined" tests and
+// the split-header tests...
 
-// Standard includes
-// - none
-
-namespace videotracker {
-namespace uvbi {
-    ImageSource::~ImageSource() = default;
-    void ImageSource::retrieve(cv::Mat &color, cv::Mat &gray,
-                               videotracker::util::TimeValue &timestamp) {
-        retrieveColor(color, timestamp);
-        cv::cvtColor(color, gray, cv::COLOR_RGB2GRAY);
-    }
-} // namespace uvbi
-} // namespace videotracker
+namespace Eigen {
+inline void outputQuat(std::ostream &os, Quaterniond const &q) {
+    os.precision(8);
+    os << "[" << q.w() << " (" << q.vec().transpose() << ")]";
+}
+inline std::ostream &operator<<(std::ostream &os, Quaterniond const &q) {
+    outputQuat(os, q);
+    return os;
+}
+} // namespace Eigen

@@ -29,6 +29,7 @@
 #pragma once
 
 // Internal Includes
+#include "BaseTypes.h"
 #include "FlexibleKalmanBase.h"
 #include "MatrixExponentialMap.h"
 
@@ -51,7 +52,7 @@ namespace pose_exp_map {
     using StateVectorBlock6 = StateVector::FixedSegmentReturnType<6>::Type;
     using StateSquareMatrix = types::SquareMatrix<Dimension>;
 
-    /// @name Accessors to blocks in the state vector.
+    //! @name Accessors to blocks in the state vector.
     /// @{
     inline StateVectorBlock3 position(StateVector &vec) {
         return vec.head<3>();
@@ -81,14 +82,16 @@ namespace pose_exp_map {
         return vec.segment<3>(9);
     }
 
-    /// both translational and angular velocities
+    //! both translational and angular velocities
     inline StateVectorBlock6 velocities(StateVector &vec) {
         return vec.segment<6>(6);
     }
-    /// @}
+    //! @}
 
-    /// This returns A(deltaT), though if you're just predicting xhat-, use
-    /// applyVelocity() instead for performance.
+    /*!
+     * This returns A(deltaT), though if you're just predicting xhat-, use
+     * applyVelocity() instead for performance.
+     */
     inline StateSquareMatrix stateTransitionMatrix(double dt) {
         // eq. 4.5 in Welch 1996 - except we have all the velocities at the
         // end
@@ -110,12 +113,14 @@ namespace pose_exp_map {
         A.bottomRightCorner<6, 6>() *= attenuation;
         return A;
     }
-    /// Computes A(deltaT)xhat(t-deltaT)
+    //! Computes A(deltaT)xhat(t-deltaT)
     inline StateVector applyVelocity(StateVector const &state, double dt) {
         // eq. 4.5 in Welch 1996
 
-        /// @todo benchmark - assuming for now that the manual small
-        /// calcuations are faster than the matrix ones.
+        /*!
+         * @todo benchmark - assuming for now that the manual small
+         * calcuations are faster than the matrix ones.
+         */
 
         StateVector ret = state;
         position(ret) += velocity(state) * dt;
@@ -128,32 +133,35 @@ namespace pose_exp_map {
         auto attenuation = computeAttenuation(damping, dt);
         velocities(state) *= attenuation;
     }
-    class State : public HasDimension<12> {
+    class State : public StateBase<State> {
       public:
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+        static constexpr size_t Dimension = 12;
 
-        /// Default constructor
+        //! Default constructor
         State()
             : m_state(StateVector::Zero()),
               m_errorCovariance(
                   StateSquareMatrix::
                       Identity() /** @todo almost certainly wrong */) {}
-        /// set xhat
+        //! set xhat
         void setStateVector(StateVector const &state) { m_state = state; }
-        /// xhat
+        //! xhat
         StateVector const &stateVector() const { return m_state; }
         // set P
         void setErrorCovariance(StateSquareMatrix const &errorCovariance) {
             m_errorCovariance = errorCovariance;
         }
-        /// P
+        //! P
         StateSquareMatrix const &errorCovariance() const {
             return m_errorCovariance;
         }
 
         void postCorrect() {
-            matrix_exponential_map::avoidSingularities(orientation(m_state));
-            m_cacheData.reset(Eigen::Vector3d(orientation(m_state)));
+            types::Vector<3> ori = orientation(m_state);
+            matrix_exponential_map::avoidSingularities(ori);
+            orientation(m_state) = ori;
+            m_cacheData.reset(ori);
         }
 
         StateVectorBlock3 position() { return pose_exp_map::position(m_state); }
@@ -184,18 +192,22 @@ namespace pose_exp_map {
         }
 
       private:
-        /// In order: x, y, z, exponential rotation coordinates w1, w2, w3,
-        /// then their derivatives in the same order.
+        /*!
+         * In order: x, y, z, exponential rotation coordinates w1, w2, w3,
+         * then their derivatives in the same order.
+         */
         StateVector m_state;
-        /// P
+        //! P
         StateSquareMatrix m_errorCovariance;
 
-        /// Cached data for use in consuming the exponential map rotation.
+        //! Cached data for use in consuming the exponential map rotation.
         matrix_exponential_map::ExponentialMapData m_cacheData;
     };
 
-    /// Stream insertion operator, for displaying the state of the state
-    /// class.
+    /*!
+     * Stream insertion operator, for displaying the state of the state
+     * class.
+     */
     template <typename OutputStream>
     inline OutputStream &operator<<(OutputStream &os, State const &state) {
         os << "State:" << state.stateVector().transpose() << "\n";

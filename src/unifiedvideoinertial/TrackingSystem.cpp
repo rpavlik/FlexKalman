@@ -53,7 +53,7 @@ namespace uvbi {
     TrackingSystem::TrackingSystem(ConfigParams const &params)
         : m_params(params), m_impl(new TrackingSystem_Impl(params)) {}
 
-    TrackingSystem::~TrackingSystem() {}
+    TrackingSystem::~TrackingSystem() = default;
 
     TrackedBody *TrackingSystem::createTrackedBody() {
         auto newId = BodyId(static_cast<BodyId::wrapped_type>(m_bodies.size()));

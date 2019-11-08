@@ -4,6 +4,9 @@
     @date 2015
 
     @author
+    Ryan Pavlik
+    <ryan.pavlik@collabora.com>
+    @author
     Sensics, Inc.
     <http://sensics.com/osvr>
 */
@@ -25,6 +28,7 @@
 #pragma once
 
 // Internal Includes
+#include "BaseTypes.h"
 #include "EigenQuatExponentialMap.h"
 #include "ExternalQuaternion.h"
 #include "FlexibleKalmanBase.h"
@@ -38,17 +42,15 @@
 // - none
 
 namespace flexkalman {
-/// The measurement here has been split into a base and derived type, so
-/// that the derived type only contains the little bit that depends on a
-/// particular state type.
-class AbsoluteOrientationBase {
+
+class AbsoluteOrientationMeasurementBase {
   public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     static constexpr size_t Dimension = 3;
     using MeasurementVector = types::Vector<Dimension>;
     using MeasurementSquareMatrix = types::SquareMatrix<Dimension>;
-    AbsoluteOrientationBase(Eigen::Quaterniond const &quat,
-                            types::Vector<3> const &emVariance)
+    AbsoluteOrientationMeasurementBase(Eigen::Quaterniond const &quat,
+                                       types::Vector<3> const &emVariance)
         : m_quat(quat), m_covariance(emVariance.asDiagonal()) {}
 
     template <typename State>
@@ -56,63 +58,94 @@ class AbsoluteOrientationBase {
         return m_covariance;
     }
 
-    /// Gets the measurement residual, also known as innovation: predicts
-    /// the measurement from the predicted state, and returns the
-    /// difference.
-    ///
-    /// State type doesn't matter as long as we can
-    /// `.getCombinedQuaternion()`
+    template <typename State>
+    MeasurementVector predictMeasurement(State const &state) const {
+        return state.incrementalOrientation();
+    }
+    template <typename State>
+    MeasurementVector getResidual(MeasurementVector const &predictedMeasurement,
+                                  State const &s) const {
+        // The prediction we're given is effectively "the state's incremental
+        // rotation", which is why we're using our measurement here as well as
+        // the prediction.
+        const Eigen::Quaterniond fullPredictedOrientation =
+            util::quat_exp(predictedMeasurement / 2.) * s.getQuaternion();
+        return 2 * util::smallest_quat_ln(m_quat *
+                                          fullPredictedOrientation.conjugate());
+    }
+    /*!
+     * Gets the measurement residual, also known as innovation: predicts
+     * the measurement from the predicted state, and returns the
+     * difference.
+     *
+     * State type doesn't matter as long as we can
+     * `.getCombinedQuaternion()`
+     */
     template <typename State>
     MeasurementVector getResidual(State const &s) const {
         const Eigen::Quaterniond prediction = s.getCombinedQuaternion();
-        const Eigen::Quaterniond residualq = m_quat * prediction.inverse();
         // Two equivalent quaternions: but their logs are typically
         // different: one is the "short way" and the other is the "long
         // way". We'll compute both and pick the "short way".
-        MeasurementVector residual = util::quat_ln(residualq);
-        MeasurementVector equivResidual =
-            util::quat_ln(Eigen::Quaterniond(-(residualq.coeffs())));
-        return residual.squaredNorm() < equivResidual.squaredNorm()
-                   ? residual
-                   : equivResidual;
+        return 2 * util::smallest_quat_ln(m_quat * prediction.conjugate());
     }
-    /// Convenience method to be able to store and re-use measurements.
+    //! Convenience method to be able to store and re-use measurements.
     void setMeasurement(Eigen::Quaterniond const &quat) { m_quat = quat; }
-
-    /// Get the block of jacobian that is non-zero: your subclass will have
-    /// to put it where it belongs for each particular state type.
-    types::Matrix<Dimension, 3> getJacobianBlock() const {
-        return Eigen::Matrix3d::Identity();
-    }
 
   private:
     Eigen::Quaterniond m_quat;
     MeasurementSquareMatrix m_covariance;
 };
+/*!
+ * A measurement of absolute orientation in 3D space.
+ *
+ * It can be used with any state class that exposes a `getCombinedQuaternion()`
+ * method (that is, an externalized quaternion state). On its own, it is only
+ * suitable for unscented filter correction, since the jacobian depends on the
+ * arrangement of the state vector. See AbsoluteOrientationEKFMeasurement's
+ * explicit specializations for use in EKF correction mode.
+ */
+class AbsoluteOrientationMeasurement
+    : public AbsoluteOrientationMeasurementBase,
+      public MeasurementBase<AbsoluteOrientationMeasurement> {
+  public:
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+    using AbsoluteOrientationMeasurementBase::
+        AbsoluteOrientationMeasurementBase;
+};
 
-/// This is the subclass of AbsoluteOrientationBase: only explicit
-/// specializations, and on state types.
-template <typename StateType> class AbsoluteOrientationMeasurement;
+/*!
+ * This is the EKF-specific relative of AbsoluteOrientationMeasurement: only
+ * explicit specializations, and on state types.
+ *
+ * Only required for EKF-style correction (since jacobian depends closely on the
+ * state).
+ */
+template <typename StateType> class AbsoluteOrientationEKFMeasurement;
 
-/// AbsoluteOrientationMeasurement with a pose_externalized_rotation::State
+//! AbsoluteOrientationEKFMeasurement with a pose_externalized_rotation::State
 template <>
-class AbsoluteOrientationMeasurement<pose_externalized_rotation::State>
-    : public AbsoluteOrientationBase {
+class AbsoluteOrientationEKFMeasurement<pose_externalized_rotation::State>
+    : public AbsoluteOrientationMeasurementBase,
+      public MeasurementBase<AbsoluteOrientationEKFMeasurement<
+          pose_externalized_rotation::State>> {
   public:
     using State = pose_externalized_rotation::State;
-    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     static constexpr size_t StateDimension = getDimension<State>();
-    using Base = AbsoluteOrientationBase;
+    static constexpr size_t Dimension = 3;
+    using MeasurementVector = types::Vector<Dimension>;
+    using MeasurementSquareMatrix = types::SquareMatrix<Dimension>;
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
-    AbsoluteOrientationMeasurement(Eigen::Quaterniond const &quat,
-                                   types::Vector<3> const &eulerVariance)
-        : Base(quat, eulerVariance) {}
+    AbsoluteOrientationEKFMeasurement(Eigen::Quaterniond const &quat,
+                                      types::Vector<3> const &eulerVariance)
+        : AbsoluteOrientationMeasurementBase(quat, eulerVariance) {}
 
     types::Matrix<Dimension, StateDimension> getJacobian(State const &s) const {
         using namespace pose_externalized_rotation;
         using Jacobian = types::Matrix<Dimension, StateDimension>;
         Jacobian ret = Jacobian::Zero();
-        ret.block<Dimension, 3>(0, 3) = Base::getJacobianBlock();
+        ret.block<Dimension, 3>(0, 3) = types::SquareMatrix<3>::Identity();
         return ret;
     }
 };

@@ -65,14 +65,14 @@ namespace uvbi {
 
         /// Filter in the orientation
         {
-            flexkalman::AbsoluteOrientationMeasurement<BodyState> meas(
+            flexkalman::AbsoluteOrientationEKFMeasurement<BodyState> meas(
                 quat, Eigen::Vector3d::Constant(m_orientationVariance));
             flexkalman::correct(p.state, p.processModel, meas);
         }
         /// Filter in the orientation
         {
             /// we'll say variance goes up with distance squared.
-            flexkalman::AbsolutePositionMeasurement<BodyState> meas(
+            flexkalman::AbsolutePositionEKFMeasurement<BodyState> meas(
                 xlate, Eigen::Vector3d::Constant(m_positionVarianceScale *
                                                  xlate.z() * xlate.z()));
             flexkalman::correct(p.state, p.processModel, meas);

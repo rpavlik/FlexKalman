@@ -120,7 +120,7 @@ namespace uvbi {
     }
 
     CannedIMUMeasurement
-    TrackedBodyIMU::preprocessOrientation(util::TimeValue const &tv,
+    TrackedBodyIMU::preprocessOrientation(util::TimeValue const & /*tv*/,
                                           Eigen::Quaterniond const &quat) {
 
         auto ret = CannedIMUMeasurement{};
@@ -132,7 +132,7 @@ namespace uvbi {
 
     /// Processes an angular velocity
     CannedIMUMeasurement TrackedBodyIMU::preprocessAngularVelocity(
-        util::TimeValue const &tv, Eigen::Quaterniond const &deltaquat,
+        util::TimeValue const & /*tv*/, Eigen::Quaterniond const &deltaquat,
         double dt) {
         Eigen::Vector3d rot =
             incRotToAngVelVec(transformRawIMUAngularVelocity(deltaquat), dt);

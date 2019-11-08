@@ -44,10 +44,14 @@ All the interface stuff below required should be public.
 
 ### State
 
+State types should derive publicly from `StateBase<MyStateType>` where the
+template parameter is their own type (the "Curiously-Recurring Template
+Pattern").
+
 Needs public members:
 
 - `static constexpr size_t Dimension = 12;`
-  - to indicate dimension, aka *n* - here 12. Used all over. (You can instead publicly derive from `HasDimension<12>` or equivalent.)
+  - to indicate dimension, aka *n* - here 12. Used all over.
 - `void setStateVector(? state)`
   - to replace the *n*-dimensional state vector, used by `FlexibleKalmanFilter::correct()`
 - `Vector<n> stateVector() const`
@@ -62,6 +66,10 @@ Needs public members:
 
 Should *not* contain the filter state - that separate object is kept separately and passed as a parameter as needed. It may contain some state (member variables) of its own if required - typically configuration parameters, etc.
 
+Process model types should derive publicly from
+`ProcessModelBase<MyProcessModelType>` where the template parameter is their own
+type (the "Curiously-Recurring Template Pattern").
+
 - `using State = YourStateType`
   - used for convenience and reducing the number of required parameters to `FlexibleKalmanFilter<>`
 - `void predictState(State & state, double dt)`
@@ -75,10 +83,14 @@ Should *not* contain the filter state - that separate object is kept separately 
 
 Note that there may (and often are) several types of measurements used in a particular filter - the `FlexibleKalmanFilter::correct()` method is a function template so it can adjust to any number of measurement types.  If you're having difficulty, check your `const` and try a named instance of your measurement as opposed to passing a temporary.
 
-Only `FlexibleKalmanFilter::correct()` interacts with Measurement types.
+Only `FlexibleKalmanFilter::correct()` and functions related to  it (other correction functions like `correctUnscented`, etc.) interacts with Measurement types.
+
+Measurement types should derive publicly from
+`MeasurementBase<MyMeasurementType>` where the template parameter is their own
+type (the "Curiously-Recurring Template Pattern").
 
 - `static constexpr size_t Dimension = 4;`
-  - to indicate dimension of your measurement, aka *m* - here 4. (You can instead publicly derive from `HasDimension<12>` or equivalent.)
+  - to indicate dimension of your measurement, aka *m* - here 4.
 - `Vector<m> getResidual(State const& state) const`
   - Also known as the "innovation" or delta *z* - this function predicts the measurement expected given the (predicted) state provided, then takes the difference (contextually defined - may be multiplicative) and returns that, typically by value.
 - `Matrix<m,m> getCovariance(State & state) const`
@@ -90,8 +102,8 @@ Only `FlexibleKalmanFilter::correct()` interacts with Measurement types.
   - Returns a predicted measurement given a state.
   - This is only technically required for the unscented-style correction, but you may implemented in all cases since it helps to implement `getResidual()`.
 - `Vector<m> getResidual(Vector<m> const &prediction, State const& state) const`
-  - Unlike the single-argument `getResidual()`, this version does not use the actual data of the measurement. Instead, it uses a prediction, likely from `predictMeasurement()`.
-  - This is only technically required for the unscented-style correction, but you may implemented in all cases since it helps to implement the single-parameter `getResidual()` - it becomes `return getResidual(predictMeasurement(s), s);`
+  - Unlike the single-argument `getResidual()`, this version does not (usually) use the actual data of the measurement. Instead, it uses a prediction, likely from `predictMeasurement()`.
+  - This is only technically required for the unscented-style correction, but you may implemented in all cases since it helps to implement the single-parameter `getResidual()` - it becomes `return getResidual(predictMeasurement(s), s);` (often)
 
 ## Acknowledgments
 

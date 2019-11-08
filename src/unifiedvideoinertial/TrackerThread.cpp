@@ -408,7 +408,7 @@ namespace uvbi {
         if (!imu.hasPoseEstimate()) {
             return;
         }
-        Eigen::Quaterniond imuQuat = imu.getPoseEstimate();
+        const auto imuQuat = Eigen::Quaterniond{imu.getPoseEstimate()};
 
 #ifdef UVBI_OUTPUT_IMU
         {

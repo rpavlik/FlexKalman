@@ -36,7 +36,7 @@
 namespace videotracker {
 namespace uvbi {
     static const auto VALIDCHARS = "*.";
-    OsvrHdkLedIdentifier::~OsvrHdkLedIdentifier() {}
+    OsvrHdkLedIdentifier::~OsvrHdkLedIdentifier() = default;
     // Convert from string encoding representations into lists
     // of boolean values for use in comparison.
     OsvrHdkLedIdentifier::OsvrHdkLedIdentifier(

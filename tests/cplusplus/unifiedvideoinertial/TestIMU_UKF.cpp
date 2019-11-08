@@ -130,6 +130,8 @@ inline void andThenCheckSigmaPointGenerator(GeneratorType const &gen) {
 }
 
 TEST_CASE("Sigma point reconstruction validity") {
+    Catch::StringMaker<float>::precision = 15;
+    Catch::StringMaker<double>::precision = 35;
 
     static const auto DIM = 3;
     using namespace flexkalman;
@@ -391,6 +393,8 @@ CATCH_TYPELIST_DESCRIBED_TESTCASE(
 
 #endif
 TEST_CASE("unscented with identity calibration output", "[ukf]") {
+    Catch::StringMaker<float>::precision = 15;
+    Catch::StringMaker<double>::precision = 35;
     using TypeParam = flexkalman::SplitQ;
 
     const auto params = flexkalman::SigmaPointParameters();
@@ -472,6 +476,8 @@ TEST_CASE("unscented with identity calibration output", "[ukf]") {
 }
 
 TEST_CASE("unscented with small x rotation calibration output", "[ukf]") {
+    Catch::StringMaker<float>::precision = 15;
+    Catch::StringMaker<double>::precision = 35;
     using MeasurementType =
         OrientationMeasurementUsingPolicy<flexkalman::SplitQ>;
     unique_ptr<TestData> data(new TestData);
@@ -548,6 +554,8 @@ TEST_CASE("unscented with small x rotation calibration output", "[ukf]") {
 }
 
 TEST_CASE("conceptual transformation orders") {
+    Catch::StringMaker<float>::precision = 15;
+    Catch::StringMaker<double>::precision = 35;
     Quaterniond positiveX(AngleAxisd(0.5, Vector3d::UnitX()));
     Quaterniond positiveY(AngleAxisd(0.5, Vector3d::UnitY()));
     Vector3d yVec = Vector3d::UnitY();

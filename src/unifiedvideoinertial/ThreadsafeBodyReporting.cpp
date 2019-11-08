@@ -148,7 +148,7 @@ namespace uvbi {
             state.angularVelocity();
 
         val.timestamp = tv;
-        return m_queue.write(std::move(val));
+        return m_queue.write(val);
     }
 
     void BodyReporting::initProcessModel(BodyProcessModel const &process) {

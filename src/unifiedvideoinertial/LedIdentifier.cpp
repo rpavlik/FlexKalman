@@ -33,6 +33,6 @@
 
 namespace videotracker {
 namespace uvbi {
-    LedIdentifier::~LedIdentifier() {}
+    LedIdentifier::~LedIdentifier() = default;
 } // namespace uvbi
 } // namespace videotracker

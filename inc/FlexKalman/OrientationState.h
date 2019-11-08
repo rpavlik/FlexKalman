@@ -30,6 +30,7 @@
 #pragma once
 
 // Internal Includes
+#include "BaseTypes.h"
 #include "ExternalQuaternion.h"
 #include "FlexibleKalmanBase.h"
 
@@ -51,8 +52,10 @@ namespace orient_externalized_rotation {
 
     using StateSquareMatrix = types::SquareMatrix<Dimension>;
 
-    /// This returns A(deltaT), though if you're just predicting xhat-, use
-    /// applyVelocity() instead for performance.
+    /*!
+     * This returns A(deltaT), though if you're just predicting xhat-, use
+     * applyVelocity() instead for performance.
+     */
     inline StateSquareMatrix stateTransitionMatrix(double dt) {
         StateSquareMatrix A = StateSquareMatrix::Identity();
         A.topRightCorner<3, 3>() = types::SquareMatrix<3>::Identity() * dt;
@@ -68,31 +71,33 @@ namespace orient_externalized_rotation {
         A.bottomRightCorner<3, 3>() *= attenuation;
         return A;
     }
-    class State : public HasDimension<6> {
+    class State : public StateBase<State> {
       public:
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
-        /// Default constructor
+        static constexpr size_t Dimension = 6;
+
+        //! Default constructor
         State()
             : m_state(StateVector::Zero()),
               m_errorCovariance(
                   StateSquareMatrix::
                       Identity() /** @todo almost certainly wrong */),
               m_orientation(Eigen::Quaterniond::Identity()) {}
-        /// set xhat
+        //! set xhat
         void setStateVector(StateVector const &state) { m_state = state; }
-        /// xhat
+        //! xhat
         StateVector const &stateVector() const { return m_state; }
         // set P
         void setErrorCovariance(StateSquareMatrix const &errorCovariance) {
             m_errorCovariance = errorCovariance;
         }
-        /// P
+        //! P
         StateSquareMatrix const &errorCovariance() const {
             return m_errorCovariance;
         }
 
-        /// Intended for startup use.
+        //! Intended for startup use.
         void setQuaternion(Eigen::Quaterniond const &quaternion) {
             m_orientation = quaternion.normalized();
         }
@@ -129,18 +134,22 @@ namespace orient_externalized_rotation {
         }
 
       private:
-        /// In order: x, y, z, orientation , then its derivatives in the
-        /// same
-        /// order.
+        /*!
+         * In order: x, y, z, orientation , then its derivatives in the
+         * same
+         * order.
+         */
         StateVector m_state;
-        /// P
+        //! P
         StateSquareMatrix m_errorCovariance;
-        /// Externally-maintained orientation per Welch 1996
+        //! Externally-maintained orientation per Welch 1996
         Eigen::Quaterniond m_orientation;
     };
 
-    /// Stream insertion operator, for displaying the state of the state
-    /// class.
+    /*!
+     * Stream insertion operator, for displaying the state of the state
+     * class.
+     */
     template <typename OutputStream>
     inline OutputStream &operator<<(OutputStream &os, State const &state) {
         os << "State:" << state.stateVector().transpose() << "\n";
@@ -150,12 +159,14 @@ namespace orient_externalized_rotation {
         return os;
     }
 
-    /// Computes A(deltaT)xhat(t-deltaT)
+    //! Computes A(deltaT)xhat(t-deltaT)
     inline void applyVelocity(State &state, double dt) {
         // eq. 4.5 in Welch 1996
 
-        /// @todo benchmark - assuming for now that the manual small
-        /// calcuations are faster than the matrix ones.
+        /*!
+         * @todo benchmark - assuming for now that the manual small
+         * calcuations are faster than the matrix ones.
+         */
 
         state.incrementalOrientation() += state.angularVelocity() * dt;
     }

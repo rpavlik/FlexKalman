@@ -45,14 +45,16 @@
 
 namespace flexkalman {
 
-/// @brief Type aliases, including template type aliases.
+//! @brief Type aliases, including template type aliases.
 namespace types {
-    /// Common scalar type
+    //! Common scalar type
     using Scalar = double;
 } // namespace types
 
-/// Convenience base class for things (like states and measurements) that
-/// have a dimension.
+/*!
+ * Convenience base class for things (like states and measurements) that
+ * have a dimension.
+ */
 template <size_t DIM> struct HasDimension {
     static constexpr size_t Dimension = DIM;
 };
@@ -62,56 +64,50 @@ template <typename T> static constexpr size_t getDimension() {
 }
 
 namespace types {
-    /// Given a filter type, get the state type.
+    //! Given a filter type, get the state type.
     template <typename FilterType> using StateType = typename FilterType::State;
 
-    /// Given a filter type, get the process model type.
+    //! Given a filter type, get the process model type.
     template <typename FilterType>
     using ProcessModelType = typename FilterType::ProcessModel;
 
-    /// A vector of length n
+    //! A vector of length n
     template <size_t n> using Vector = Eigen::Matrix<Scalar, n, 1>;
 
-    /// A vector of length = dimension of T
-    template <typename T> using DimVector = Vector<T::Dimension>;
-
-    /// A square matrix, n x n
+    //! A square matrix, n x n
     template <size_t n> using SquareMatrix = Eigen::Matrix<Scalar, n, n>;
 
-    /// A square matrix, n x n, where n is the dimension of T
-    template <typename T> using DimSquareMatrix = SquareMatrix<T::Dimension>;
-
-    /// A square diagonal matrix, n x n
+    //! A square diagonal matrix, n x n
     template <size_t n> using DiagonalMatrix = Eigen::DiagonalMatrix<Scalar, n>;
 
-    /// A square diagonal matrix, n x n, where n is the dimension of T
-    template <typename T>
-    using DimDiagonalMatrix = DiagonalMatrix<T::Dimension>;
-
-    /// A matrix with rows = m,  cols = n
+    //! A matrix with rows = m,  cols = n
     template <size_t m, size_t n> using Matrix = Eigen::Matrix<Scalar, m, n>;
 
-    /// A matrix with rows = dimension of T, cols = dimension of U
+    //! A matrix with rows = dimension of T, cols = dimension of U
     template <typename T, typename U>
     using DimMatrix = Matrix<T::Dimension, U::Dimension>;
 
 } // namespace types
 
-/// Computes P-
-///
-/// Usage is optional, most likely called from the process model
-/// `updateState()`` method.
+/*!
+ * Computes P-
+ *
+ * Usage is optional, most likely called from the process model
+ * `updateState()`` method.
+ */
 template <typename StateType, typename ProcessModelType>
-inline types::DimSquareMatrix<StateType>
+inline types::SquareMatrix<getDimension<StateType>()>
 predictErrorCovariance(StateType const &state, ProcessModelType &processModel,
                        double dt) {
-    types::DimSquareMatrix<StateType> A =
-        processModel.getStateTransitionMatrix(state, dt);
+    using StateSquareMatrix = types::SquareMatrix<getDimension<StateType>()>;
+    const auto A = processModel.getStateTransitionMatrix(state, dt);
     // FLEXKALMAN_DEBUG_OUTPUT("State transition matrix", A);
-    types::DimSquareMatrix<StateType> P = state.errorCovariance();
-    /// @todo Determine if the fact that Q is (at least in one case)
-    /// symmetrical implies anything else useful performance-wise here or
-    /// later in the data flow.
+    auto &&P = state.errorCovariance();
+    /*!
+     * @todo Determine if the fact that Q is (at least in one case)
+     * symmetrical implies anything else useful performance-wise here or
+     * later in the data flow.
+     */
     // auto Q = processModel.getSampledProcessNoiseCovariance(dt);
     FLEXKALMAN_DEBUG_OUTPUT("Process Noise Covariance Q",
                             processModel.getSampledProcessNoiseCovariance(dt));

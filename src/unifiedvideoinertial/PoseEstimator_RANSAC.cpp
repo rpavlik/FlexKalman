@@ -183,6 +183,8 @@ namespace uvbi {
 
             /// Make a vector of the inlier beacon IDs.
             std::vector<ZeroBasedBeaconId> inlierBeaconIds;
+            inlierBeaconIds.reserve(inlierIndices.rows);
+
             for (int i = 0; i < inlierIndices.rows; i++) {
                 inlierBeaconIds.push_back(beaconIds[i]);
             }
@@ -321,8 +323,10 @@ namespace uvbi {
         p.state.velocity() = Eigen::Vector3d::Zero();
         p.state.angularVelocity() = Eigen::Vector3d::Zero();
 #endif
-        using StateVec = flexkalman::types::DimVector<BodyState>;
-        using StateSquareMatrix = flexkalman::types::DimSquareMatrix<BodyState>;
+        static constexpr size_t StateDim =
+            flexkalman::getDimension<BodyState>();
+        using StateVec = flexkalman::types::Vector<StateDim>;
+        using StateSquareMatrix = flexkalman::types::SquareMatrix<StateDim>;
 
         StateSquareMatrix covariance = StateVec(InitialStateError).asDiagonal();
         /// @todo Copy the existing angular velocity error covariance

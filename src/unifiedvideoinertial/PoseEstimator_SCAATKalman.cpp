@@ -369,9 +369,10 @@ namespace uvbi {
 
         if (gotMeasurement) {
             // Re-symmetrize error covariance.
-            flexkalman::types::DimSquareMatrix<BodyState> cov =
-                0.5 * p.state.errorCovariance() +
-                0.5 * p.state.errorCovariance().transpose();
+            using BodySquareMatrix = flexkalman::types::SquareMatrix<
+                flexkalman::getDimension<BodyState>()>;
+            BodySquareMatrix cov = 0.5 * p.state.errorCovariance() +
+                                   0.5 * p.state.errorCovariance().transpose();
             p.state.errorCovariance() = cov;
 
 #ifdef UVBI_DEBUG_VELOCITY

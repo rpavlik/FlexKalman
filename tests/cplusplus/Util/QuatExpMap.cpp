@@ -106,7 +106,7 @@ static inline Vector3d vecFromQuatlib(QuatArray const &arr) {
 class QuatCreator {
   public:
     explicit QuatCreator(QuatArray &&arr, std::string &&input)
-        : m_coeffs(std::move(arr)), m_input(std::move(input)) {}
+        : m_coeffs(arr), m_input(std::move(input)) {}
 
     static QuatCreator Identity() {
         return QuatCreator(toQuatlib(Eigen::Quaterniond::Identity()),

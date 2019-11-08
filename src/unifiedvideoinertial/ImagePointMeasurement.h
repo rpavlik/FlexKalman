@@ -26,6 +26,7 @@
 
 // Internal Includes
 #include "FlexKalman/AugmentedState.h"
+#include "FlexKalman/BaseTypes.h"
 #include "FlexKalman/FlexibleKalmanBase.h"
 #include "FlexKalman/PoseState.h"
 #include "FlexKalman/PureVectorState.h"
@@ -49,7 +50,8 @@ namespace uvbi {
     };
     /// Measurement class for auto-calibrating Kalman filter in video-based
     /// tracker.
-    class ImagePointMeasurement {
+    class ImagePointMeasurement
+        : public flexkalman::MeasurementBase<ImagePointMeasurement> {
       public:
         static const size_t Dimension = 2;
         using Vector = flexkalman::types::Vector<Dimension>;

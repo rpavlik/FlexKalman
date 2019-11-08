@@ -78,13 +78,15 @@ struct TestData {
     /// Default constructor is no translation, identity rotation, 10 along
     /// main diagonal as the state covariance matrix.
     BodyState state;
-    flexkalman::types::DimSquareMatrix<BodyState> originalStateError;
+    static constexpr size_t StateDim = flexkalman::getDimension<BodyState>();
+    flexkalman::types::SquareMatrix<StateDim> originalStateError;
 
     BodyProcessModel processModel;
     Eigen::Vector3d imuVariance;
 };
 namespace Eigen {
 inline void outputQuat(std::ostream &os, Quaterniond const &q) {
+    os.precision(8);
     os << "[" << q.w() << " (" << q.vec().transpose() << ")]";
 }
 inline std::ostream &operator<<(std::ostream &os, Quaterniond const &q) {

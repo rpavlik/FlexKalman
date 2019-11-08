@@ -6,10 +6,14 @@
     van der Merwe, R., Wan, E. A., & Julier, S. J. (2004). "Sigma-Point Kalman
     Filters for Nonlinear Estimation and Sensor-Fusion: Applications to
     Integrated Navigation." In AIAA Guidance, Navigation, and Control Conference
-    and Exhibit (pp. 1--30). Reston, Virigina: American Institute of Aeronautics
+    and Exhibit (pp. 1--30). Reston, Virginia: American Institute of Aeronautics
     and Astronautics. http://doi.org/10.2514/6.2004-5120
 
-    @date 2016
+    @date 2016-2019
+
+    @author
+    Ryan Pavlik
+    <ryan.pavlik@collabora.com>
 
     @author
     Sensics, Inc.
@@ -17,6 +21,7 @@
 */
 
 // Copyright 2016 Sensics, Inc.
+// Copyright 2019 Collabora, Ltd.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -43,24 +48,30 @@
 
 namespace flexkalman {
 
+template <typename Derived> class StateBase;
+template <typename Derived> class MeasurementBase;
+template <typename Derived> class ProcessModelBase;
+
+/*!
+ * The UKF parallel to CorrectionInProgress as used in an EKF.
+ *
+ * Initialization is done by beginUnscentedCorrection (like
+ * beginExtendedCorrection). stateCorrectionFinite is provided immediately,
+ * while the finishCorrection() method takes an optional bool (true by default)
+ * to optionally cancel if the new error covariance is not finite.
+ */
 template <typename State, typename Measurement>
 class SigmaPointCorrectionApplication {
   public:
-#if 0
-        static constexpr size_t StateDim =
-            getDimension<State>();
-        static constexpr size_t MeasurementDim =
-            getDimension<Measurement>();
-#endif
     static constexpr size_t n = getDimension<State>();
     static constexpr size_t m = getDimension<Measurement>();
 
-    using StateVec = types::DimVector<State>;
-    using StateSquareMatrix = types::DimSquareMatrix<State>;
-    using MeasurementVec = types::DimVector<Measurement>;
-    using MeasurementSquareMatrix = types::DimSquareMatrix<Measurement>;
+    using StateVec = types::Vector<n>;
+    using StateSquareMatrix = types::SquareMatrix<n>;
+    using MeasurementVec = types::Vector<m>;
+    using MeasurementSquareMatrix = types::SquareMatrix<m>;
 
-    /// state augmented with measurement noise mean
+    //! state augmented with measurement noise mean
     static constexpr size_t AugmentedStateDim = n + m;
     using AugmentedStateVec = types::Vector<AugmentedStateDim>;
     using AugmentedStateCovMatrix = types::SquareMatrix<AugmentedStateDim>;
@@ -76,34 +87,25 @@ class SigmaPointCorrectionApplication {
     using GainMatrix = types::Matrix<n, m>;
 
     SigmaPointCorrectionApplication(
-        State &s, Measurement &m,
+        State &s, Measurement &meas,
         SigmaPointParameters const &params = SigmaPointParameters())
-        : state(s), measurement(m),
-          sigmaPoints(getAugmentedStateVec(s, m), getAugmentedStateCov(s, m),
-                      params),
+        : state(s), measurement(meas),
+          sigmaPoints(getAugmentedStateVec(s),
+                      getAugmentedStateCov(s, measurement), params),
           transformedPoints(
               transformSigmaPoints(state, measurement, sigmaPoints)),
           reconstruction(sigmaPoints, transformedPoints),
           innovationCovariance(
               computeInnovationCovariance(state, measurement, reconstruction)),
           PvvDecomp(innovationCovariance.ldlt()),
-#if 0
-              K(computeKalmanGain(innovationCovariance, reconstruction)),
-#endif
           deltaz(measurement.getResidual(reconstruction.getMean(), state)),
-#if 0
-              stateCorrection(K * deltaz),
-#else
           stateCorrection(
               computeStateCorrection(reconstruction, deltaz, PvvDecomp)),
-#endif
-          stateCorrectionFinite(stateCorrection.array().allFinite()) {
-    }
+          stateCorrectionFinite(stateCorrection.array().allFinite()) {}
 
-    static AugmentedStateVec getAugmentedStateVec(State const &s,
-                                                  Measurement const &m) {
+    static AugmentedStateVec getAugmentedStateVec(State const &s) {
         AugmentedStateVec ret;
-        /// assuming measurement noise is zero mean
+        //! assuming measurement noise is zero mean
         ret << s.stateVector(), MeasurementVec::Zero();
         return ret;
     }
@@ -116,9 +118,11 @@ class SigmaPointCorrectionApplication {
         return ret;
     }
 
-    /// Transforms sigma points by having the measurement class compute the
-    /// estimated measurement for a state whose state vector we update to
-    /// each of the sigma points in turn.
+    /*!
+     * Transforms sigma points by having the measurement class compute the
+     * estimated measurement for a state whose state vector we update to
+     * each of the sigma points in turn.
+     */
     static TransformedSigmaPointsMat
     transformSigmaPoints(State const &s, Measurement &meas,
                          SigmaPointsGen const &sigmaPoints) {
@@ -138,17 +142,17 @@ class SigmaPointCorrectionApplication {
     }
 
 #if 0
-        // Solve for K in K=Pxy Pvv^-1
-        // where the cross-covariance matrix from the reconstruction is
-        // transpose(Pxy) and Pvv is the reconstructed covariance plus the
-        // measurement covariance
-        static GainMatrix computeKalmanGain(MeasurementSquareMatrix const &Pvv,
-                                            Reconstruction const &recon) {
-            // (Actually solves with transpose(Pvv) * transpose(K) =
-            // transpose(Pxy) )
-            GainMatrix ret = Pvv.transpose().ldlt().solve(recon.getCrossCov());
-            return ret;
-        }
+    // Solve for K in K=Pxy Pvv^-1
+    // where the cross-covariance matrix from the reconstruction is
+    // transpose(Pxy) and Pvv is the reconstructed covariance plus the
+    // measurement covariance
+    static GainMatrix computeKalmanGain(MeasurementSquareMatrix const &Pvv,
+                                        Reconstruction const &recon) {
+        // (Actually solves with transpose(Pvv) * transpose(K) =
+        // transpose(Pxy) )
+        GainMatrix ret = Pvv.transpose().ldlt().solve(recon.getCrossCov());
+        return ret;
+    }
 #endif
     static StateVec computeStateCorrection(
         Reconstruction const &recon, MeasurementVec const &deltaz,
@@ -157,36 +161,37 @@ class SigmaPointCorrectionApplication {
         return ret;
     }
 
-    /// Finish computing the rest and correct the state.
-    /// @param cancelIfNotFinite If the new error covariance is detected to
-    /// contain non-finite values, should we cancel the correction and not
-    /// apply it?
-    /// @return true if correction completed
+    /*!
+     * Finish computing the rest and correct the state.
+     *
+     * @param cancelIfNotFinite If the new error covariance is detected to
+     * contain non-finite values, should we cancel the correction and not
+     * apply it?
+     *
+     * @return true if correction completed
+     */
     bool finishCorrection(bool cancelIfNotFinite = true) {
-#if 0
-            StateSquareMatrix newP = state.errorCovariance() -
-                                     K * innovationCovariance * K.transpose();
-#else
-        /// Logically state.errorCovariance() - K * Pvv * K.transpose(),
-        /// but considering just the second term, we can
-        /// replace K with its definition (Pxv Pvv^-1), distribute the
-        /// transpose on the right over the product, then pull out
-        /// Pvv^-1 * Pvv * (Pvv^-1).transpose()
-        /// as "B", leaving Pxv B Pxv.transpose()
-        ///
-        /// Since innovationCovariance aka Pvv is symmetric,
-        /// (Pvv^-1).transpose() = Pvv^-1.
-        /// Left multiplication gives
-        /// Pvv B = Pvv * Pvv^-1 * Pvv * Pvv^-1
-        /// whose right hand side is the Pvv-sized identity, and that is in
-        /// a form that allows us to use our existing LDLT decomp of Pvv to
-        /// solve for B then evaluate the full original expression.
+        /*!
+         * Logically state.errorCovariance() - K * Pvv * K.transpose(),
+         * but considering just the second term, we can
+         * replace K with its definition (Pxv Pvv^-1), distribute the
+         * transpose on the right over the product, then pull out
+         * Pvv^-1 * Pvv * (Pvv^-1).transpose()
+         * as "B", leaving Pxv B Pxv.transpose()
+         *
+         * Since innovationCovariance aka Pvv is symmetric,
+         * (Pvv^-1).transpose() = Pvv^-1.
+         * Left multiplication gives
+         * Pvv B = Pvv * Pvv^-1 * Pvv * Pvv^-1
+         * whose right hand side is the Pvv-sized identity, and that is in
+         * a form that allows us to use our existing LDLT decomp of Pvv to
+         * solve for B then evaluate the full original expression.
+         */
         StateSquareMatrix newP =
             state.errorCovariance() -
             reconstruction.getCrossCov() *
                 PvvDecomp.solve(MeasurementSquareMatrix::Identity()) *
                 reconstruction.getCrossCov().transpose();
-#endif
         bool finite = newP.array().allFinite();
         if (cancelIfNotFinite && !finite) {
             return false;
@@ -206,37 +211,41 @@ class SigmaPointCorrectionApplication {
     SigmaPointsGen sigmaPoints;
     TransformedSigmaPointsMat transformedPoints;
     Reconstruction reconstruction;
-    /// aka Pvv
+    //! aka Pvv
     MeasurementSquareMatrix innovationCovariance;
     Eigen::LDLT<MeasurementSquareMatrix> PvvDecomp;
 #if 0
-        GainMatrix K;
+    GainMatrix K;
 #endif
-    /// reconstructed mean measurement residual/delta z/innovation
+    //! reconstructed mean measurement residual/delta z/innovation
     types::Vector<m> deltaz;
     StateVec stateCorrection;
     bool stateCorrectionFinite;
 };
+
 template <typename State, typename Measurement>
 inline SigmaPointCorrectionApplication<State, Measurement>
 beginUnscentedCorrection(
-    State &s, Measurement &m,
+    StateBase<State> &state, MeasurementBase<Measurement> &meas,
     SigmaPointParameters const &params = SigmaPointParameters()) {
-    return SigmaPointCorrectionApplication<State, Measurement>(s, m, params);
+    return SigmaPointCorrectionApplication<State, Measurement>(
+        state.derived(), meas.derived(), params);
 }
 
-/// Correct a Kalman filter's state using a measurement that provides a
-/// two-parameter getResidual function, in the manner of an
-/// Unscented Kalman Filter (UKF).
-///
-/// @param cancelIfNotFinite If the state correction or new error covariance
-/// is detected to contain non-finite values, should we cancel the
-/// correction and not apply it?
-///
-/// @return true if correction completed
-template <typename StateType, typename MeasurementType>
+/*!
+ * Correct a Kalman filter's state using a measurement that provides a
+ * two-parameter getResidual function, in the manner of an
+ * Unscented Kalman Filter (UKF).
+ *
+ * @param cancelIfNotFinite If the state correction or new error covariance
+ * is detected to contain non-finite values, should we cancel the
+ * correction and not apply it?
+ *
+ * @return true if correction completed
+ */
+template <typename State, typename Measurement>
 static inline bool
-correctUnscented(StateType &state, MeasurementType &meas,
+correctUnscented(StateBase<State> &state, MeasurementBase<Measurement> &meas,
                  bool cancelIfNotFinite = true,
                  SigmaPointParameters const &params = SigmaPointParameters()) {
 
