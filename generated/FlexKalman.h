@@ -2539,7 +2539,7 @@ class ConstantProcess : public ProcessModelBase<ConstantProcess<StateType>> {
     }
 
     void setNoiseAutocorrelation(StateVector const &noise) {
-        m_constantNoise = noise.asDiagonal;
+        m_constantNoise = noise.asDiagonal();
     }
 
   private:
