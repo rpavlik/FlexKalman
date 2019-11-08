@@ -456,7 +456,7 @@ namespace util {
             Eigen::Quaternion<Scalar> ret;
             ret.vec() = vecscale * vec;
             ret.w() = std::cos(theta);
-            return ret.normalized();
+            return ret;
         }
 
         /*!
