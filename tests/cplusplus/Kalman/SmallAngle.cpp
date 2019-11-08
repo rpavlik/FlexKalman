@@ -38,9 +38,13 @@ TEST_CASE("small_angle_quat_exp") {
         auto full_exp = flexkalman::util::quat_exp(rotVec);
         CAPTURE(full_exp);
         auto small_angle = flexkalman::util::small_angle_quat_exp(rotVec);
-        REQUIRE(full_exp.w() == Approx(small_angle.w()));
-        REQUIRE(full_exp.x() == Approx(small_angle.x()));
-        REQUIRE(full_exp.y() == Approx(small_angle.y()));
-        REQUIRE(full_exp.z() == Approx(small_angle.z()));
+        CAPTURE(small_angle);
+
+        auto approx = Approx::custom();
+        approx.margin(0.0001);
+        REQUIRE(full_exp.w() == approx(small_angle.w()));
+        REQUIRE(full_exp.x() == approx(small_angle.x()));
+        REQUIRE(full_exp.y() == approx(small_angle.y()));
+        REQUIRE(full_exp.z() == approx(small_angle.z()));
     }
 }

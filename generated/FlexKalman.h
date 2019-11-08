@@ -469,14 +469,21 @@ namespace util {
             EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(Derived, 3);
             using Scalar = typename Derived::Scalar;
             //! @todo get better way of determining "zero vec" for this purpose.
-            if (vec.isApproxToConstant(0, 1.e-4)) {
+            if (vec.derived().isApproxToConstant(0, 1.e-4)) {
                 return Eigen::Quaternion<Scalar>::Identity();
             }
-            // For non-zero vectors, the vector scale sinc(theta) approximately
-            // equals 1, while the scale for w, cos(theta), is approximately 0.
-            // So, we treat this as a "pure" quaternion and normalize it.
-            return Eigen::Quaternion<Scalar>{0, vec.x(), vec.y(), vec.z()}
-                .normalized();
+            // For non-zero vectors, the vector scale
+            // sinc(theta)=sin(theta)/theta approximately equals 1, and w,
+            // cos(theta), is approximately 1 - theta^2/2.
+            // To ensure we're exactly normalized, we could treat the vec as the
+            // vector portion of a quaternion and compute the other part to make
+            // it exactly normalized:
+            // Scalar w = std::sqrt(1 - vec.derived().squaredNorm());
+            // Instead we'll do the small-angle approx to really skip the sqrt,
+            // and we'll be approximately normalized.
+            Scalar w = 1 - vec.derived().squaredNorm() / 2.;
+            return Eigen::Quaternion<Scalar>{
+                w, vec.derived().x(), vec.derived().y(), vec.derived().z()};
         }
 
         /*!
