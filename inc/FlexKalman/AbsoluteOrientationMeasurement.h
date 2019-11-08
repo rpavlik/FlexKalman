@@ -69,8 +69,7 @@ class AbsoluteOrientationMeasurementBase {
         // rotation", which is why we're using our measurement here as well as
         // the prediction.
         const Eigen::Quaterniond fullPredictedOrientation =
-            util::small_angle_quat_exp(predictedMeasurement / 2.) *
-            s.getQuaternion();
+            util::quat_exp(predictedMeasurement / 2.) * s.getQuaternion();
         return 2 * util::smallest_quat_ln(m_quat *
                                           fullPredictedOrientation.conjugate());
     }
