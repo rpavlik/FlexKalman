@@ -86,6 +86,7 @@ struct TestData {
 };
 namespace Eigen {
 inline void outputQuat(std::ostream &os, Quaterniond const &q) {
+    os.precision(8);
     os << "[" << q.w() << " (" << q.vec().transpose() << ")]";
 }
 inline std::ostream &operator<<(std::ostream &os, Quaterniond const &q) {
