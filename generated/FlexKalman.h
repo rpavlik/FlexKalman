@@ -519,7 +519,8 @@ namespace util {
             // result (i.e., ln(qv, qw) = (phi/sin(phi)) * qv )
             Scalar vecnorm = quat.vec().norm();
 
-            // "best for numerical stability" vs asin or acos
+            // "best for numerical stability" vs asin or acos.
+            // Approximately vecnorm near 0.
             Scalar phi = std::atan2(vecnorm, quat.w());
 
             // Here is where we compute the coefficient to scale the vector part
