@@ -230,9 +230,12 @@ commonSmallSingleAxisChecks(TestData *data, MeasurementType &kalmanMeas,
     AND_THEN("delta z (residual/propagated mean residual) should be "
              "approximately 0, except for the single axis of rotation, which "
              "should be magnitude SMALL_VALUE") {
-        REQUIRE(inProgress.deltaz[0] == Approx(rotationVector[0]));
-        REQUIRE(inProgress.deltaz[1] == Approx(rotationVector[1]));
-        REQUIRE(inProgress.deltaz[2] == Approx(rotationVector[2]));
+        REQUIRE(inProgress.deltaz[0] ==
+                Approx(rotationVector[0]).margin(0.0001));
+        REQUIRE(inProgress.deltaz[1] ==
+                Approx(rotationVector[1]).margin(0.0001));
+        REQUIRE(inProgress.deltaz[2] ==
+                Approx(rotationVector[2]).margin(0.0001));
     }
 
     CAPTURE(inProgress.stateCorrection.transpose());
@@ -252,7 +255,8 @@ commonSmallSingleAxisChecks(TestData *data, MeasurementType &kalmanMeas,
                         SMALL_VALUE);
             } else {
                 /// Not our rotation axis, correction should be approx 0.
-                REQUIRE(inProgress.stateCorrection[stateIndex] == Approx(0.));
+                REQUIRE(inProgress.stateCorrection[stateIndex] ==
+                        Approx(0.).margin(0.0001));
             }
         }
     }
@@ -271,7 +275,8 @@ commonSmallSingleAxisChecks(TestData *data, MeasurementType &kalmanMeas,
                         0.);
             } else {
                 /// Not our rotation axis, correction should be approx 0.
-                REQUIRE(inProgress.stateCorrection[stateIndex] == Approx(0.));
+                REQUIRE(inProgress.stateCorrection[stateIndex] ==
+                        Approx(0.).margin(0.0001));
             }
         }
     }
