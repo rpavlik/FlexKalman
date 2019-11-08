@@ -145,9 +145,10 @@ namespace util {
         operator<<(CSVRowProxy<Derived> &&row,
                    detail::CellGroup<T, PrefixType, Tag> const &group) {
             using RowProxyType = CSVRowProxy<Derived> &&;
-            auto proxy = CellGroupProxy<RowProxyType, Tag>{
-                std::forward<RowProxyType>(row), group.getPrefix()};
+            auto proxy =
+                CellGroupProxy<RowProxyType, Tag>{row, group.getPrefix()};
             proxy << group.getData();
+            // Must move this because of return type
             return std::move(row);
         }
 
