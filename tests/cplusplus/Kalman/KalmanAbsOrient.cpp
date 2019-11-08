@@ -26,6 +26,7 @@
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 #include <iostream>
+#if 0
 template <typename T>
 inline void dumpKalmanDebugOuput(const char name[], const char expr[],
                                  T const &value) {
@@ -35,6 +36,7 @@ inline void dumpKalmanDebugOuput(const char name[], const char expr[],
 
 #define FLEXKALMAN_DEBUG_OUTPUT(Name, Value)                                   \
     dumpKalmanDebugOuput(Name, #Value, Value)
+#endif
 #include "FlexKalman/AbsoluteOrientationMeasurement.h"
 #include "FlexKalman/FlexibleKalmanFilter.h"
 #include "FlexKalman/FlexibleUnscentedCorrect.h"
