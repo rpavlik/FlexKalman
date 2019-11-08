@@ -24,6 +24,11 @@
 
 #pragma once
 
+// DO NOT include flexkalman headers here! This is shared between the "combined"
+// tests and the split-header tests...
+
+#include "TestHelpers.h"
+
 /// Are the contents of a value invalid? (Invalid is defined to be any "weird"
 /// floating point value - nan, inf, denormalized, etc. - anything that
 /// std::isnormal() returns false on that isn't just zero)
@@ -65,4 +70,11 @@ inline bool covarianceContentsInvalid(
 inline bool
 contentsInvalid(flexkalman::pose_externalized_rotation::State const &state) {
     return stateContentsInvalid(state) || covarianceContentsInvalid(state);
+}
+
+template <typename State>
+static void dumpState(State const &state, const char msg[], size_t iteration) {
+    std::cout << "\n"
+              << msg << " (iteration " << iteration << "):\n"
+              << state << std::endl;
 }

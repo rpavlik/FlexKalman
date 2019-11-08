@@ -28,7 +28,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Library/third-party includes
+// DO NOT include flexkalman headers here! This is shared between the "combined"
+// tests and the split-header tests...
+
 #include <catch2/catch.hpp>
 
 #include "ContentsInvalid.h"
