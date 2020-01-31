@@ -30,7 +30,7 @@
 #pragma once
 
 // Internal Includes
-#include "BaseTypes.h"
+#include "FlexibleKalmanBase.h"
 
 // Library/third-party includes
 // - none
@@ -41,17 +41,18 @@
 namespace flexkalman {
 
 //! A constant-velocity model for a 6DOF pose (with velocities)
-template <typename S>
+template <typename StateType>
 class PoseConstantVelocityGenericProcessModel
-    : public ProcessModelBase<PoseConstantVelocityGenericProcessModel<S>> {
+    : public ProcessModelBase<
+          PoseConstantVelocityGenericProcessModel<StateType>> {
   public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    using State = S;
+    using State = StateType;
     using StateVector = typename State::StateVector;
     using StateSquareMatrix = typename State::StateSquareMatrix;
     using NoiseAutocorrelation = types::Vector<6>;
     PoseConstantVelocityGenericProcessModel(double positionNoise = 0.01,
-                                         double orientationNoise = 0.1) {
+                                            double orientationNoise = 0.1) {
         setNoiseAutocorrelation(positionNoise, orientationNoise);
     }
     void setNoiseAutocorrelation(double positionNoise = 0.01,

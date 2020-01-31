@@ -96,16 +96,6 @@ namespace pose_exp_map {
         return std::pow(damping, dt);
     }
 #if 0
-    inline StateSquareMatrix
-    stateTransitionMatrixWithVelocityDamping(double dt, double damping) {
-
-        // eq. 4.5 in Welch 1996
-
-        auto A = stateTransitionMatrix(dt);
-        auto attenuation = computeAttenuation(damping, dt);
-        A.bottomRightCorner<6, 6>() *= attenuation;
-        return A;
-    }
     //! Computes A(deltaT)xhat(t-deltaT)
     inline StateVector applyVelocity(StateVector const &state, double dt) {
         // eq. 4.5 in Welch 1996
@@ -227,6 +217,33 @@ namespace pose_exp_map {
         StateSquareMatrix A = StateSquareMatrix::Identity();
         A.topRightCorner<6, 6>() = types::SquareMatrix<6>::Identity() * dt;
 
+        return A;
+    }
+
+    inline StateSquareMatrix
+    stateTransitionMatrixWithVelocityDamping(State const &s, double dt,
+                                             double damping) {
+
+        // eq. 4.5 in Welch 1996
+
+        auto A = stateTransitionMatrix(s, dt);
+        auto attenuation = computeAttenuation(damping, dt);
+        A.bottomRightCorner<6, 6>() *= attenuation;
+        return A;
+    }
+
+    /*!
+     * Returns the state transition matrix for a constant velocity with
+     * separate damping paramters for linear and angular velocity (not for
+     * direct use in computing state transition, because it is very sparse,
+     * but in computing other values)
+     */
+    inline StateSquareMatrix stateTransitionMatrixWithSeparateVelocityDamping(
+        State const &state, double dt, double posDamping, double oriDamping) {
+        // eq. 4.5 in Welch 1996
+        auto A = stateTransitionMatrix(state, dt);
+        A.block<3, 3>(6, 6) *= computeAttenuation(posDamping, dt);
+        A.bottomRightCorner<3, 3>() *= computeAttenuation(oriDamping, dt);
         return A;
     }
 

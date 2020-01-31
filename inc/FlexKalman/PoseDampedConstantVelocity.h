@@ -79,9 +79,10 @@ class PoseDampedConstantVelocityProcessModel
     }
 
     //! Also known as the "process model jacobian" in TAG, this is A.
-    StateSquareMatrix getStateTransitionMatrix(State const &, double dt) const {
+    StateSquareMatrix getStateTransitionMatrix(State const &s,
+                                               double dt) const {
         return pose_externalized_rotation::
-            stateTransitionMatrixWithVelocityDamping(dt, m_damp);
+            stateTransitionMatrixWithVelocityDamping(s, dt, m_damp);
     }
 
     void predictStateOnly(State &s, double dt) const {

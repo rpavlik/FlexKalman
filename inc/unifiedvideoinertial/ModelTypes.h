@@ -41,7 +41,7 @@ namespace uvbi {
 
     using BodyState = flexkalman::pose_externalized_rotation::State;
     using BodyProcessModel =
-        flexkalman::PoseSeparatelyDampedConstantVelocityProcessModel;
+        flexkalman::PoseSeparatelyDampedConstantVelocityProcessModel<BodyState>;
 
     using BeaconState = flexkalman::PureVectorState<3>;
     using BeaconStatePtr = std::unique_ptr<BeaconState>;
