@@ -55,68 +55,9 @@ namespace pose_exp_map {
     using ConstStateVectorBlock6 =
         StateVector::ConstFixedSegmentReturnType<6>::Type;
     using StateSquareMatrix = types::SquareMatrix<Dimension>;
-#if 0
-    //! @name Accessors to blocks in the state vector.
-    /// @{
-    inline StateVectorBlock3 position(StateVector &vec) {
-        return vec.head<3>();
-    }
-    inline ConstStateVectorBlock3 position(StateVector const &vec) {
-        return vec.head<3>();
-    }
-
-    inline StateVectorBlock3 orientation(StateVector &vec) {
-        return vec.segment<3>(3);
-    }
-    inline ConstStateVectorBlock3 orientation(StateVector const &vec) {
-        return vec.segment<3>(3);
-    }
-
-    inline StateVectorBlock3 velocity(StateVector &vec) {
-        return vec.segment<3>(6);
-    }
-    inline ConstStateVectorBlock3 velocity(StateVector const &vec) {
-        return vec.segment<3>(6);
-    }
-
-    inline StateVectorBlock3 angularVelocity(StateVector &vec) {
-        return vec.segment<3>(9);
-    }
-    inline ConstStateVectorBlock3 angularVelocity(StateVector const &vec) {
-        return vec.segment<3>(9);
-    }
-
-    //! both translational and angular velocities
-    inline StateVectorBlock6 velocities(StateVector &vec) {
-        return vec.segment<6>(6);
-    }
-    //! @}
-#endif
     inline double computeAttenuation(double damping, double dt) {
         return std::pow(damping, dt);
     }
-#if 0
-    //! Computes A(deltaT)xhat(t-deltaT)
-    inline StateVector applyVelocity(StateVector const &state, double dt) {
-        // eq. 4.5 in Welch 1996
-
-        /*!
-         * @todo benchmark - assuming for now that the manual small
-         * calcuations are faster than the matrix ones.
-         */
-
-        StateVector ret = state;
-        position(ret) += velocity(state) * dt;
-        orientation(ret) += angularVelocity(state) * dt;
-        return ret;
-    }
-
-    inline void dampenVelocities(StateVector &state, double damping,
-                                 double dt) {
-        auto attenuation = computeAttenuation(damping, dt);
-        velocities(state) *= attenuation;
-    }
-#endif
     class State : public StateBase<State> {
       public:
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
