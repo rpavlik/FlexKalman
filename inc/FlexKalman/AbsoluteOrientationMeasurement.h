@@ -43,6 +43,13 @@
 
 namespace flexkalman {
 
+//! Default implementation: overload if this won't work for your state type.
+//! @see AbsoluteOrientationMeasurementBase
+template <typename State>
+types::Vector<3> predictAbsoluteOrientationMeasurement(State const &s) {
+    return s.incrementalOrientation();
+}
+
 class AbsoluteOrientationMeasurementBase {
   public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
@@ -60,7 +67,7 @@ class AbsoluteOrientationMeasurementBase {
 
     template <typename State>
     MeasurementVector predictMeasurement(State const &state) const {
-        return state.incrementalOrientation();
+        return predictAbsoluteOrientationMeasurement(state);
     }
     template <typename State>
     MeasurementVector getResidual(MeasurementVector const &predictedMeasurement,
