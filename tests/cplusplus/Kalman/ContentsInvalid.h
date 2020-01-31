@@ -53,23 +53,32 @@ inline bool covarianceContentsInvalid(Eigen::MatrixBase<Derived> const &v) {
 }
 
 /// Applies contentsInvalid() to state aspects of a
-/// pose_externalized_rotation::State
+/// generic state
+template <typename Derived>
+inline bool stateContentsInvalid(flexkalman::StateBase<Derived> const &state) {
+    return contentsInvalid(state.derived().stateVector());
+}
+
+/// Applies covarianceContentsInvalid() to the covariance of a generic state
+template <typename Derived>
+inline bool
+covarianceContentsInvalid(flexkalman::StateBase<Derived> const &state) {
+    return covarianceContentsInvalid(state.derived().errorCovariance());
+}
+
+/// Applies contentsInvalid() and covarianceContentsInvalid() to a generic state
+template <typename Derived>
+inline bool contentsInvalid(flexkalman::StateBase<Derived> const &state) {
+    return stateContentsInvalid(state) || covarianceContentsInvalid(state);
+}
+
+/// Applies contentsInvalid() to state aspects of a
+/// pose_externalized_rotation::State.
+/// Must get its own overload because of the external rotation quaternion.
 inline bool stateContentsInvalid(
     flexkalman::pose_externalized_rotation::State const &state) {
     return contentsInvalid(state.stateVector()) ||
            contentsInvalid(state.getQuaternion().coeffs());
-}
-
-/// Applies contentsInvalid() and covarianceContentsInvalid() to the covariance
-/// of a pose_externalized_rotation::State
-inline bool covarianceContentsInvalid(
-    flexkalman::pose_externalized_rotation::State const &state) {
-    return covarianceContentsInvalid(state.errorCovariance());
-}
-
-inline bool
-contentsInvalid(flexkalman::pose_externalized_rotation::State const &state) {
-    return stateContentsInvalid(state) || covarianceContentsInvalid(state);
 }
 
 template <typename State>
