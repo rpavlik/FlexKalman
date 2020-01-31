@@ -150,7 +150,6 @@ template <typename StateType, typename ProcessModelType>
 inline types::SquareMatrix<getDimension<StateType>()>
 predictErrorCovariance(StateType const &state, ProcessModelType &processModel,
                        double dt) {
-    using StateSquareMatrix = types::SquareMatrix<getDimension<StateType>()>;
     const auto A = processModel.getStateTransitionMatrix(state, dt);
     // FLEXKALMAN_DEBUG_OUTPUT("State transition matrix", A);
     auto &&P = state.errorCovariance();
@@ -165,6 +164,174 @@ predictErrorCovariance(StateType const &state, ProcessModelType &processModel,
     return A * P * A.transpose() +
            processModel.getSampledProcessNoiseCovariance(dt);
 }
+
+
+//! A constant-velocity model for a 6DOF pose (with velocities)
+template <typename StateType>
+class PoseConstantVelocityGenericProcessModel
+    : public ProcessModelBase<
+          PoseConstantVelocityGenericProcessModel<StateType>> {
+  public:
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+    using State = StateType;
+    using StateVector = typename State::StateVector;
+    using StateSquareMatrix = typename State::StateSquareMatrix;
+    using NoiseAutocorrelation = types::Vector<6>;
+    PoseConstantVelocityGenericProcessModel(double positionNoise = 0.01,
+                                            double orientationNoise = 0.1) {
+        setNoiseAutocorrelation(positionNoise, orientationNoise);
+    }
+    void setNoiseAutocorrelation(double positionNoise = 0.01,
+                                 double orientationNoise = 0.1) {
+        m_mu.head<3>() = types::Vector<3>::Constant(positionNoise);
+        m_mu.tail<3>() = types::Vector<3>::Constant(orientationNoise);
+    }
+    void setNoiseAutocorrelation(NoiseAutocorrelation const &noise) {
+        m_mu = noise;
+    }
+
+    //! Also known as the "process model jacobian" in TAG, this is A.
+    StateSquareMatrix getStateTransitionMatrix(State const &s,
+                                               double dt) const {
+        // using argument-dependent lookup
+        return stateTransitionMatrix(s, dt);
+    }
+
+    //! Does not update error covariance
+    void predictStateOnly(State &s, double dt) const {
+        FLEXKALMAN_DEBUG_OUTPUT("Time change", dt);
+        // using argument-dependent lookup
+        applyVelocity(s, dt);
+    }
+    //! Updates state vector and error covariance
+    void predictState(State &s, double dt) const {
+        predictStateOnly(s, dt);
+        auto Pminus = predictErrorCovariance(s, *this, dt);
+        s.setErrorCovariance(Pminus);
+    }
+
+    /*!
+     * This is Q(deltaT) - the Sampled Process Noise Covariance
+     * @return a matrix of dimension n x n.
+     *
+     * Like all covariance matrices, it is real symmetrical (self-adjoint),
+     * so .selfAdjointView<Eigen::Upper>() might provide useful performance
+     * enhancements in some algorithms.
+     */
+    StateSquareMatrix getSampledProcessNoiseCovariance(double dt) const {
+        constexpr auto dim = getDimension<State>();
+        StateSquareMatrix cov = StateSquareMatrix::Zero();
+        auto dt3 = (dt * dt * dt) / 3;
+        auto dt2 = (dt * dt) / 2;
+        for (std::size_t xIndex = 0; xIndex < dim / 2; ++xIndex) {
+            auto xDotIndex = xIndex + dim / 2;
+            // xIndex is 'i' and xDotIndex is 'j' in eq. 4.8
+            const auto mu = getMu(xIndex);
+            cov(xIndex, xIndex) = mu * dt3;
+            auto symmetric = mu * dt2;
+            cov(xIndex, xDotIndex) = symmetric;
+            cov(xDotIndex, xIndex) = symmetric;
+            cov(xDotIndex, xDotIndex) = mu * dt;
+        }
+        return cov;
+    }
+
+  private:
+    /*!
+     * this is mu-arrow, the auto-correlation vector of the noise
+     * sources
+     */
+    NoiseAutocorrelation m_mu;
+    double getMu(std::size_t index) const {
+        assert(index < (getDimension<State>() / 2) &&
+               "Should only be passing "
+               "'i' - the main state, not "
+               "the derivative");
+        // This may not be totally correct but it's one of the parameters
+        // you can kind of fudge in kalman filters anyway.
+        // Should techincally be the diagonal of the correlation kernel of
+        // the noise sources. (p77, p197 in Welch 1996)
+        return m_mu(index);
+    }
+};
+
+
+/*!
+ * A basically-constant-velocity model, with the addition of some
+ * damping of the velocities inspired by TAG. This model has separate
+ * damping/attenuation of linear and angular velocities.
+ */
+template <typename StateType>
+class PoseSeparatelyDampedConstantVelocityProcessModel
+    : public ProcessModelBase<
+          PoseSeparatelyDampedConstantVelocityProcessModel<StateType>> {
+  public:
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+    using State = StateType;
+    using StateVector = typename StateType::StateVector;
+    using StateSquareMatrix = typename StateType::StateSquareMatrix;
+    using BaseProcess = PoseConstantVelocityGenericProcessModel<State>;
+    using NoiseAutocorrelation = typename BaseProcess::NoiseAutocorrelation;
+    PoseSeparatelyDampedConstantVelocityProcessModel(
+        double positionDamping = 0.3, double orientationDamping = 0.01,
+        double positionNoise = 0.01, double orientationNoise = 0.1)
+        : m_constantVelModel(positionNoise, orientationNoise) {
+        setDamping(positionDamping, orientationDamping);
+    }
+
+    void setNoiseAutocorrelation(double positionNoise = 0.01,
+                                 double orientationNoise = 0.1) {
+        m_constantVelModel.setNoiseAutocorrelation(positionNoise,
+                                                   orientationNoise);
+    }
+
+    void setNoiseAutocorrelation(NoiseAutocorrelation const &noise) {
+        m_constantVelModel.setNoiseAutocorrelation(noise);
+    }
+    //! Set the damping - must be in (0, 1)
+    void setDamping(double posDamping, double oriDamping) {
+        if (posDamping > 0 && posDamping < 1) {
+            m_posDamp = posDamping;
+        }
+        if (oriDamping > 0 && oriDamping < 1) {
+            m_oriDamp = oriDamping;
+        }
+    }
+
+    //! Also known as the "process model jacobian" in TAG, this is A.
+    StateSquareMatrix getStateTransitionMatrix(State const &s,
+                                               double dt) const {
+        // using argument-dependent lookup
+        return stateTransitionMatrixWithSeparateVelocityDamping(
+            s, dt, m_posDamp, m_oriDamp);
+    }
+
+    void predictStateOnly(State &s, double dt) const {
+        m_constantVelModel.predictStateOnly(s, dt);
+        // Dampen velocities - using argument-dependent lookup
+        separatelyDampenVelocities(s, m_posDamp, m_oriDamp, dt);
+    }
+    void predictState(State &s, double dt) const {
+        predictStateOnly(s, dt);
+        auto Pminus = predictErrorCovariance(s, *this, dt);
+        s.setErrorCovariance(Pminus);
+    }
+
+    /*!
+     * This is Q(deltaT) - the Sampled Process Noise Covariance
+     * @return a matrix of dimension n x n. Note that it is real
+     * symmetrical (self-adjoint), so .selfAdjointView<Eigen::Upper>()
+     * might provide useful performance enhancements.
+     */
+    StateSquareMatrix getSampledProcessNoiseCovariance(double dt) const {
+        return m_constantVelModel.getSampledProcessNoiseCovariance(dt);
+    }
+
+  private:
+    BaseProcess m_constantVelModel;
+    double m_posDamp = 0.2;
+    double m_oriDamp = 0.01;
+};
 
 namespace util {
     namespace ei_quat_exp_map {
@@ -373,8 +540,8 @@ namespace external_quat {
 } // namespace external_quat
 
 
-namespace pose_externalized_rotation {
-    constexpr size_t Dimension = 12;
+namespace pose_with_accel {
+    constexpr size_t Dimension = 18;
     using StateVector = types::Vector<Dimension>;
     using StateVectorBlock3 = StateVector::FixedSegmentReturnType<3>::Type;
     using ConstStateVectorBlock3 =
@@ -393,44 +560,8 @@ namespace pose_externalized_rotation {
         // eq. 4.5 in Welch 1996 - except we have all the velocities at the
         // end
         StateSquareMatrix A = StateSquareMatrix::Identity();
-        A.topRightCorner<6, 6>() = types::SquareMatrix<6>::Identity() * dt;
-
-        return A;
-    }
-    /*!
-     * Function used to compute the coefficient m in v_new = m * v_old.
-     * The damping value is for exponential decay.
-     */
-    inline double computeAttenuation(double damping, double dt) {
-        return std::pow(damping, dt);
-    }
-
-    /*!
-     * Returns the state transition matrix for a constant velocity with a
-     * single damping parameter (not for direct use in computing state
-     * transition, because it is very sparse, but in computing other
-     * values)
-     */
-    inline StateSquareMatrix
-    stateTransitionMatrixWithVelocityDamping(double dt, double damping) {
-        // eq. 4.5 in Welch 1996
-        auto A = stateTransitionMatrix(dt);
-        A.bottomRightCorner<6, 6>() *= computeAttenuation(damping, dt);
-        return A;
-    }
-
-    /*!
-     * Returns the state transition matrix for a constant velocity with
-     * separate damping paramters for linear and angular velocity (not for
-     * direct use in computing state transition, because it is very sparse,
-     * but in computing other values)
-     */
-    inline StateSquareMatrix stateTransitionMatrixWithSeparateVelocityDamping(
-        double dt, double posDamping, double oriDamping) {
-        // eq. 4.5 in Welch 1996
-        auto A = stateTransitionMatrix(dt);
-        A.block<3, 3>(6, 6) *= computeAttenuation(posDamping, dt);
-        A.bottomRightCorner<3, 3>() *= computeAttenuation(oriDamping, dt);
+        A.block<6, 6>(0, 6) = types::SquareMatrix<6>::Identity() * dt;
+        A.block<6, 6>(6, 12) = types::SquareMatrix<6>::Identity() * dt;
         return A;
     }
 
@@ -438,7 +569,7 @@ namespace pose_externalized_rotation {
       public:
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
-        static constexpr size_t Dimension = 12;
+        static constexpr size_t Dimension = 18;
 
         //! Default constructor
         State()
@@ -498,10 +629,25 @@ namespace pose_externalized_rotation {
         }
 
         //! Linear and angular velocities
-        StateVectorBlock6 velocities() { return m_state.tail<6>(); }
+        StateVectorBlock6 velocities() { return m_state.segment<6>(6); }
 
         //! Linear and angular velocities
-        ConstStateVectorBlock6 velocities() const { return m_state.tail<6>(); }
+        ConstStateVectorBlock6 velocities() const {
+            return m_state.segment<6>(6);
+        }
+
+        StateVectorBlock3 acceleration() { return m_state.segment<3>(12); }
+
+        ConstStateVectorBlock3 acceleration() const {
+            return m_state.segment<3>(12);
+        }
+        StateVectorBlock3 angularAcceleration() {
+            return m_state.segment<3>(15);
+        }
+
+        ConstStateVectorBlock3 angularAcceleration() const {
+            return m_state.segment<3>(15);
+        }
 
         Eigen::Quaterniond const &getQuaternion() const {
             return m_orientation;
@@ -551,7 +697,7 @@ namespace pose_externalized_rotation {
     }
 
     //! Computes A(deltaT)xhat(t-deltaT)
-    inline void applyVelocity(State &state, double dt) {
+    inline void applyTime(State &state, double dt) {
         // eq. 4.5 in Welch 1996
 
         /*!
@@ -561,34 +707,25 @@ namespace pose_externalized_rotation {
 
         state.position() += state.velocity() * dt;
         state.incrementalOrientation() += state.angularVelocity() * dt;
+        state.velocity() += state.acceleration() * dt;
+        state.angularVelocity() += state.angularAcceleration() * dt;
     }
 
-    //! Dampen all 6 components of velocity by a single factor.
-    inline void dampenVelocities(State &state, double damping, double dt) {
-        auto attenuation = computeAttenuation(damping, dt);
-        state.velocities() *= attenuation;
-    }
-
-    //! Separately dampen the linear and angular velocities
-    inline void separatelyDampenVelocities(State &state, double posDamping,
-                                           double oriDamping, double dt) {
-        state.velocity() *= computeAttenuation(posDamping, dt);
-        state.angularVelocity() *= computeAttenuation(oriDamping, dt);
-    }
-} // namespace pose_externalized_rotation
+} // namespace pose_with_accel
 
 
-//! A constant-velocity model for a 6DOF pose (with velocities)
-class PoseConstantVelocityProcessModel
-    : public ProcessModelBase<PoseConstantVelocityProcessModel> {
+//! A constant-acceleration model for a 6DOF pose (with velocities and
+//! accelerations)
+class PoseAccelVelocityProcessModel
+    : public ProcessModelBase<PoseAccelVelocityProcessModel> {
   public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    using State = pose_externalized_rotation::State;
-    using StateVector = pose_externalized_rotation::StateVector;
-    using StateSquareMatrix = pose_externalized_rotation::StateSquareMatrix;
+    using State = pose_with_accel::State;
+    using StateVector = pose_with_accel::StateVector;
+    using StateSquareMatrix = pose_with_accel::StateSquareMatrix;
     using NoiseAutocorrelation = types::Vector<6>;
-    PoseConstantVelocityProcessModel(double positionNoise = 0.01,
-                                     double orientationNoise = 0.1) {
+    PoseAccelVelocityProcessModel(double positionNoise = 0.01,
+                                  double orientationNoise = 0.1) {
         setNoiseAutocorrelation(positionNoise, orientationNoise);
     }
     void setNoiseAutocorrelation(double positionNoise = 0.01,
@@ -602,13 +739,13 @@ class PoseConstantVelocityProcessModel
 
     //! Also known as the "process model jacobian" in TAG, this is A.
     StateSquareMatrix getStateTransitionMatrix(State const &, double dt) const {
-        return pose_externalized_rotation::stateTransitionMatrix(dt);
+        return pose_with_accel::stateTransitionMatrix(dt);
     }
 
     //! Does not update error covariance
     void predictStateOnly(State &s, double dt) const {
         FLEXKALMAN_DEBUG_OUTPUT("Time change", dt);
-        pose_externalized_rotation::applyVelocity(s, dt);
+        pose_with_accel::applyTime(s, dt);
     }
     //! Updates state vector and error covariance
     void predictState(State &s, double dt) const {
@@ -624,6 +761,8 @@ class PoseConstantVelocityProcessModel
      * Like all covariance matrices, it is real symmetrical (self-adjoint),
      * so .selfAdjointView<Eigen::Upper>() might provide useful performance
      * enhancements in some algorithms.
+     *
+     * @todo needs adapting for accel
      */
     StateSquareMatrix getSampledProcessNoiseCovariance(double dt) const {
         constexpr auto dim = getDimension<State>();
@@ -647,6 +786,8 @@ class PoseConstantVelocityProcessModel
     /*!
      * this is mu-arrow, the auto-correlation vector of the noise
      * sources
+     *
+     * @todo needs adapting for accel
      */
     NoiseAutocorrelation m_mu;
     double getMu(std::size_t index) const {
@@ -660,83 +801,6 @@ class PoseConstantVelocityProcessModel
         // the noise sources. (p77, p197 in Welch 1996)
         return m_mu(index);
     }
-};
-
-
-/*!
- * A basically-constant-velocity model, with the addition of some
- * damping of the velocities inspired by TAG. This model has separate
- * damping/attenuation of linear and angular velocities.
- */
-class PoseSeparatelyDampedConstantVelocityProcessModel
-    : public ProcessModelBase<
-          PoseSeparatelyDampedConstantVelocityProcessModel> {
-  public:
-    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    using State = pose_externalized_rotation::State;
-    using StateVector = pose_externalized_rotation::StateVector;
-    using StateSquareMatrix = pose_externalized_rotation::StateSquareMatrix;
-    using BaseProcess = PoseConstantVelocityProcessModel;
-    using NoiseAutocorrelation = BaseProcess::NoiseAutocorrelation;
-    PoseSeparatelyDampedConstantVelocityProcessModel(
-        double positionDamping = 0.3, double orientationDamping = 0.01,
-        double positionNoise = 0.01, double orientationNoise = 0.1)
-        : m_constantVelModel(positionNoise, orientationNoise) {
-        setDamping(positionDamping, orientationDamping);
-    }
-
-    void setNoiseAutocorrelation(double positionNoise = 0.01,
-                                 double orientationNoise = 0.1) {
-        m_constantVelModel.setNoiseAutocorrelation(positionNoise,
-                                                   orientationNoise);
-    }
-
-    void setNoiseAutocorrelation(NoiseAutocorrelation const &noise) {
-        m_constantVelModel.setNoiseAutocorrelation(noise);
-    }
-    //! Set the damping - must be in (0, 1)
-    void setDamping(double posDamping, double oriDamping) {
-        if (posDamping > 0 && posDamping < 1) {
-            m_posDamp = posDamping;
-        }
-        if (oriDamping > 0 && oriDamping < 1) {
-            m_oriDamp = oriDamping;
-        }
-    }
-
-    //! Also known as the "process model jacobian" in TAG, this is A.
-    StateSquareMatrix getStateTransitionMatrix(State const &, double dt) const {
-        return pose_externalized_rotation::
-            stateTransitionMatrixWithSeparateVelocityDamping(dt, m_posDamp,
-                                                             m_oriDamp);
-    }
-
-    void predictStateOnly(State &s, double dt) const {
-        m_constantVelModel.predictStateOnly(s, dt);
-        // Dampen velocities
-        pose_externalized_rotation::separatelyDampenVelocities(s, m_posDamp,
-                                                               m_oriDamp, dt);
-    }
-    void predictState(State &s, double dt) const {
-        predictStateOnly(s, dt);
-        auto Pminus = predictErrorCovariance(s, *this, dt);
-        s.setErrorCovariance(Pminus);
-    }
-
-    /*!
-     * This is Q(deltaT) - the Sampled Process Noise Covariance
-     * @return a matrix of dimension n x n. Note that it is real
-     * symmetrical (self-adjoint), so .selfAdjointView<Eigen::Upper>()
-     * might provide useful performance enhancements.
-     */
-    StateSquareMatrix getSampledProcessNoiseCovariance(double dt) const {
-        return m_constantVelModel.getSampledProcessNoiseCovariance(dt);
-    }
-
-  private:
-    BaseProcess m_constantVelModel;
-    double m_posDamp = 0.2;
-    double m_oriDamp = 0.01;
 };
 
 
@@ -954,6 +1018,218 @@ class OrientationConstantVelocityProcessModel
         return m_mu(index);
     }
 };
+
+
+namespace pose_externalized_rotation {
+    constexpr size_t Dimension = 12;
+    using StateVector = types::Vector<Dimension>;
+    using StateVectorBlock3 = StateVector::FixedSegmentReturnType<3>::Type;
+    using ConstStateVectorBlock3 =
+        StateVector::ConstFixedSegmentReturnType<3>::Type;
+
+    using StateVectorBlock6 = StateVector::FixedSegmentReturnType<6>::Type;
+    using ConstStateVectorBlock6 =
+        StateVector::ConstFixedSegmentReturnType<6>::Type;
+    using StateSquareMatrix = types::SquareMatrix<Dimension>;
+
+    /*!
+     * This returns A(deltaT), though if you're just predicting xhat-, use
+     * applyVelocity() instead for performance.
+     */
+    inline StateSquareMatrix stateTransitionMatrix(double dt) {
+        // eq. 4.5 in Welch 1996 - except we have all the velocities at the
+        // end
+        StateSquareMatrix A = StateSquareMatrix::Identity();
+        A.topRightCorner<6, 6>() = types::SquareMatrix<6>::Identity() * dt;
+
+        return A;
+    }
+    /*!
+     * Function used to compute the coefficient m in v_new = m * v_old.
+     * The damping value is for exponential decay.
+     */
+    inline double computeAttenuation(double damping, double dt) {
+        return std::pow(damping, dt);
+    }
+
+    class State : public StateBase<State> {
+      public:
+        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
+        static constexpr size_t Dimension = 12;
+        using StateVector = types::Vector<Dimension>;
+        using StateSquareMatrix = types::SquareMatrix<Dimension>;
+
+        //! Default constructor
+        State()
+            : m_state(StateVector::Zero()),
+              m_errorCovariance(StateSquareMatrix::Identity() *
+                                10 /** @todo almost certainly wrong */),
+              m_orientation(Eigen::Quaterniond::Identity()) {}
+        //! set xhat
+        void setStateVector(StateVector const &state) { m_state = state; }
+        //! xhat
+        StateVector const &stateVector() const { return m_state; }
+
+        // set P
+        void setErrorCovariance(StateSquareMatrix const &errorCovariance) {
+            m_errorCovariance = errorCovariance;
+        }
+        //! P
+        StateSquareMatrix const &errorCovariance() const {
+            return m_errorCovariance;
+        }
+        StateSquareMatrix &errorCovariance() { return m_errorCovariance; }
+
+        //! Intended for startup use.
+        void setQuaternion(Eigen::Quaterniond const &quaternion) {
+            m_orientation = quaternion.normalized();
+        }
+
+        void postCorrect() { externalizeRotation(); }
+
+        void externalizeRotation() {
+            setQuaternion(getCombinedQuaternion());
+            incrementalOrientation() = Eigen::Vector3d::Zero();
+        }
+
+        StateVectorBlock3 position() { return m_state.head<3>(); }
+
+        ConstStateVectorBlock3 position() const { return m_state.head<3>(); }
+
+        StateVectorBlock3 incrementalOrientation() {
+            return m_state.segment<3>(3);
+        }
+
+        ConstStateVectorBlock3 incrementalOrientation() const {
+            return m_state.segment<3>(3);
+        }
+
+        StateVectorBlock3 velocity() { return m_state.segment<3>(6); }
+
+        ConstStateVectorBlock3 velocity() const {
+            return m_state.segment<3>(6);
+        }
+
+        StateVectorBlock3 angularVelocity() { return m_state.segment<3>(9); }
+
+        ConstStateVectorBlock3 angularVelocity() const {
+            return m_state.segment<3>(9);
+        }
+
+        //! Linear and angular velocities
+        StateVectorBlock6 velocities() { return m_state.tail<6>(); }
+
+        //! Linear and angular velocities
+        ConstStateVectorBlock6 velocities() const { return m_state.tail<6>(); }
+
+        Eigen::Quaterniond const &getQuaternion() const {
+            return m_orientation;
+        }
+
+        Eigen::Quaterniond getCombinedQuaternion() const {
+            // divide by 2 since we're integrating it essentially.
+            return util::quat_exp(incrementalOrientation() / 2.) *
+                   m_orientation;
+        }
+
+        /*!
+         * Get the position and quaternion combined into a single isometry
+         * (transformation)
+         */
+        Eigen::Isometry3d getIsometry() const {
+            Eigen::Isometry3d ret;
+            ret.fromPositionOrientationScale(position(), getQuaternion(),
+                                             Eigen::Vector3d::Constant(1));
+            return ret;
+        }
+
+      private:
+        /*!
+         * In order: x, y, z, incremental rotations phi (about x), theta
+         * (about y), psy (about z), then their derivatives in the same
+         * order.
+         */
+        StateVector m_state;
+        //! P
+        StateSquareMatrix m_errorCovariance;
+        //! Externally-maintained orientation per Welch 1996
+        Eigen::Quaterniond m_orientation;
+    };
+
+    /*!
+     * Stream insertion operator, for displaying the state of the state
+     * class.
+     */
+    template <typename OutputStream>
+    inline OutputStream &operator<<(OutputStream &os, State const &state) {
+        os << "State:" << state.stateVector().transpose() << "\n";
+        os << "quat:" << state.getCombinedQuaternion().coeffs().transpose()
+           << "\n";
+        os << "error:\n" << state.errorCovariance() << "\n";
+        return os;
+    }
+
+    //! Computes A(deltaT)xhat(t-deltaT)
+    inline void applyVelocity(State &state, double dt) {
+        // eq. 4.5 in Welch 1996
+
+        /*!
+         * @todo benchmark - assuming for now that the manual small
+         * calcuations are faster than the matrix ones.
+         */
+
+        state.position() += state.velocity() * dt;
+        state.incrementalOrientation() += state.angularVelocity() * dt;
+    }
+
+    //! Dampen all 6 components of velocity by a single factor.
+    inline void dampenVelocities(State &state, double damping, double dt) {
+        auto attenuation = computeAttenuation(damping, dt);
+        state.velocities() *= attenuation;
+    }
+
+    //! Separately dampen the linear and angular velocities
+    inline void separatelyDampenVelocities(State &state, double posDamping,
+                                           double oriDamping, double dt) {
+        state.velocity() *= computeAttenuation(posDamping, dt);
+        state.angularVelocity() *= computeAttenuation(oriDamping, dt);
+    }
+
+    inline StateSquareMatrix stateTransitionMatrix(State const & /* state */,
+                                                   double dt) {
+        return stateTransitionMatrix(dt);
+    }
+    /*!
+     * Returns the state transition matrix for a constant velocity with a
+     * single damping parameter (not for direct use in computing state
+     * transition, because it is very sparse, but in computing other
+     * values)
+     */
+    inline StateSquareMatrix
+    stateTransitionMatrixWithVelocityDamping(State const &state, double dt,
+                                             double damping) {
+        // eq. 4.5 in Welch 1996
+        auto A = stateTransitionMatrix(state, dt);
+        A.bottomRightCorner<6, 6>() *= computeAttenuation(damping, dt);
+        return A;
+    }
+
+    /*!
+     * Returns the state transition matrix for a constant velocity with
+     * separate damping paramters for linear and angular velocity (not for
+     * direct use in computing state transition, because it is very sparse,
+     * but in computing other values)
+     */
+    inline StateSquareMatrix stateTransitionMatrixWithSeparateVelocityDamping(
+        State const &state, double dt, double posDamping, double oriDamping) {
+        // eq. 4.5 in Welch 1996
+        auto A = stateTransitionMatrix(state, dt);
+        A.block<3, 3>(6, 6) *= computeAttenuation(posDamping, dt);
+        A.bottomRightCorner<3, 3>() *= computeAttenuation(oriDamping, dt);
+        return A;
+    }
+} // namespace pose_externalized_rotation
 
 class AbsolutePositionMeasurementBase {
   public:
@@ -1610,6 +1886,91 @@ class AngularVelocityEKFMeasurement<orient_externalized_rotation::State>
 };
 
 
+//! A constant-velocity model for a 6DOF pose (with velocities)
+class PoseConstantVelocityProcessModel
+    : public ProcessModelBase<PoseConstantVelocityProcessModel> {
+  public:
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+    using State = pose_externalized_rotation::State;
+    using StateVector = pose_externalized_rotation::StateVector;
+    using StateSquareMatrix = pose_externalized_rotation::StateSquareMatrix;
+    using NoiseAutocorrelation = types::Vector<6>;
+    PoseConstantVelocityProcessModel(double positionNoise = 0.01,
+                                     double orientationNoise = 0.1) {
+        setNoiseAutocorrelation(positionNoise, orientationNoise);
+    }
+    void setNoiseAutocorrelation(double positionNoise = 0.01,
+                                 double orientationNoise = 0.1) {
+        m_mu.head<3>() = types::Vector<3>::Constant(positionNoise);
+        m_mu.tail<3>() = types::Vector<3>::Constant(orientationNoise);
+    }
+    void setNoiseAutocorrelation(NoiseAutocorrelation const &noise) {
+        m_mu = noise;
+    }
+
+    //! Also known as the "process model jacobian" in TAG, this is A.
+    StateSquareMatrix getStateTransitionMatrix(State const &, double dt) const {
+        return pose_externalized_rotation::stateTransitionMatrix(dt);
+    }
+
+    //! Does not update error covariance
+    void predictStateOnly(State &s, double dt) const {
+        FLEXKALMAN_DEBUG_OUTPUT("Time change", dt);
+        pose_externalized_rotation::applyVelocity(s, dt);
+    }
+    //! Updates state vector and error covariance
+    void predictState(State &s, double dt) const {
+        predictStateOnly(s, dt);
+        auto Pminus = predictErrorCovariance(s, *this, dt);
+        s.setErrorCovariance(Pminus);
+    }
+
+    /*!
+     * This is Q(deltaT) - the Sampled Process Noise Covariance
+     * @return a matrix of dimension n x n.
+     *
+     * Like all covariance matrices, it is real symmetrical (self-adjoint),
+     * so .selfAdjointView<Eigen::Upper>() might provide useful performance
+     * enhancements in some algorithms.
+     */
+    StateSquareMatrix getSampledProcessNoiseCovariance(double dt) const {
+        constexpr auto dim = getDimension<State>();
+        StateSquareMatrix cov = StateSquareMatrix::Zero();
+        auto dt3 = (dt * dt * dt) / 3;
+        auto dt2 = (dt * dt) / 2;
+        for (std::size_t xIndex = 0; xIndex < dim / 2; ++xIndex) {
+            auto xDotIndex = xIndex + dim / 2;
+            // xIndex is 'i' and xDotIndex is 'j' in eq. 4.8
+            const auto mu = getMu(xIndex);
+            cov(xIndex, xIndex) = mu * dt3;
+            auto symmetric = mu * dt2;
+            cov(xIndex, xDotIndex) = symmetric;
+            cov(xDotIndex, xIndex) = symmetric;
+            cov(xDotIndex, xDotIndex) = mu * dt;
+        }
+        return cov;
+    }
+
+  private:
+    /*!
+     * this is mu-arrow, the auto-correlation vector of the noise
+     * sources
+     */
+    NoiseAutocorrelation m_mu;
+    double getMu(std::size_t index) const {
+        assert(index < (getDimension<State>() / 2) &&
+               "Should only be passing "
+               "'i' - the main state, not "
+               "the derivative");
+        // This may not be totally correct but it's one of the parameters
+        // you can kind of fudge in kalman filters anyway.
+        // Should techincally be the diagonal of the correlation kernel of
+        // the noise sources. (p77, p197 in Welch 1996)
+        return m_mu(index);
+    }
+};
+
+
 /*!
  * A basically-constant-velocity model, with the addition of some
  * damping of the velocities inspired by TAG
@@ -1647,9 +2008,10 @@ class PoseDampedConstantVelocityProcessModel
     }
 
     //! Also known as the "process model jacobian" in TAG, this is A.
-    StateSquareMatrix getStateTransitionMatrix(State const &, double dt) const {
+    StateSquareMatrix getStateTransitionMatrix(State const &s,
+                                               double dt) const {
         return pose_externalized_rotation::
-            stateTransitionMatrixWithVelocityDamping(dt, m_damp);
+            stateTransitionMatrixWithVelocityDamping(s, dt, m_damp);
     }
 
     void predictStateOnly(State &s, double dt) const {
@@ -1960,95 +2322,6 @@ getPrediction(StateBase<StateType> const &state,
     stateCopy.postCorrect();
     return stateCopy;
 }
-
-
-//! A constant-velocity model for a 6DOF pose (with velocities)
-template <typename S>
-class PoseConstantVelocityGenericProcessModel
-    : public ProcessModelBase<PoseConstantVelocityGenericProcessModel<S>> {
-  public:
-    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    using State = S;
-    using StateVector = typename State::StateVector;
-    using StateSquareMatrix = typename State::StateSquareMatrix;
-    using NoiseAutocorrelation = types::Vector<6>;
-    PoseConstantVelocityGenericProcessModel(double positionNoise = 0.01,
-                                         double orientationNoise = 0.1) {
-        setNoiseAutocorrelation(positionNoise, orientationNoise);
-    }
-    void setNoiseAutocorrelation(double positionNoise = 0.01,
-                                 double orientationNoise = 0.1) {
-        m_mu.head<3>() = types::Vector<3>::Constant(positionNoise);
-        m_mu.tail<3>() = types::Vector<3>::Constant(orientationNoise);
-    }
-    void setNoiseAutocorrelation(NoiseAutocorrelation const &noise) {
-        m_mu = noise;
-    }
-
-    //! Also known as the "process model jacobian" in TAG, this is A.
-    StateSquareMatrix getStateTransitionMatrix(State const &s,
-                                               double dt) const {
-        // using argument-dependent lookup
-        return stateTransitionMatrix(s, dt);
-    }
-
-    //! Does not update error covariance
-    void predictStateOnly(State &s, double dt) const {
-        FLEXKALMAN_DEBUG_OUTPUT("Time change", dt);
-        // using argument-dependent lookup
-        applyVelocity(s, dt);
-    }
-    //! Updates state vector and error covariance
-    void predictState(State &s, double dt) const {
-        predictStateOnly(s, dt);
-        auto Pminus = predictErrorCovariance(s, *this, dt);
-        s.setErrorCovariance(Pminus);
-    }
-
-    /*!
-     * This is Q(deltaT) - the Sampled Process Noise Covariance
-     * @return a matrix of dimension n x n.
-     *
-     * Like all covariance matrices, it is real symmetrical (self-adjoint),
-     * so .selfAdjointView<Eigen::Upper>() might provide useful performance
-     * enhancements in some algorithms.
-     */
-    StateSquareMatrix getSampledProcessNoiseCovariance(double dt) const {
-        constexpr auto dim = getDimension<State>();
-        StateSquareMatrix cov = StateSquareMatrix::Zero();
-        auto dt3 = (dt * dt * dt) / 3;
-        auto dt2 = (dt * dt) / 2;
-        for (std::size_t xIndex = 0; xIndex < dim / 2; ++xIndex) {
-            auto xDotIndex = xIndex + dim / 2;
-            // xIndex is 'i' and xDotIndex is 'j' in eq. 4.8
-            const auto mu = getMu(xIndex);
-            cov(xIndex, xIndex) = mu * dt3;
-            auto symmetric = mu * dt2;
-            cov(xIndex, xDotIndex) = symmetric;
-            cov(xDotIndex, xIndex) = symmetric;
-            cov(xDotIndex, xDotIndex) = mu * dt;
-        }
-        return cov;
-    }
-
-  private:
-    /*!
-     * this is mu-arrow, the auto-correlation vector of the noise
-     * sources
-     */
-    NoiseAutocorrelation m_mu;
-    double getMu(std::size_t index) const {
-        assert(index < (getDimension<State>() / 2) &&
-               "Should only be passing "
-               "'i' - the main state, not "
-               "the derivative");
-        // This may not be totally correct but it's one of the parameters
-        // you can kind of fudge in kalman filters anyway.
-        // Should techincally be the diagonal of the correlation kernel of
-        // the noise sources. (p77, p197 in Welch 1996)
-        return m_mu(index);
-    }
-};
 
 
 /*!
@@ -2477,16 +2750,6 @@ namespace pose_exp_map {
         return std::pow(damping, dt);
     }
 #if 0
-    inline StateSquareMatrix
-    stateTransitionMatrixWithVelocityDamping(double dt, double damping) {
-
-        // eq. 4.5 in Welch 1996
-
-        auto A = stateTransitionMatrix(dt);
-        auto attenuation = computeAttenuation(damping, dt);
-        A.bottomRightCorner<6, 6>() *= attenuation;
-        return A;
-    }
     //! Computes A(deltaT)xhat(t-deltaT)
     inline StateVector applyVelocity(StateVector const &state, double dt) {
         // eq. 4.5 in Welch 1996
@@ -2608,6 +2871,33 @@ namespace pose_exp_map {
         StateSquareMatrix A = StateSquareMatrix::Identity();
         A.topRightCorner<6, 6>() = types::SquareMatrix<6>::Identity() * dt;
 
+        return A;
+    }
+
+    inline StateSquareMatrix
+    stateTransitionMatrixWithVelocityDamping(State const &s, double dt,
+                                             double damping) {
+
+        // eq. 4.5 in Welch 1996
+
+        auto A = stateTransitionMatrix(s, dt);
+        auto attenuation = computeAttenuation(damping, dt);
+        A.bottomRightCorner<6, 6>() *= attenuation;
+        return A;
+    }
+
+    /*!
+     * Returns the state transition matrix for a constant velocity with
+     * separate damping paramters for linear and angular velocity (not for
+     * direct use in computing state transition, because it is very sparse,
+     * but in computing other values)
+     */
+    inline StateSquareMatrix stateTransitionMatrixWithSeparateVelocityDamping(
+        State const &state, double dt, double posDamping, double oriDamping) {
+        // eq. 4.5 in Welch 1996
+        auto A = stateTransitionMatrix(state, dt);
+        A.block<3, 3>(6, 6) *= computeAttenuation(posDamping, dt);
+        A.bottomRightCorner<3, 3>() *= computeAttenuation(oriDamping, dt);
         return A;
     }
 
