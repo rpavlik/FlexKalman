@@ -125,6 +125,17 @@ namespace pose_exp_map {
             return m_state.segment<3>(3);
         }
 
+        /*!
+         * Get the position and quaternion combined into a single isometry
+         * (transformation)
+         */
+        Eigen::Isometry3d getIsometry() const {
+            Eigen::Isometry3d ret;
+            ret.fromPositionOrientationScale(position(), getQuaternion(),
+                                             Eigen::Vector3d::Constant(1));
+            return ret;
+        }
+
       private:
         /*!
          * In order: x, y, z, exponential rotation coordinates w1, w2, w3,
@@ -186,6 +197,13 @@ namespace pose_exp_map {
         A.block<3, 3>(6, 6) *= computeAttenuation(posDamping, dt);
         A.bottomRightCorner<3, 3>() *= computeAttenuation(oriDamping, dt);
         return A;
+    }
+
+    //! Separately dampen the linear and angular velocities
+    inline void separatelyDampenVelocities(State &state, double posDamping,
+                                           double oriDamping, double dt) {
+        state.velocity() *= computeAttenuation(posDamping, dt);
+        state.angularVelocity() *= computeAttenuation(oriDamping, dt);
     }
 
     /// Computes A(deltaT)xhat(t-deltaT) (or, the more precise, non-linear thing
