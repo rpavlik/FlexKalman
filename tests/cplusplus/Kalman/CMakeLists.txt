@@ -1,5 +1,5 @@
-
-foreach(test KalmanNoNaNs KalmanCombinedNoNaNs KalmanAbsOrient SmallAngle)
+#KalmanQuatNoNaNs
+foreach(test KalmanNoNaNs KalmanCombinedNoNaNs  KalmanExpNoNaNs KalmanAbsOrient SmallAngle)
     add_executable(Test${test}
         ${test}.cpp)
     target_link_libraries(Test${test} FlexKalman eigen-headers kf-catch2-main)
