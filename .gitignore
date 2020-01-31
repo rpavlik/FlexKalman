@@ -109,4 +109,8 @@ $RECYCLE.BIN/
 Session.vim
 .netrwhist
 *~
+
 build*
+
+__pycache__/
+.vscode/
