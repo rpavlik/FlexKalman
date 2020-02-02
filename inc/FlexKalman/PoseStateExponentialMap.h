@@ -218,7 +218,7 @@ namespace pose_exp_map {
         state.rotationVector() = newOrientation.getVector();
     }
 
-    types::Vector<3> predictAbsoluteOrientationMeasurement(State const &s) {
+    inline types::Vector<3> predictAbsoluteOrientationMeasurement(State const &s) {
         return s.rotationVector();
     }
     using ConstantVelocityProcessModel =
