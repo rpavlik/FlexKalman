@@ -3,6 +3,11 @@ if(BUILD_TESTING)
     add_subdirectory(catch-single-header-2.13.7)
 endif()
 
+# Interface target for CLI11
+add_library(CLI11-headers INTERFACE)
+target_include_directories(CLI11-headers
+                           INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/CLI11")
+
 # Interface target for Eigen
 add_library(eigen-headers INTERFACE)
 target_compile_definitions(eigen-headers INTERFACE EIGEN_MPL2_ONLY)
