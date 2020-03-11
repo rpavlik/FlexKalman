@@ -11,7 +11,7 @@
 
 // Copyright 2020 Collabora, Ltd.
 //
-// SPDX-License-Identifier: BSL-1.0
+// SPDX-License-Identifier: BSL-1.0 OR Apache-2.0
 
 #include "DataDriven.h"
 
@@ -84,10 +84,11 @@ class App {
     App(PoseFilterInterface &filter) : poseFilter(filter) {}
     bool showCovariance = false;
     bool outputPredictions = false;
+    double distanceErrorLimit = 10.0;
     std::ofstream outCsv;
 
     int run(std::string const &fn) {
-
+        int ret = 0;
         csv::CSVReader in(fn);
         bool haveRealPose = csv::CSV_NOT_FOUND != in.index_of("real_x");
         size_t iteration = 0;
@@ -146,12 +147,21 @@ class App {
             if (haveRealPose) {
                 Pose pose = parseRealPose(row);
                 output(OutputType::Correction, iteration, &pose);
+                double distanceError =
+                    (pose.position - poseFilter.getPosition()).norm();
+                if (distanceError > distanceErrorLimit) {
+                    std::cerr << "Exceeded the distance error limit!\n";
+//! @todo
+#if 0
+                    ret = -5;
+#endif
+                }
             } else {
                 output(OutputType::Correction, iteration);
             }
             ++iteration;
         }
-        return 0;
+        return ret;
     }
 };
 
