@@ -1,7 +1,7 @@
 /** @file
     @brief Header for measurements of absolute orientation.
 
-    @date 2015
+    @date 2015, 2020
 
     @author
     Ryan Pavlik
@@ -12,6 +12,9 @@
 */
 
 // Copyright 2015 Sensics, Inc.
+// Copyright 2020 Collabora, Ltd.
+//
+// SPDX-License-Identifier: Apache-2.0
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
