@@ -1,11 +1,16 @@
-// Copyright 2019-2019, Collabora, Ltd.
-// SPDX-License-Identifier: BSL-1.0
-/*!
- * @file
- * @brief  SO3 pose representation
- * @author Ryan Pavlik <ryan.pavlik@collabora.com>
- *
- */
+/** @file
+    @brief Header for SO3 pose representation
+
+    @date 2019-2020
+
+    @author
+    Ryan Pavlik
+    <ryan.pavlik@collabora.com>
+*/
+
+// Copyright 2019-2020, Collabora, Ltd.
+// SPDX-License-Identifier: BSL-1.0 OR Apache-2.0
+
 #pragma once
 
 #include "MatrixExponentialMap.h"
