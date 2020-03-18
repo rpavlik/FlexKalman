@@ -8,6 +8,12 @@ add_library(CLI11-headers INTERFACE)
 target_include_directories(CLI11-headers
                            INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/CLI11")
 
+# Interface target for csv-parser
+add_library(csv-headers INTERFACE)
+target_include_directories(
+    csv-headers
+    INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/csv-parser/single_include")
+
 # Interface target for Eigen
 add_library(eigen-headers INTERFACE)
 target_compile_definitions(eigen-headers INTERFACE EIGEN_MPL2_ONLY)
