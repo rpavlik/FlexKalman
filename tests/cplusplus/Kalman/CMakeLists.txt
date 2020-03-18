@@ -11,3 +11,7 @@ target_link_libraries(Kalman_ManualTest FlexKalman eigen-headers)
 
 add_executable(ManualDump ManualDump.cpp)
 target_link_libraries(ManualDump FlexKalman eigen-headers)
+
+
+add_executable(DataDriven DataDrivenMain.cpp DataDriven.cpp)
+target_link_libraries(DataDriven FlexKalman eigen-headers pthread CLI11-headers csv-headers)

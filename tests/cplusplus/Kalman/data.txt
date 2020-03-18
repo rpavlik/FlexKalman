@@ -1,0 +1,4 @@
+quat 0 0 0 1
+rotvec 0.2 0 0
+rotvec 0.2 0 0
+rotvec 0.3 0 0
