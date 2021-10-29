@@ -221,6 +221,13 @@ This project: Most files are licensed under the Apache License, Version 2.0.
 Some are licensed "BSL-1.0 OR Apache-2.0", and this is the preference for new
 additions.
 
+This code originated as a part of tracking code from
+[OSVR-Core](https://github.com/OSVR/OSVR-Core). It was then extracted into a
+project providing the tracking capabilities standalone,
+[UVBI-and-KalmanFramework-Standalone](https://github.com/rpavlik/UVBI-and-KalmanFramework-Standalone).
+Since this is by far the most reusable code from that, though, I then extracted
+it once more into this repository.
+
 - `/cmake` - Git subtree from <https://github.com/rpavlik/cmake-modules> used at
   compile-time only. Primarily BSL 1.0, some items under the license used by
   CMake (BSD-style)
