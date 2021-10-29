@@ -9,6 +9,7 @@
 */
 
 // Copyright 2019-2020, Collabora, Ltd.
+//
 // SPDX-License-Identifier: BSL-1.0 OR Apache-2.0
 
 #pragma once
