@@ -1,3 +1,0 @@
-[submodule "vendor/folly"]
-	path = vendor/folly
-	url = https://github.com/facebook/folly.git

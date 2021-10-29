@@ -1,0 +1,7 @@
+set(_FlexKalman_old_mod_path ${CMAKE_MODULE_PATH})
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR} ${CMAKE_MODULE_PATH})
+include(CMakeFindDependencyMacro)
+find_dependency(Eigen3)
+include("${CMAKE_CURRENT_LIST_DIR}/FlexKalmanTargets.cmake")
+
+set(CMAKE_MODULE_PATH ${_FlexKalman_old_mod_path})

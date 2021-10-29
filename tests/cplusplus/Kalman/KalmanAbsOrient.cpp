@@ -37,12 +37,12 @@ inline void dumpKalmanDebugOuput(const char name[], const char expr[],
 #define FLEXKALMAN_DEBUG_OUTPUT(Name, Value)                                   \
     dumpKalmanDebugOuput(Name, #Value, Value)
 #endif
+// #include "../Util/IMUStateMeasurements.h"
 #include "FlexKalman/AbsoluteOrientationMeasurement.h"
 #include "FlexKalman/FlexibleKalmanFilter.h"
 #include "FlexKalman/FlexibleUnscentedCorrect.h"
 #include "FlexKalman/PoseConstantVelocity.h"
 #include "FlexKalman/PoseDampedConstantVelocity.h"
-#include "unifiedvideoinertial/IMUStateMeasurements.h"
 
 #include <catch2/catch.hpp>
 

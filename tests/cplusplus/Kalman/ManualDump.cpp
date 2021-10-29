@@ -3,8 +3,8 @@
 #include <Eigen/Eigen>
 #include <fstream>
 
-#include "unifiedvideoinertial/CSV.h"
-#include "unifiedvideoinertial/CSVCellGroup.h"
+#include "../Util/CSV.h"
+#include "../Util/CSVCellGroup.h"
 
 using namespace videotracker::util;
 
