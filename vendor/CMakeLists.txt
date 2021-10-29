@@ -1,6 +1,6 @@
 if(BUILD_TESTING)
     # Will search for a system install first.
-    add_subdirectory(catch-single-header-2.8.0)
+    add_subdirectory(catch-single-header-2.13.7)
 endif()
 
 # Interface target for Eigen
